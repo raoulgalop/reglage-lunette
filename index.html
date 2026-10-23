@@ -1,0 +1,1339 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#111418">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Lunette">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<title>Réglage Lunette</title>
+<link rel="stylesheet" href="leaflet/leaflet.css">
+<style>
+:root{--bg:#111418;--card:#1c2128;--line:#2c333d;--txt:#e9ecf0;--mut:#9aa4b1;--acc:#f59e0b;--ok:#34d399;--bad:#f87171;--blue:#60a5fa}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{padding-bottom:env(safe-area-inset-bottom)}
+html,body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,Roboto,sans-serif;font-size:16px}
+header{position:sticky;top:0;z-index:1000;padding-top:env(safe-area-inset-top);background:var(--bg);border-bottom:1px solid var(--line)}
+h1{font-size:17px;margin:0;padding:10px 16px 2px}
+details.fold>summary{cursor:pointer;padding:8px 0;font-weight:700;list-style:none}details.fold>summary::before{content:"▸ ";color:var(--acc)}details.fold[open]>summary::before{content:"▾ "}details.fold.sub{border-top:1px solid var(--line)}details.fold.sub>summary{padding:8px 0 4px}
+#setupLine{font-size:12px;color:var(--mut);padding:0 16px 4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+nav{display:flex}
+nav button{flex:1;min-width:0;background:none;border:0;border-bottom:3px solid transparent;color:var(--mut);padding:9px 1px;font-size:13px;font-weight:600}
+nav button.on{color:var(--acc);border-color:var(--acc)}
+main{padding:12px 12px 40px}
+section{display:none}section.on{display:block}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:12px}
+.card h2{font-size:13px;margin:0 0 10px;color:var(--mut);font-weight:600;text-transform:uppercase;letter-spacing:.04em;display:flex;justify-content:space-between;align-items:center}
+.row{display:flex;gap:8px;margin-bottom:8px}
+.row>label{flex:1;min-width:0}
+label{display:block;font-size:12px;color:var(--mut)}
+input,select{width:100%;margin-top:3px;background:#0d1014;color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:9px;font-size:16px}
+input:focus,select:focus{outline:2px solid var(--acc);border-color:transparent}
+.seg{display:flex;margin-top:3px;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.seg button{flex:1;background:#0d1014;color:var(--mut);border:0;padding:9px 4px;font-size:14px}
+.seg button.on{background:var(--acc);color:#111;font-weight:700}
+.btn{background:#2a313b;color:var(--txt);border:0;border-radius:8px;padding:9px 12px;font-size:14px}
+.btn.acc{background:var(--acc);color:#111;font-weight:700}
+.btn.sm{padding:6px 10px;font-size:13px}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.res{display:flex;gap:8px}
+.res>div{flex:1;background:#0d1014;border-radius:10px;padding:10px;text-align:center}
+.big{font-size:36px;font-weight:800;color:var(--acc);line-height:1.1}
+.dir{font-size:15px;font-weight:700;margin-top:2px}
+.sub{font-size:12px;color:var(--mut);margin-top:3px}
+canvas{width:100%;display:block;border-radius:10px;background:#f4f1e8;touch-action:none}
+#jMap{height:240px;border-radius:10px;background:#0d1014;margin-top:6px}
+textarea{width:100%;margin-top:3px;background:#0d1014;color:var(--txt);border:1px solid var(--line);border-radius:8px;padding:9px;font-size:15px;font-family:inherit;min-height:60px}
+table.jc{width:100%;border-collapse:collapse;font-size:14px}table.jc td,table.jc th{padding:5px 3px;text-align:center;border-bottom:1px solid var(--line)}table.jc input{padding:6px;font-size:15px;margin:0}
+.kpi{display:flex;gap:8px;flex-wrap:wrap}.kpi>div{flex:1;min-width:90px;background:#0d1014;border-radius:10px;padding:8px;text-align:center}.kpi b{display:block;font-size:22px;color:var(--acc)}
+#map{height:46vh;min-height:260px;border-radius:10px;background:#0d1014}
+.hint{font-size:12px;color:var(--mut);margin:6px 0 0;line-height:1.4}
+.warn{color:var(--acc)}
+.kv{display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-size:14px;margin-top:10px}
+.kv span:nth-child(odd){color:var(--mut)}
+.kv span:nth-child(even){text-align:right;font-variant-numeric:tabular-nums}
+table{width:100%;border-collapse:collapse;font-size:13px}
+table.dope td{font-size:17px;padding:8px 3px}table.dope td:nth-child(2),table.dope td:nth-child(3){font-weight:800;color:var(--acc)}
+th,td{padding:6px 3px;text-align:right;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+th{color:var(--mut);font-weight:600;font-size:11px}
+td:first-child,th:first-child{text-align:left}
+tr.zero td{color:var(--ok)}
+.scroll{overflow-x:auto}
+.leaflet-container{font:inherit}
+</style>
+</head>
+<body>
+<header>
+  <h1>🎯 Réglage Lunette</h1>
+  <div id="setupLine"></div>
+  <nav>
+    <button data-t="tir" class="on">Tir</button>
+    <button data-t="zero">Zérotage</button>
+    <button data-t="table">Table</button>
+    <button data-t="ret">Réticule</button>
+    <button data-t="mat">Matériel</button>
+    <button data-t="log">Journal</button>
+  </nav>
+</header>
+<main>
+
+<!-- ===================== TIR ===================== -->
+<section id="tir" class="on">
+  <div class="card">
+    <div class="row"><label>Setup<select id="quickSetup"></select></label></div>
+    <div id="map"></div>
+    <div class="row" style="margin-top:8px;margin-bottom:0">
+      <label>Toucher la carte place<div class="seg" id="placeMode"><button data-v="target" class="on">🎯 Cible</button><button data-v="shooter">🧍 Tireur</button></div></label>
+      <label style="flex:0 0 auto">&nbsp;<br><button class="btn acc" id="gpsBtn">📍 GPS</button></label>
+    </div>
+    <p class="hint" id="gpsInfo">Recherche de la position GPS…</p>
+  </div>
+
+  <div class="card">
+    <h2>Géométrie du tir</h2>
+    <div class="row">
+      <label>Distance (m)<input id="tDist" type="number" inputmode="decimal" value="100"></label>
+      <label>Azimut (°)<input id="tAz" type="number" inputmode="decimal" value="0"></label>
+      <label>Site (°)<input id="tSite" type="number" inputmode="decimal" step="0.1" value="0"></label>
+    </div>
+    <div class="row" style="margin-bottom:0">
+      <label>Latitude (°)<input id="tLat" type="number" inputmode="decimal" step="0.0001" value="46"></label>
+      <label>Coriolis<div class="seg" id="corOn"><button data-v="1" class="on">Oui</button><button data-v="0">Non</button></div></label>
+    </div>
+    <p class="hint" id="geoInfo">Placez la cible sur la carte, ou saisissez la distance mesurée (télémètre) et l'azimut.</p>
+  </div>
+
+  <div class="card">
+    <h2>Météo sur place <button class="btn sm acc" id="meteoBtn">☁ Actualiser</button></h2>
+    <div class="row">
+      <label>Temp. (°C)<input id="mT" type="number" inputmode="decimal" value="15"></label>
+      <label>Pression (hPa)<input id="mP" type="number" inputmode="decimal" value="1013"></label>
+      <label>Humidité (%)<input id="mH" type="number" inputmode="decimal" value="50"></label>
+    </div>
+    <div class="row" style="margin-bottom:0">
+      <label>Vent (km/h)<input id="mWs" type="number" inputmode="decimal" value="0"></label>
+      <label>Vient de (°)<input id="mWd" type="number" inputmode="decimal" value="270"></label>
+    </div>
+    <p class="hint" id="meteoInfo">Pression du lieu (station), pas ramenée au niveau de la mer. Le vent météo est mesuré à 10 m de haut : au ras du sol il est souvent plus faible, corrigez si besoin.</p>
+  </div>
+
+  <div class="card">
+    <h2>Solution de tir</h2>
+    <div class="res">
+      <div><div class="sub">Élévation</div><div class="big" id="sE">0</div><div class="dir" id="sEd">clic</div><div class="sub" id="sEa"></div></div>
+      <div><div class="sub">Dérive</div><div class="big" id="sW">0</div><div class="dir" id="sWd">clic</div><div class="sub" id="sWa"></div></div>
+    </div>
+    <div class="kv" id="sDetail"></div>
+  </div>
+</section>
+
+<!-- ===================== ZÉROTAGE ===================== -->
+<section id="zero">
+  <div class="card">
+    <div class="row">
+      <label>Distance de tir (m)<input id="zDist" type="number" inputmode="decimal" value="50"></label>
+      <label>Carreau cible (cm)<select id="zGrid"><option>0.5</option><option selected>1</option><option>2</option><option>2.5</option><option>5</option></select></label>
+    </div>
+    <div class="chips" style="margin:-2px 0 8px"><button class="btn sm zd">25</button><button class="btn sm zd">30</button><button class="btn sm zd">50</button><button class="btn sm zd">100</button></div>
+    <canvas id="tgt" width="600" height="600"></canvas>
+    <p class="hint">Touchez la cible à l'endroit de chaque impact (centre = point visé). Le centre du groupement est calculé.</p>
+    <div class="row" style="margin-top:8px">
+      <button class="btn" id="undo">↶ Annuler</button>
+      <button class="btn" id="clear">Effacer</button>
+      <button class="btn" id="zoomOut">－</button>
+      <button class="btn" id="zoomIn">＋</button>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Écart mesuré (point d'impact moyen)</h2>
+    <div class="row">
+      <label>Vertical (cm)<input id="zV" type="number" inputmode="decimal" step="0.1" value="0"></label>
+      <label>Sens<div class="seg" id="zVs"><button data-v="1" class="on">Haut</button><button data-v="-1">Bas</button></div></label>
+    </div>
+    <div class="row">
+      <label>Horizontal (cm)<input id="zH" type="number" inputmode="decimal" step="0.1" value="0"></label>
+      <label>Sens<div class="seg" id="zHs"><button data-v="1" class="on">Droite</button><button data-v="-1">Gauche</button></div></label>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Correction à appliquer</h2>
+    <div class="res">
+      <div><div class="sub">Élévation</div><div class="big" id="rV">0</div><div class="dir" id="rVd">clic</div><div class="sub" id="rVa"></div></div>
+      <div><div class="sub">Dérive</div><div class="big" id="rH">0</div><div class="dir" id="rHd">clic</div><div class="sub" id="rHa"></div></div>
+    </div>
+    <p class="hint" id="zInfo"></p>
+  </div>
+</section>
+
+<!-- ===================== TABLE ===================== -->
+<section id="table">
+  <div class="card">
+    <h2>Table de tir / abaque <span><button class="btn sm pp" data-p="pr">PR</button> <button class="btn sm pp" data-p="tld">TLD</button></span></h2>
+    <div class="row">
+      <label>De (m)<input id="pFrom" type="number" inputmode="decimal" value="100"></label>
+      <label>À (m)<input id="pTo" type="number" inputmode="decimal" value="300"></label>
+      <label>Pas (m)<input id="pStep" type="number" inputmode="decimal" value="25"></label>
+    </div>
+    <div class="row"><label>Distances précises (facultatif, remplace De/À/Pas)<input id="pList" type="text" placeholder="ex. 112, 168, 203, 245, 287"></label></div>
+    <div class="row">
+      <label>Vents (km/h)<input id="pWinds" type="text" value="5, 10, 15, 20"></label>
+      <label>Direction du vent<select id="pDir"><option value="1">3 h / 9 h (plein travers)</option><option value="0.87">2-4 h / 8-10 h (×0,87)</option><option value="0.5">1-5 h / 7-11 h (×0,5)</option></select></label>
+    </div>
+    <div class="row"><label>Taille de la cible dans la table<select id="pTgt" class="tgtSel"></select></label></div>
+    <div class="chips" id="tblList"></div>
+    <div class="row"><label>Nom de la table<input id="tblName" type="text" placeholder="ex. Stage 3 PR Bordeaux"></label></div>
+    <div class="chips"><button class="btn sm acc" id="tblSave">💾 Enregistrer cette table</button></div>
+    <div class="scroll"><table class="dope"><thead id="pHead"></thead><tbody id="pTable"></tbody></table></div>
+    <canvas id="pChart" width="760" height="460" style="margin-top:10px;background:#0d1014"></canvas>
+    <p class="hint" id="pInfo"></p>
+    <div class="chips"><button class="btn sm acc" id="pExport">💾 Enregistrer la carte de tir (image)</button></div>
+    <p class="hint" id="pExportMsg"></p>
+  </div>
+
+  <div class="card">
+    <h2>Abaque vent selon sa direction</h2>
+    <div class="row">
+      <label>Vitesse du vent (km/h)<input id="wdSpeed" type="number" inputmode="decimal" value="10"></label>
+      <label>Rose pour la distance<select id="wdDist"></select></label>
+    </div>
+    <canvas id="wdRose" width="700" height="700" style="max-width:420px;margin:0 auto 10px;background:#0d1014;border-radius:12px"></canvas>
+    <div class="scroll"><table class="dope" id="wdTable"></table></div>
+    <p class="hint">Heures = d'où vient le vent, la cible étant à 12 h. Valeurs en <span class="u">MRAD</span> : correction de dérive (→ à droite, ← à gauche, du côté d'où vient le vent) et, en petit, la petite correction d'élévation due au vent de face (12 h) ou arrière (6 h). Le vent actuel (onglet Tir) est surligné.</p>
+  </div>
+
+  <div class="card">
+    <h2>Préparer un stage</h2>
+    <div class="row"><label>Distances des cibles, dans l'ordre (m)<input id="stDist" type="text" inputmode="decimal" value="120, 175, 230, 280"></label></div>
+    <div class="row"><label>Tourelle réglée sur<select id="stBase"></select></label></div>
+    <table><thead><tr><th>Cible</th><th>Dist.</th><th>Clics<br>à afficher</th><th>Ou tenue<br>(<span class="u">MRAD</span>)</th></tr></thead><tbody id="stTable"></tbody></table>
+    <p class="hint">« Tenue » = où placer la cible sur l'arbre du réticule si vous laissez la tourelle sur la distance choisie (négatif = sous le centre). Vent non compris : tenez-le avec la colonne « vent réf. » de la carte.</p>
+  </div>
+
+  <div class="card">
+    <h2>Ajuster sur mes impacts (truing)</h2>
+    <p class="hint" style="margin:0 0 8px">Après une séance : indiquez une distance longue (200–300 m) et l'élévation qui a réellement touché. L'application recalcule la vitesse ou le coefficient balistique pour que la carte colle à votre arme.</p>
+    <div class="row">
+      <label>Distance (m)<input id="trD" type="number" inputmode="decimal" value="250"></label>
+      <label>Élévation réelle (<span class="u">MRAD</span>)<input id="trE" type="number" inputmode="decimal" step="0.1" placeholder="ex. 9.4"></label>
+    </div>
+    <div class="row"><label>Ajuster<div class="seg" id="trWhat"><button data-v="v0" class="on">Vitesse V0</button><button data-v="bc">Coef. CB</button></div></label></div>
+    <div class="chips"><button class="btn sm acc" id="trGo">Calculer</button><button class="btn sm" id="trApply" style="display:none">Appliquer à la munition</button></div>
+    <p class="hint" id="trRes"></p>
+  </div>
+
+  <div class="card">
+    <div class="row" style="margin-bottom:0">
+      <label>De (m)<input id="bFrom" type="number" inputmode="decimal" value="25"></label>
+      <label>À (m)<input id="bTo" type="number" inputmode="decimal" value="300"></label>
+      <label>Pas (m)<input id="bStep" type="number" inputmode="decimal" value="25"></label>
+    </div>
+    <p class="hint" id="bInfo"></p>
+  </div>
+  <div class="card scroll">
+    <table>
+      <thead><tr><th>Dist.<br>m</th><th>Chute<br>cm</th><th>Corr.<br><span class="u">MRAD</span></th><th>Clics<br>élév.</th><th>Dérive<br>cm</th><th>Clics<br>dérive</th><th>V<br>m/s</th><th>E<br>J</th></tr></thead>
+      <tbody id="bTable"></tbody>
+    </table>
+    <p class="hint">Chute négative = la balle passe sous le point visé → clics vers le HAUT. Dérive = vent + Coriolis, avec la météo et l'azimut de l'onglet Tir.</p>
+  </div>
+</section>
+
+<!-- ===================== RÉTICULE ===================== -->
+<section id="ret">
+  <div class="card">
+    <div class="row">
+      <label>Réticule<select id="rType"></select></label>
+      <label style="flex:0 0 34%">Grossissement<input id="rMag" type="number" inputmode="decimal" value="10"></label>
+    </div>
+    <canvas id="retc" width="700" height="700" style="background:#e9edf0;border-radius:50%"></canvas>
+    <div class="chips"><button class="btn sm" id="rZoomOut">－</button><button class="btn sm" id="rZoomIn">＋</button><button class="btn sm" id="rFit">Ajuster</button></div>
+    <div class="row" style="margin-top:8px"><label>Cible affichée derrière le réticule<select id="rTgt" class="tgtSel"></select></label></div>
+    <p class="hint" id="rTgtInfo"></p>
+    <p class="hint" id="rHold"></p>
+  </div>
+  <div class="card">
+    <h2>Mes cibles</h2>
+    <div class="row">
+      <label>Forme<select id="ctKind"><option value="gong">Ronde (gong)</option><option value="rect">Rectangle (plaque)</option><option value="ipsc">Silhouette</option></select></label>
+      <label>Largeur (cm)<input id="ctW" type="number" inputmode="decimal" placeholder="20"></label>
+      <label>Hauteur (cm)<input id="ctH" type="number" inputmode="decimal" placeholder="= largeur"></label>
+    </div>
+    <div class="row"><label>Nom<input id="ctName" type="text" placeholder="ex. Gong 12 cm du stand"></label></div>
+    <div class="chips"><button class="btn sm acc" id="ctSave">💾 Ajouter la cible</button></div>
+    <div class="chips" id="ctList"></div>
+  </div>
+  <div class="card">
+    <h2>Le vrai réticule de votre lunette</h2>
+    <p class="hint" id="rReal" style="font-size:14px;color:var(--txt)"></p>
+    <p class="hint">Le dessin ci-dessus est un modèle de la famille du réticule. Pour voir exactement le vôtre, importez une photo ou une capture du réticule (notice, site du fabricant, ou photo prise à travers la lunette sur fond clair), puis étalonnez-la : l'application y placera le point de visée.</p>
+    <input type="file" id="rFile" accept="image/*" style="display:none">
+    <div class="chips"><button class="btn sm acc" id="rImport">📷 Importer le réticule</button><button class="btn sm" id="rCalib">📏 Étalonner</button><button class="btn sm" id="rPhotoToggle">Photo / dessin</button><button class="btn sm" id="rPhotoDel">🗑</button></div>
+    <div class="row" id="rCalibRow" style="display:none;margin-top:8px"><label>Valeur de la graduation touchée (<span class="ru">mil</span>)<input id="rCalVal" type="number" inputmode="decimal" value="5"></label></div>
+    <p class="hint warn" id="rCalibMsg"></p>
+  </div>
+  <div class="card">
+    <h2 id="rName"></h2>
+    <p class="hint" id="rText" style="font-size:14px;color:var(--txt)"></p>
+    <p class="hint" id="rFocal" style="font-size:14px;color:var(--txt)"></p>
+  </div>
+  <div class="card">
+    <h2>Estimer une distance au réticule</h2>
+    <div class="row">
+      <label>Taille réelle (cm)<input id="rSize" type="number" inputmode="decimal" value="50"></label>
+      <label>Lecture au réticule (<span class="ru">mil</span>)<input id="rRead" type="number" inputmode="decimal" step="0.1" value="2"></label>
+    </div>
+    <div class="big" id="rDist" style="text-align:center">—</div>
+    <p class="hint" id="rDistInfo"></p>
+    <div class="chips"><button class="btn sm acc" id="rUse">Utiliser cette distance dans Tir</button></div>
+  </div>
+  <div class="card">
+    <h2>Bon à savoir</h2>
+    <p class="hint" style="font-size:14px;color:var(--txt)">
+      <b>1 MRAD (mil)</b> = 10 cm à 100 m, 5 cm à 50 m, 3 cm à 30 m. Avec des clics de 0,1 mil : 1 clic = 1 cm à 100 m.<br>
+      <b>1 MOA</b> ≈ 2,9 cm à 100 m. Avec des clics de 1/4 MOA : 1 clic ≈ 0,73 cm à 100 m.<br>
+      <b>Tourelles ou tenue ?</b> Cliquer aux tourelles garde le centre du réticule comme point de visée (le plus précis). Viser « en tenue » avec les graduations est plus rapide pour enchaîner plusieurs distances ou corriger le vent.<br>
+      <b>Tenue :</b> pour remonter le tir, on place la cible sur une graduation SOUS le centre ; pour corriger un vent qui pousse à droite, on place la cible sur une graduation à DROITE du centre (le canon pointe alors à gauche).<br>
+      <b>Parallaxe :</b> réglez la molette latérale (SF) jusqu'à ce que le réticule ne bouge plus sur la cible quand vous bougez la tête.
+    </p>
+  </div>
+</section>
+
+<!-- ===================== MATÉRIEL ===================== -->
+<section id="mat">
+  <div class="card" id="cSetups">
+    <h2>Mes setups</h2>
+    <div class="row"><label>Nom du setup<input id="setupName" type="text" placeholder="ex. B14R + SK Standard Plus 50 m"></label></div>
+    <div class="row"><label>Note (facultatif)<input id="setupNote" type="text" placeholder="ex. zéro fait au stand, 12 clics de réserve"></label></div>
+    <div class="chips"><button class="btn sm acc" id="setupSave">💾 Enregistrer le setup actuel</button></div>
+    <details id="setupBox" class="fold" style="margin-top:10px"><summary id="setupSum">Setups enregistrés</summary><div id="setupList"></div></details>
+    <p class="hint">Un setup mémorise l'arme, la lunette, la munition (avec vos valeurs modifiées) et le zéro. Rappelez-le ici ou en haut de l'onglet Tir.</p>
+  </div>
+  <div class="card" id="cWeapon">
+    <h2>Arme</h2>
+    <div class="row"><label>Type d'arme<select class="cType"></select></label></div>
+    <div class="row"><label>Marque<select class="cBrand"></select></label><label>Modèle<select class="cModel"></select></label></div>
+    <div class="row"><label>Calibre<input data-f="cal" type="text"></label><label>Hauteur lunette (cm)<input data-f="sight" type="number" inputmode="decimal" step="0.1"></label></div>
+    <div class="row"><label>Canon (mm)<input data-f="barrel" type="number" inputmode="decimal"></label><label>Pas de rayure (1:x")<input data-f="twist" type="number" inputmode="decimal" step="0.5"></label></div>
+    <div class="row"><label>Rail / embase pentée (MOA)<input data-f="rail" type="number" inputmode="decimal" placeholder="0"></label><label>&nbsp;<div class="chips" style="margin-top:3px"><button class="btn sm rl">0</button><button class="btn sm rl">20</button><button class="btn sm rl">30</button></div></label></div>
+    <div class="cSave"></div>
+  </div>
+
+  <div class="card" id="cScope">
+    <h2>Lunette</h2>
+    <div class="row"><label>Marque<select class="cBrand"></select></label><label>Modèle<select class="cModel"></select></label></div>
+    <div class="row"><label>Unité tourelles<select data-f="unit"><option>MRAD</option><option>MOA</option></select></label>
+      <label>Valeur d'un clic<select data-f="click"><option value="0.1">0.1 MRAD</option><option value="0.05">0.05 MRAD</option><option value="0.2">0.2 MRAD</option><option value="0.25">1/4 MOA</option><option value="0.125">1/8 MOA</option><option value="0.5">1/2 MOA</option><option value="1">1 MOA</option></select></label></div>
+    <div class="row"><label>Plan focal<select data-f="focal"><option value="FFP">1er plan (FFP)</option><option value="SFP">2e plan (SFP)</option></select></label>
+      <label>Grossissement<input data-f="mag" type="text"></label></div>
+    <div class="row"><label>Réticule<select data-f="reticle" id="retSel"></select></label>
+      <label>Gross. de calibration (SFP)<input data-f="calMag" type="number" inputmode="decimal"></label></div>
+    <div class="row"><label>Course totale élévation (unité tourelle)<input data-f="travelE" type="number" inputmode="decimal" placeholder="voir notice"></label></div>
+    <p class="hint" id="scopeSrc"></p>
+    <div class="cSave"></div>
+  </div>
+
+  <div class="card" id="cAmmo">
+    <h2>Munition</h2>
+    <div class="row"><label>Type de munition<select class="cType"></select></label></div>
+    <div class="row"><label>Marque<select class="cBrand"></select></label><label>Modèle<select class="cModel"></select></label></div>
+    <div class="row"><label>Calibre<input data-f="cal" type="text"></label><label>Poids (grains)<input data-f="gr" type="number" inputmode="decimal"></label></div>
+    <div class="row"><label>Vitesse V0 (m/s)<input data-f="v0" type="number" inputmode="decimal"></label><label>Coef. balistique G1<input data-f="bc" type="number" inputmode="decimal" step="0.001"></label></div>
+    <p class="hint" id="ammoSrc"></p>
+    <div class="cSave"></div>
+  </div>
+
+  <div class="card">
+    <h2>Zéro de la lunette</h2>
+    <div class="row"><label>Distance de zéro (m)<input id="zeroD" type="number" inputmode="decimal" value="50"></label></div>
+    <div class="chips" style="margin:-2px 0 8px"><button class="btn sm zc">25</button><button class="btn sm zc">30</button><button class="btn sm zc">50</button><button class="btn sm zc">100</button></div>
+    <div class="row"><label>Temp. au zérotage (°C)<input id="zeroT" type="number" inputmode="decimal" placeholder="= météo actuelle"></label><label>Pression au zérotage (hPa)<input id="zeroP" type="number" inputmode="decimal" placeholder="= météo actuelle"></label></div>
+    <div id="travelBox" class="kv" style="margin:0 0 10px"></div>
+    <p class="hint" id="travelInfo"></p>
+    <p class="hint">Laissez la température et la pression vides si vous avez fait le zéro dans des conditions proches d'aujourd'hui. Tout est enregistré automatiquement. Modifiez une valeur puis « Enregistrer » pour l'ajouter à votre catalogue (même marque + modèle = mise à jour).</p>
+  </div>
+</section>
+<section id="log">
+  <div class="card">
+    <h2>Nouvelle séance de tir</h2>
+    <div class="row"><label>Setup utilisé<select id="jSetup"></select></label></div>
+    <p class="hint" id="jSetupInfo" style="margin:2px 0 8px"></p>
+    <div class="row">
+      <label>Date<input id="jDate" type="datetime-local"></label>
+      <label>Lieu<input id="jPlace" type="text" placeholder="ex. Stand de Bordeaux"></label>
+    </div>
+    <div class="chips"><button class="btn sm acc" id="jGps">📍 Ma position GPS</button><button class="btn sm" id="jFromTir">Position du tireur (onglet Tir)</button></div>
+    <div id="jMap"></div>
+    <p class="hint" id="jLocInfo">Appuyez sur la carte pour placer le lieu de tir.</p>
+    <div class="row">
+      <label>Munition<select id="jAmmo"></select></label>
+    </div>
+    <div class="row"><label>Cible<select id="jTgt" class="tgtSel"></select></label></div>
+    <div class="row">
+      <label>Nombre de cartouches<input id="jCount" type="number" inputmode="numeric" min="0" placeholder="ex. 150"></label>
+      <label>N° de lot (facultatif)<input id="jLot" type="text" placeholder="ex. 12345"></label>
+    </div>
+    <p class="hint" id="jMeteo"></p>
+    <h2 style="margin-top:12px">Corrections réelles <span class="hint" style="text-transform:none;margin:0">facultatif</span></h2>
+    <p class="hint" style="margin:0 0 6px">Pour chaque distance, l'élévation calculée par l'appli est remplie automatiquement ; indiquez celle qui a réellement touché (et la correction de vent utilisée si besoin).</p>
+    <div class="scroll"><table class="jc"><thead><tr><th>Dist. m</th><th>Appli <span class="u">MRAD</span></th><th>Réelle <span class="u">MRAD</span></th><th>Vent réel <span class="u">MRAD</span></th><th></th></tr></thead><tbody id="jRows"></tbody></table></div>
+    <div class="chips"><button class="btn sm" id="jAddRow">＋ Ajouter une distance</button></div>
+    <div class="row" style="margin-top:8px"><label>Notes<textarea id="jNote" placeholder="ex. vent rafaleux de droite, groupement 3 cm à 100 m"></textarea></label></div>
+    <div class="chips"><button class="btn acc" id="jSave">💾 Enregistrer la séance</button></div>
+    <p class="hint" id="jMsg"></p>
+  </div>
+  <div class="card">
+    <h2>Historique</h2>
+    <div class="row"><label>Afficher<select id="jFilter"></select></label></div>
+    <div class="kpi" id="jKpi"></div>
+    <div id="jStats" class="hint" style="margin-top:8px"></div>
+    <div id="jList" style="margin-top:6px"></div>
+    <div class="chips"><button class="btn sm" id="jCsv">⬇️ Exporter le journal (CSV)</button></div>
+    <p class="hint" id="jCsvMsg"></p>
+  </div>
+</section>
+</main>
+
+<script src="leaflet/leaflet.js"></script>
+<script src="catalog.js"></script>
+<script>
+const $=id=>document.getElementById(id);
+const num=id=>{const e=typeof id==="string"?$(id):id;const v=parseFloat(String(e.value).replace(",","."));return isFinite(v)?v:0;};
+const fx=(x,n)=>(Math.abs(x)<0.5*Math.pow(10,-n)?0:x).toFixed(n);
+const DEG=Math.PI/180;
+function seg(id){return $(id).querySelector(".on").dataset.v;}
+function setSeg(id,v){$(id).querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.v==v));}
+
+/* ================= état persistant ================= */
+const FIELDS=["wdSpeed","pList","pFrom","pTo","pStep","pWinds","pDir","stDist","trD","rMag","rSize","rRead","tDist","tAz","tSite","tLat","mT","mP","mH","mWs","mWd","zDist","zGrid","zV","zH","bFrom","bTo","bStep","zeroD","zeroT","zeroP"];
+const SEGS=["placeMode","corOn","zVs","zHs","trWhat"];
+let S={sel:{weapon:"Bergara|B-14R HMR (.22 LR)",scope:"Discovery Optics|ED-PRS GEN II 5-25x56 SFIR FFP-Z MRAD",ammo:"SK|Standard Plus 40 gr"},
+       val:{weapon:{},scope:{},ammo:{}},custom:{weapon:[],scope:[],ammo:[]},tf:{weapon:"",ammo:""},setups:[],activeSetup:"",retZoom:0,impacts:[],halfCm:10,shooter:null,target:null,meteoTime:null};
+function save(){try{const f={};FIELDS.forEach(k=>f[k]=$(k).value);SEGS.forEach(k=>f[k]=seg(k));S.fields=f;localStorage.setItem("lunette2",JSON.stringify(S));}catch(e){}}
+function load(){
+  try{const s=JSON.parse(localStorage.getItem("lunette2"));if(s)S=Object.assign(S,s);}catch(e){}
+  // anciens noms de modèles → noms actuels
+  const REN=Object.assign({"Discovery Optics|ED-PRS II 5-25x56 FFP":"Discovery Optics|ED-PRS GEN II 5-25x56 SFIR FFP-Z MRAD","Discovery Optics|ED-PRS II 5-25x56 FFP (MOA)":"Discovery Optics|ED-PRS GEN II 5-25x56 SFIR FFP-Z MOA"},window.SCOPE_REN||{});
+  const AREN=window.AMMO_REN||{};
+  const ren=o=>{if(!o)return;if(REN[o.scope])o.scope=REN[o.scope];if(AREN[o.ammo])o.ammo=AREN[o.ammo];};ren(S.sel);(S.setups||[]).forEach(st=>ren(st.sel));
+  if(S.retPhoto)Object.keys(REN).forEach(k=>{if(S.retPhoto[k]){S.retPhoto[REN[k]]=S.retPhoto[k];delete S.retPhoto[k];}});
+  if(S.fields){FIELDS.forEach(k=>{if(S.fields[k]!=null)$(k).value=S.fields[k];});SEGS.forEach(k=>{if(S.fields[k])setSeg(k,S.fields[k]);});}
+}
+
+/* ================= catalogue ================= */
+const KINDS={weapon:{card:"cWeapon",f:["cal","sight","barrel","twist","rail"]},scope:{card:"cScope",f:["unit","click","focal","mag","reticle","calMag","travelE"]},ammo:{card:"cAmmo",f:["cal","gr","v0","bc"]}};
+const STRF=["cal","unit","click","focal","mag","reticle","type"];
+const key=e=>e.brand+"|"+e.model;
+function list(kind){ // catalogue + perso (le perso remplace une entrée de même nom)
+  const m=new Map();CATALOG[kind].forEach(e=>m.set(key(e),e));S.custom[kind].forEach(e=>m.set(key(e),Object.assign({},e,{custom:true})));
+  return [...m.values()];
+}
+function find(kind,k){return list(kind).find(e=>key(e)===k);}
+function V(kind,f){ // valeur active = valeur modifiée sinon catalogue
+  const v=S.val[kind][f];if(v!=null&&v!=="")return v;const e=find(kind,S.sel[kind]);return e?e[f]:"";
+}
+function renderCard(kind){
+  const c=$(KINDS[kind].card),items=list(kind),cur=find(kind,S.sel[kind])||items[0];
+  if(cur)S.sel[kind]=key(cur);
+  const tSel=c.querySelector(".cType");let pool=items;
+  if(tSel){
+    const types=[...new Set(items.map(e=>e.type).filter(Boolean))],tf=S.tf[kind]||"";
+    tSel.innerHTML=`<option value="">Tous les types</option>`+types.map(t=>`<option${t===tf?" selected":""}>${esc(t)}</option>`).join("");
+    if(tf)pool=items.filter(e=>e.type===tf||e===cur);
+  }
+  let brands=[...new Set(pool.map(e=>e.brand))];
+  let models=pool.filter(e=>e.brand===cur.brand);
+  if(kind==="ammo"){ // munitions filtrées par calibre de l'arme
+    const cal=String(V("weapon","cal")).toLowerCase().replace(/\s/g,"");
+    const ok=e=>!cal||String(e.cal).toLowerCase().replace(/\s/g,"")===cal||e===cur;
+    brands=[...new Set(pool.filter(ok).map(e=>e.brand))];if(!brands.includes(cur.brand))brands.push(cur.brand);
+    models=models.filter(ok);
+  }
+  brands.push("➕ Nouvelle marque…");
+  c.querySelector(".cBrand").innerHTML=brands.map(b=>`<option${b===cur.brand?" selected":""}>${esc(b)}</option>`).join("");
+  { // regroupe les modèles par famille (texte avant la parenthèse du calibre)
+    const fam=e=>e.model.replace(/\s*\([^)]*\)\s*$/,"")||e.model,groups=new Map();
+    models.forEach(e=>{const f=fam(e);if(!groups.has(f))groups.set(f,[]);groups.get(f).push(e);});
+    const opt=e=>`<option value="${esc(key(e))}"${e===cur?" selected":""}>${esc(e.model)}${e.custom?" ★":""}</option>`;
+    c.querySelector(".cModel").innerHTML=[...groups].sort((x,y)=>x[0].localeCompare(y[0],"fr",{numeric:true})).map(([f,es])=>es.length>1&&groups.size>1?`<optgroup label="${esc(f)}">${es.map(opt).join("")}</optgroup>`:es.map(opt).join("")).join("");
+  }
+  KINDS[kind].f.forEach(f=>{const el=c.querySelector(`[data-f=${f}]`);el.value=V(kind,f);});
+  const modified=Object.values(S.val[kind]).some(v=>v!=null&&v!=="");
+  c.querySelector(".cSave").innerHTML=
+    `<div class="row" style="margin:4px 0 0"><label>Enregistrer sous : marque<input class="nBrand" value="${esc(cur.brand)}"></label><label>Modèle<input class="nModel" value="${esc(cur.model)}"></label></div>`+
+    `<div class="chips"><button class="btn sm acc sv">💾 Enregistrer</button>${modified?'<button class="btn sm rs">↺ Valeurs catalogue</button>':""}${cur.custom?'<button class="btn sm dl">🗑 Supprimer</button>':""}</div>`+
+    (modified?'<p class="hint warn">Valeurs modifiées par rapport au catalogue.</p>':"");
+  if(kind==="scope"){$("scopeSrc").textContent=(cur.retName?`Réticule réel : ${cur.retName}. `:"")+(cur.src?`Source : ${cur.src}. Vérifiez sur la notice de votre lunette.`:"");
+    c.querySelector("[data-f=calMag]").disabled=V("scope","focal")!=="SFP";}
+  const ammoMsg={C:"✅ CB publié par le fabricant",V:"🔢 CB calculé d'après les vitesses publiées par le fabricant",E:"⚠️ CB estimé : le fabricant ne publie pas de CB G1"};
+  if(kind==="ammo")$("ammoSrc").innerHTML=cur.custom?"Munition personnelle.":`<b>${ammoMsg[cur.bcK]||ammoMsg.E}</b>${S.val.ammo.bc!=null&&S.val.ammo.bc!==""?" (valeur catalogue, remplacée par la vôtre)":""}.<br>${esc(cur.src||"")}. Mesurez votre V0 au chrono si possible, et affinez le CB avec l'outil « truing » de l'onglet Table.`;
+  const unit=c.querySelector("[data-f=unit]");if(unit)filterClicks();
+}
+function filterClicks(){
+  const c=$("cScope"),u=c.querySelector("[data-f=unit]").value,sel=c.querySelector("[data-f=click]");
+  [...sel.options].forEach(o=>o.hidden=!o.text.includes(u));
+  if(sel.selectedOptions[0]&&sel.selectedOptions[0].hidden){sel.value=u==="MRAD"?"0.1":"0.25";S.val.scope.click=sel.value;}
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+Object.keys(KINDS).forEach(kind=>{
+  const c=$(KINDS[kind].card);
+  c.querySelector(".cBrand").onchange=e=>{
+    let b=e.target.value;
+    if(b.startsWith("➕")){S.val[kind]={};const cur=find(kind,S.sel[kind]);renderCard(kind);c.querySelector(".nBrand").value="";c.querySelector(".nModel").value="";c.querySelector(".nBrand").focus();return;}
+    const first=list(kind).find(x=>x.brand===b);S.sel[kind]=key(first);S.val[kind]={};changed();
+  };
+  c.querySelector(".cModel").onchange=e=>{S.sel[kind]=e.target.value;S.val[kind]={};changed();};
+  const tSel=c.querySelector(".cType");
+  if(tSel)tSel.onchange=e=>{S.tf[kind]=e.target.value;const cur=find(kind,S.sel[kind]);
+    if(e.target.value&&cur&&cur.type!==e.target.value){const f=list(kind).find(x=>x.type===e.target.value);if(f){S.sel[kind]=key(f);S.val[kind]={};}}
+    changed();};
+  KINDS[kind].f.forEach(f=>{const el=c.querySelector(`[data-f=${f}]`);
+    el.addEventListener(el.tagName==="SELECT"?"change":"input",()=>{S.val[kind][f]=el.value;if(f==="unit")filterClicks();compute();save();});
+    el.addEventListener("change",()=>renderCard(kind));});
+  c.addEventListener("click",e=>{
+    if(e.target.classList.contains("sv")){
+      const brand=c.querySelector(".nBrand").value.trim()||"Perso",model=c.querySelector(".nModel").value.trim()||"Sans nom";
+      const cur=find(kind,S.sel[kind])||{};const ent={brand,model,type:S.tf[kind]||cur.type||""};KINDS[kind].f.forEach(f=>{const v=c.querySelector(`[data-f=${f}]`).value;ent[f]=isNaN(parseFloat(v))||STRF.includes(f)?v:parseFloat(v);});
+      S.custom[kind]=S.custom[kind].filter(x=>key(x)!==key(ent));S.custom[kind].push(ent);S.sel[kind]=key(ent);S.val[kind]={};changed();
+    }else if(e.target.classList.contains("rs")){S.val[kind]={};changed();}
+    else if(e.target.classList.contains("dl")){S.custom[kind]=S.custom[kind].filter(x=>key(x)!==S.sel[kind]);S.sel[kind]="";S.val[kind]={};changed();}
+  });
+});
+const normCal=c=>String(c||"").toLowerCase().replace(/\s/g,"");
+let lastCal=null;
+function changed(){
+  const cal=normCal(V("weapon","cal"));
+  if(lastCal!==null&&cal!==lastCal){ // nouvelle arme : proposer une munition du bon calibre
+    const cur=find("ammo",S.sel.ammo);
+    if(cal&&(!cur||normCal(V("ammo","cal"))!==cal)){const f=list("ammo").find(e=>normCal(e.cal)===cal);if(f){S.sel.ammo=key(f);S.val.ammo={};}}
+  }
+  lastCal=cal;
+  Object.keys(KINDS).forEach(renderCard);renderSetups();jSync();compute();save();}
+
+/* ================= profil actif ================= */
+function P(){
+  const unit=V("scope","unit")||"MRAD";
+  return {unit,click:parseFloat(V("scope","click"))||0.1,sight:parseFloat(V("weapon","sight"))||5,
+    v0:parseFloat(V("ammo","v0"))||330,bc:parseFloat(V("ammo","bc"))||0.13,gr:parseFloat(V("ammo","gr"))||0,
+    rail:parseFloat(V("weapon","rail"))||0,travel:parseFloat(V("scope","travelE"))||0,
+    zero:num("zeroD")||50,zT:$("zeroT").value===""?num("mT"):num("zeroT"),zP:$("zeroP").value===""?(num("mP")||1013):num("zeroP")};
+}
+const toUnit=(rad,u)=>u==="MOA"?rad/DEG*60:rad*1000; // angle en MOA ou MRAD
+const cmUnit=(cm,d,u)=>d>0?toUnit(cm/100/d,u):0;
+
+/* ================= balistique ================= */
+const G1=[[0,.2629],[.05,.2558],[.1,.2487],[.15,.2413],[.2,.2344],[.25,.2278],[.3,.2214],[.35,.2155],[.4,.2104],[.45,.2061],[.5,.2032],[.55,.202],[.6,.2034],[.7,.2165],[.725,.223],[.75,.2313],[.775,.2417],[.8,.2546],[.825,.2706],[.85,.2901],[.875,.3136],[.9,.3415],[.925,.3734],[.95,.4084],[.975,.4448],[1,.4805],[1.025,.5136],[1.05,.5427],[1.075,.5677],[1.1,.5883],[1.125,.6053],[1.15,.6191],[1.2,.6393],[1.25,.6518],[1.3,.6589],[1.35,.6621],[1.4,.6625],[1.45,.6607],[1.5,.6573],[1.55,.6528],[1.6,.6474],[1.65,.6413],[1.7,.6347],[1.75,.628],[1.8,.621],[1.85,.6141],[1.9,.6072],[1.95,.6003],[2,.5934],[2.05,.5867],[2.1,.5804],[2.15,.5743],[2.2,.5685],[2.25,.563],[2.3,.5577],[2.35,.5527],[2.4,.5481],[2.45,.5438],[2.5,.5397],[2.6,.5325],[2.7,.5264],[2.8,.5211],[2.9,.5168],[3,.5133],[3.1,.5105],[3.2,.5084],[3.3,.5067],[3.4,.5054],[3.5,.504],[3.6,.503],[3.7,.5022],[3.8,.5016],[3.9,.501],[4,.5006],[4.2,.4998],[4.4,.4995],[4.6,.4992],[4.8,.499],[5,.4988]];
+function cdG1(m){if(m<=0)return G1[0][1];if(m>=5)return G1[G1.length-1][1];let i=1;while(G1[i][0]<m)i++;const[a,c0]=G1[i-1],[b,c1]=G1[i];return c0+(c1-c0)*(m-a)/(b-a);}
+function atmo(T,P,H){ // T °C, P hPa (station), H %
+  const Tk=T+273.15,Pv=(H||0)/100*6.1078*Math.pow(10,7.5*T/(T+237.3));
+  const rho=((P-Pv)*100)/(287.058*Tk)+(Pv*100)/(461.495*Tk);
+  return {ratio:rho/1.225,sound:331.3*Math.sqrt(1+T/273.15)};
+}
+/* Repère lié à la ligne de visée : x vers la cible, y vers le haut (perpendiculaire), z vers la droite.
+   o = {p, alpha (rad, au-dessus de la ligne de visée), site (rad), atm, wind:{d,r} m/s horizontaux,
+        cor:bool, lat, az (rad), maxX} → fonction distance -> {y,z,t,v} (y,z en m par rapport à la visée) */
+function fly(o){
+  const p=o.p,K=2.08551e-4*3.28084/p.bc*o.atm.ratio,g=9.80665,dt=0.0004,cs=Math.cos(o.site),sn=Math.sin(o.site);
+  const gx=-g*sn,gy=-g*cs;
+  const wx=(o.wind?o.wind.d:0)*cs,wy=-(o.wind?o.wind.d:0)*sn,wz=o.wind?o.wind.r:0;
+  let Ox=0,Oy=0,Oz=0;
+  if(o.cor){const W=7.292115e-5,Od=W*Math.cos(o.lat)*Math.cos(o.az),Ou=W*Math.sin(o.lat),Or=-W*Math.cos(o.lat)*Math.sin(o.az);
+    Ox=Od*cs+Ou*sn;Oy=-Od*sn+Ou*cs;Oz=Or;}
+  let x=0,y=-p.sight/100,z=0,vx=p.v0*Math.cos(o.alpha),vy=p.v0*Math.sin(o.alpha),vz=0,t=0;
+  const pts=[[0,y,z,0,p.v0]];
+  while(x<o.maxX&&t<8){
+    const rx=vx-wx,ry=vy-wy,rz=vz-wz,vr=Math.hypot(rx,ry,rz),k=K*cdG1(vr/o.atm.sound)*vr;
+    const ax=-k*rx+gx-2*(Oy*vz-Oz*vy),ay=-k*ry+gy-2*(Oz*vx-Ox*vz),az=-k*rz-2*(Ox*vy-Oy*vx);
+    vx+=ax*dt;vy+=ay*dt;vz+=az*dt;x+=vx*dt;y+=vy*dt;z+=vz*dt;t+=dt;
+    pts.push([x,y,z,t,Math.hypot(vx,vy,vz)]);
+    if(vx<20)break;
+  }
+  return d=>{let lo=0,hi=pts.length-1;if(d>pts[hi][0])return null;
+    while(hi-lo>1){const m=(lo+hi)>>1;if(pts[m][0]<d)lo=m;else hi=m;}
+    const a=pts[lo],b=pts[hi],f=(d-a[0])/((b[0]-a[0])||1),L=i=>a[i]+(b[i]-a[i])*f;
+    return {y:L(1),z:L(2),t:L(3),v:L(4)};};
+}
+function zeroAngle(p){
+  const atm=atmo(p.zT,p.zP,50);let a=0;
+  for(let i=0;i<25;i++){const r=fly({p,alpha:a,site:0,atm,maxX:p.zero+1})(p.zero);if(!r)break;a-=r.y/p.zero;if(Math.abs(r.y)<1e-6)break;}
+  return a;
+}
+function conditions(){
+  const ws=num("mWs")/3.6,from=num("mWd")*DEG,az=num("tAz")*DEG;
+  return {atm:atmo(num("mT"),num("mP")||1013,num("mH")),wind:{d:-ws*Math.cos(from-az),r:-ws*Math.sin(from-az)},
+          cor:seg("corOn")==="1",lat:num("tLat")*DEG,az,site:num("tSite")*DEG};
+}
+
+/* ================= course de tourelle / rail penté ================= */
+// alpha = angle canon/ligne de visée nécessaire au zéro ; le rail penté incline la lunette de « rail » MOA vers le bas
+function travel(p,alpha){
+  if(!p.travel)return null;
+  const half=p.travel/2,needRad=alpha-p.rail/60*DEG,need=toUnit(needRad,p.unit);
+  return {half,need,up:half-need,down:half+need,upRad:(p.unit==="MOA"?(half/60*DEG):half/1000)-needRad};
+}
+function travelReport(){
+  const p=P(),alpha=zeroAngle(p),T=travel(p,alpha),u=p.unit,box=$("travelBox"),info=$("travelInfo");
+  const rows=[["Angle canon / visée au zéro",`${fx(toUnit(alpha,u),2)} ${u} (${fx(alpha/DEG*60,1)} MOA)`],["Rail penté",`${fx(p.rail,0)} MOA (${fx(toUnit(p.rail/60*DEG,u),2)} ${u})`]];
+  if(!T){box.innerHTML=rows.map(r=>`<span>${r[0]}</span><span>${r[1]}</span>`).join("");
+    info.textContent="Renseignez la course totale en élévation de la lunette (onglet Matériel, carte Lunette) pour voir la course restante.";return;}
+  // distance maximale atteignable aux tourelles
+  let dmax=0;try{const c=conditions(),tr=fly(Object.assign({p,alpha,maxX:2001},c,{site:0}));
+    for(let d=p.zero;d<=2000;d+=5){const r=tr(d);if(!r)break;if(-r.y/d>T.upRad)break;dmax=d;}}catch(e){}
+  rows.push(["Tourelle au zéro",`${T.need>=0?"+":""}${fx(T.need,1)} ${u} depuis le centre mécanique`],
+    ["Course restante vers le haut",`${fx(T.up,1)} ${u}`],["Course restante vers le bas",`${fx(T.down,1)} ${u}`],
+    ["Portée max aux tourelles",dmax?`≈ ${dmax}${dmax>=2000?"+":""} m`:"—"]);
+  box.innerHTML=rows.map(r=>`<span>${r[0]}</span><span>${r[1]}</span>`).join("");
+  info.innerHTML=(T.down<0?'<span class="warn">⚠ Zéro impossible : il faudrait descendre la tourelle plus bas que sa butée. Réduisez la pente du rail.</span> ':
+    T.up<T.half*0.3?'<span class="warn">⚠ Il reste peu de course vers le haut : un rail plus penté vous ferait gagner de la portée.</span> ':"")+
+    "Calcul en supposant que la tourelle est au centre de sa course quand la lunette vise dans l'axe du rail (montage sans défaut). Avec une .22 LR zérotée à 30 ou 50 m, le canon pointe déjà vers le haut ; un rail de 20 à 30 MOA décale le zéro vers le bas de la course et libère d'autant de clics pour tirer loin, sans changer la balistique.";
+}
+document.querySelectorAll(".rl").forEach(b=>b.onclick=()=>{S.val.weapon.rail=b.textContent;changed();});
+
+/* ================= solution de tir ================= */
+function clickTxt(n,pos,neg){const r=Math.round(n);return r===0?"OK":(r>0?pos:neg);}
+function solve(){
+  const p=P(),c=conditions(),D=num("tDist"),alpha=zeroAngle(p);
+  LAST=null;if(D<=0){return;}
+  const full=fly(Object.assign({p,alpha,maxX:D+1},c))(D);
+  const noCor=fly(Object.assign({p,alpha,maxX:D+1},c,{cor:false}))(D);
+  if(!full||!noCor){$("sE").textContent="—";$("sEd").textContent="hors portée";return;}
+  const eRad=-full.y/D,wRad=-full.z/D; // + = monter / aller à droite
+  LAST={eRad,wRad,D};
+  const eU=toUnit(eRad,p.unit),wU=toUnit(wRad,p.unit),eC=eU/p.click,wC=wU/p.click;
+  $("sE").textContent=Math.abs(Math.round(eC));$("sW").textContent=Math.abs(Math.round(wC));
+  $("sEd").textContent=clickTxt(eC,"⬆ vers le HAUT","⬇ vers le BAS");
+  $("sWd").textContent=clickTxt(wC,"➡ à DROITE","⬅ à GAUCHE");
+  $("sEa").textContent=`${fx(Math.abs(eU),2)} ${p.unit} · ${fx(Math.abs(eC),1)} clics`;
+  $("sWa").textContent=`${fx(Math.abs(wU),2)} ${p.unit} · ${fx(Math.abs(wC),1)} clics`;
+  const windCm=noCor.z*100,corH=(full.z-noCor.z)*100,corV=(full.y-noCor.y)*100;
+  const ws=num("mWs"),rel=((num("mWd")-num("tAz"))%360+360)%360,hour=Math.round(rel/30)%12||12;
+  const E=p.gr?0.5*p.gr*6.479891e-5*full.v*full.v:0;
+  const rows=[
+    ["Chute / visée",`${fx(full.y*100,1)} cm`],
+    ["Vent",ws?`${fx(ws,0)} km/h de ${hour} h → ${fx(Math.abs(windCm),1)} cm ${windCm>0?"à droite":"à gauche"}`:"aucun"],
+    ["Coriolis horizontal",c.cor?`${fx(Math.abs(corH),1)} cm ${corH>0?"à droite":"à gauche"}`:"désactivé"],
+    ["Coriolis vertical (Eötvös)",c.cor?`${fx(corV,1)} cm`:"désactivé"],
+    ["Angle de site",`${fx(num("tSite"),1)}°`],
+    ["Temps de vol",`${fx(full.t,3)} s`],
+    ["Vitesse à l'impact",`${fx(full.v,0)} m/s${full.v<c.atm.sound*1.0&&p.v0>c.atm.sound?" (subsonique)":""}`],
+    ["Énergie à l'impact",E?`${fx(E,0)} J`:"—"],
+    ...(()=>{const T=travel(p,alpha);if(!T)return [];
+      const ok=eRad<=T.upRad;return [["Course restante vers le haut",`${fx(T.up,1)} ${p.unit}${ok?" ✓":` <span class="warn">⚠ insuffisante : il manque ${fx(toUnit(eRad-T.upRad,p.unit),1)} ${p.unit}, complétez en tenue au réticule</span>`}`]];})(),
+    ["1 clic à cette distance",`${fx(cmUnit(1,D,p.unit)?(p.click/cmUnit(1,D,p.unit)):0,2)} cm`]];
+  $("sDetail").innerHTML=rows.map(r=>`<span>${r[0]}</span><span>${r[1]}</span>`).join("");
+}
+
+/* ================= carte PR, stage, truing ================= */
+function elevAt(p,d,c){const a=zeroAngle(p),r=fly(Object.assign({p,alpha:a,maxX:d+1},c,{wind:{d:0,r:0},site:0}))(d);return r?toUnit(-r.y/d,p.unit):NaN;}
+function distList(){ // distances précises si saisies, sinon De / À / Pas
+  const l=[...new Set(String($("pList").value).split(/[ ,;]+/).map(parseFloat).filter(v=>v>=5&&v<=2000))].sort((a,b)=>a-b);
+  if(l.length)return l.slice(0,40);
+  const from=Math.max(5,num("pFrom")),to=Math.min(2000,Math.max(from,num("pTo"))),step=Math.max(5,num("pStep")),r=[];
+  for(let d=from;d<=to+1e-6&&r.length<80;d+=step)r.push(Math.round(d*10)/10);return r;
+}
+function dopeData(){
+  const p=P(),c=conditions(),alpha=zeroAngle(p),u=p.unit,dir=parseFloat($("pDir").value)||1;
+  const dl=distList(),to=dl[dl.length-1];
+  const winds=String($("pWinds").value).split(/[ ,;]+/).map(parseFloat).filter(v=>v>0).slice(0,6);
+  const base=Object.assign({p,alpha,maxX:to+1},c,{site:0,wind:{d:0,r:0},cor:false});
+  const t0=fly(base),tw=winds.map(w=>fly(Object.assign({},base,{wind:{d:0,r:w/3.6*dir}})));
+  const rows=[];
+  for(const d of dl){const r=t0(d);if(!r)break;
+    const e=toUnit(-r.y/d,u),ws=tw.map(t=>{const w=t(d);return w?toUnit(Math.abs(w.z-r.z)/d,u):NaN;});
+    rows.push({d,e,cl:Math.round(e/p.click),ws,t:r.t,v:r.v});}
+  return {p,u,winds,dir,rows,dec:u==="MOA"?1:1};
+}
+function dope(){
+  const D=dopeData(),u=D.u,p=D.p;
+  const tg=tgtFind(S.tgt),tA=d=>{const s=tgtSize(tg,d),a=mm=>radTo(mm/1000/d,u);return fx(a(tg.kind==="rings"?s.black:s.w),u==="MOA"?1:2)+(tg.kind!=="rings"&&Math.abs(s.w-s.h)>1?"×"+fx(a(s.h),u==="MOA"?1:2):"");};
+  $("pHead").innerHTML=`<tr><th>Dist.<br>m</th><th>Élév.<br>${u}</th><th>Clics<br>↑</th>${D.winds.map(w=>`<th>Vent<br>${w} km/h</th>`).join("")}<th>V<br>m/s</th>${tg?`<th>Cible<br>${u}</th>`:""}</tr>`;
+  $("pTable").innerHTML=D.rows.map(r=>`<tr><td>${r.d}</td><td>${fx(Math.round(r.e/p.click)*p.click,u==="MOA"?2:1)}</td><td>${r.cl}</td>${r.ws.map(w=>`<td>${isNaN(w)?"—":fx(w,1)}</td>`).join("")}<td>${fx(r.v,0)}</td>${tg?`<td>${tA(r.d)}</td>`:""}</tr>`).join("");
+  $("pInfo").textContent=`Lecture directe : élévation à afficher (ou à tenir) + correction de vent en ${u} pour chaque vitesse, direction ${$("pDir").selectedOptions[0].text}. Corrigez le vent dans le sens d'où il vient. Zéro ${p.zero} m · ${fx(num("mT"),0)} °C · ${fx(num("mP"),0)} hPa · ${S.sel.ammo.replace("|"," ")}.`;
+  if(tg)$("pInfo").textContent+=` Colonne Cible : ${tg.kind==="rings"?"diamètre du visuel noir":"taille"} de « ${tg.name} » vue à chaque distance, à comparer à la correction de vent (si le vent dépasse la demi-taille de la cible, il faut corriger).`;
+  drawChart($("pChart"),D,false);
+}
+function drawChart(cv,D,light){
+  const g=cv.getContext("2d"),W=cv.width,H=cv.height,pad={l:58,r:16,t:16,b:44},u=D.u;
+  const bg=light?"#fff":"#0d1014",fg=light?"#111":"#e9ecf0",grid=light?"#ddd":"#2c333d",mut=light?"#555":"#9aa4b1";
+  g.fillStyle=bg;g.fillRect(0,0,W,H);if(!D.rows.length)return;
+  const xs=D.rows.map(r=>r.d),x0=xs[0],x1=xs[xs.length-1]||x0+1,ymax=Math.max(...D.rows.map(r=>r.e),...D.rows.flatMap(r=>r.ws.filter(v=>!isNaN(v))),1)*1.08;
+  const X=d=>pad.l+(d-x0)/((x1-x0)||1)*(W-pad.l-pad.r),Y=v=>H-pad.b-v/ymax*(H-pad.t-pad.b);
+  g.font="15px sans-serif";g.lineWidth=1;
+  const ystep=ymax>40?10:ymax>16?2:ymax>6?1:0.5;
+  for(let v=0;v<=ymax;v+=ystep){g.strokeStyle=grid;g.beginPath();g.moveTo(pad.l,Y(v));g.lineTo(W-pad.r,Y(v));g.stroke();g.fillStyle=mut;g.textAlign="right";g.fillText(fx(v,ystep<1?1:0),pad.l-6,Y(v)+5);}
+  const xstep=(x1-x0)>500?100:(x1-x0)>200?50:25;
+  for(let d=Math.ceil(x0/xstep)*xstep;d<=x1;d+=xstep){g.strokeStyle=grid;g.beginPath();g.moveTo(X(d),pad.t);g.lineTo(X(d),H-pad.b);g.stroke();g.fillStyle=mut;g.textAlign="center";g.fillText(d,X(d),H-pad.b+18);}
+  g.fillStyle=mut;g.textAlign="center";g.fillText("distance (m)",W/2,H-6);g.save();g.translate(14,H/2);g.rotate(-Math.PI/2);g.fillText(u,0,0);g.restore();
+  const cols=["#f59e0b","#60a5fa","#34d399","#a78bfa","#f472b6","#22d3ee"];
+  const curve=(get,col,w,dash)=>{g.strokeStyle=col;g.lineWidth=w;g.setLineDash(dash||[]);g.beginPath();D.rows.forEach((r,i)=>{const v=get(r);if(isNaN(v))return;i?g.lineTo(X(r.d),Y(v)):g.moveTo(X(r.d),Y(v));});g.stroke();g.setLineDash([]);};
+  curve(r=>r.e,cols[0],4);
+  D.winds.forEach((w,i)=>curve(r=>r.ws[i],cols[(i+1)%cols.length],2.5,[8,5]));
+  // légende
+  const items=[["Élévation",cols[0]],...D.winds.map((w,i)=>[`Vent ${w} km/h`,cols[(i+1)%cols.length]])];
+  g.textAlign="left";let lx=pad.l+8,ly=pad.t+16;
+  items.forEach(([t,c])=>{g.fillStyle=c;g.fillRect(lx,ly-10,18,4);g.fillStyle=fg;g.fillText(t,lx+24,ly-4);ly+=20;});
+}
+$("pDir").onchange=()=>{compute();save();};
+/* ---- abaque vent par direction ---- */
+const HOURS=[12,1,2,3,4,5,6,7,8,9,10,11];
+function windDirData(){
+  const p=P(),c=conditions(),alpha=zeroAngle(p),u=p.unit,ws=num("wdSpeed")/3.6;
+  const dl=distList(),to=dl[dl.length-1];
+  const base=Object.assign({p,alpha,maxX:to+1},c,{site:0,wind:{d:0,r:0},cor:false}),t0=fly(base);
+  const tr=HOURS.slice(0,7).map(h=>{const a=h%12*30*DEG;return fly(Object.assign({},base,{wind:{d:-ws*Math.cos(a),r:-ws*Math.sin(a)}}));});
+  const rows=[];
+  for(const d of dl){const r=t0(d);if(!r)break;
+    const cells=tr.map(t=>{const w=t(d);return w?{w:toUnit(-(w.z-r.z)/d,u),e:toUnit(-(w.y-r.y)/d,u)}:null;});
+    rows.push({d,cells});}
+  // vent actuel (onglet Tir) en heures
+  const rel=((num("mWd")-num("tAz"))%360+360)%360,curH=Math.round(rel/30)%12||12;
+  return {p,u,rows,speed:num("wdSpeed"),curH,curOn:num("mWs")>0};
+}
+const cellFor=(row,h)=>{const i=h===12?0:h<=6?h:12-h,c=row.cells[i];if(!c)return null;return {w:h>6?-c.w:c.w,e:c.e};};
+const fmtW=w=>Math.abs(w)<0.05?"0":(w>0?"→":"←")+fx(Math.abs(w),1);
+const fmtE=e=>Math.abs(e)<0.05?"":(e>0?"↑":"↓")+fx(Math.abs(e),1);
+function windDir(){
+  const D=windDirData(),sel=$("wdDist"),prev=sel.value;
+  sel.innerHTML=D.rows.map(r=>`<option>${r.d}</option>`).join("");
+  sel.value=[...sel.options].some(o=>o.value===prev)?prev:(D.rows[Math.floor(D.rows.length/2)]||{d:""}).d;
+  const hs=[12,1,2,3,4,5,6],cur=D.curOn?(D.curH>6?12-D.curH:D.curH):-1;
+  $("wdTable").innerHTML=`<thead><tr><th>Dist.</th>${hs.map(h=>`<th>${h===12||h===6?h+" h":h+" h / "+(12-h)+" h"}</th>`).join("")}</tr></thead><tbody>`+
+    D.rows.map(r=>`<tr><td>${r.d}</td>${hs.map(h=>{const c=cellFor(r,h);const hl=(h%12)===(cur%12)&&cur>=0?' style="background:#3a2a07"':"";
+      return `<td${hl}>${c?fmtW(c.w)+(fmtE(c.e)?`<br><small style="color:var(--mut)">${fmtE(c.e)}</small>`:""):"—"}</td>`;}).join("")}</tr>`).join("")+"</tbody>";
+  drawRose($("wdRose"),D,+sel.value,false);
+}
+function drawRose(cv,D,dist,light){
+  const g=cv.getContext("2d"),W=cv.width,c=W/2,R=W*0.36,row=D.rows.find(r=>r.d===dist)||D.rows[0];
+  const bg=light?"#fff":"#0d1014",fg=light?"#111":"#e9ecf0",mut=light?"#666":"#9aa4b1",acc="#f59e0b";
+  g.fillStyle=bg;g.fillRect(0,0,W,W);if(!row)return;
+  g.strokeStyle=mut;g.lineWidth=2;g.beginPath();g.arc(c,c,R,0,7);g.stroke();
+  // tireur au centre, cible en haut
+  g.fillStyle=acc;g.beginPath();g.moveTo(c,c-R*0.55);g.lineTo(c-14,c-R*0.55+26);g.lineTo(c+14,c-R*0.55+26);g.fill();
+  g.strokeStyle=acc;g.lineWidth=4;g.beginPath();g.moveTo(c,c+R*0.15);g.lineTo(c,c-R*0.5);g.stroke();
+  g.fillStyle=fg;g.font="bold 26px sans-serif";g.textAlign="center";g.textBaseline="middle";
+  g.fillText(`${row.d} m`,c,c+R*0.32);g.font="20px sans-serif";g.fillStyle=mut;g.fillText(`vent ${fx(D.speed,0)} km/h · ${D.u}`,c,c+R*0.48);
+  HOURS.forEach(h=>{const a=(h%12)*30*DEG,x=c+Math.sin(a)*R,y=c-Math.cos(a)*R,cell=cellFor(row,h),cur=D.curOn&&D.curH===h;
+    g.fillStyle=cur?acc:(light?"#e9edf0":"#1c2128");g.beginPath();g.arc(x,y,52,0,7);g.fill();
+    g.fillStyle=cur?"#111":mut;g.font="bold 18px sans-serif";g.fillText(h+" h",x,y-26);
+    g.fillStyle=cur?"#111":fg;g.font="bold 26px sans-serif";g.fillText(cell?fmtW(cell.w):"—",x,y+2);
+    const e=cell?fmtE(cell.e):"";if(e){g.font="18px sans-serif";g.fillStyle=cur?"#111":mut;g.fillText(e,x,y+28);}
+    // flèche du vent vers le centre
+    const x2=c+Math.sin(a)*(R-62),y2=c-Math.cos(a)*(R-62),x3=c+Math.sin(a)*(R-100),y3=c-Math.cos(a)*(R-100);
+    g.strokeStyle=cur?acc:mut;g.lineWidth=2;g.beginPath();g.moveTo(x2,y2);g.lineTo(x3,y3);g.stroke();});
+  g.textBaseline="alphabetic";
+}
+$("wdDist").onchange=()=>{windDir();};
+document.querySelectorAll(".pp").forEach(b=>b.onclick=()=>{
+  const tld=b.dataset.p==="tld",rim=/22 lr|17 hmr|22 wmr/i.test(String(V("weapon","cal")));
+  const cfg=tld?(rim?[100,400,25,"5, 10, 15, 20"]:[300,1200,50,"5, 10, 15, 20, 30"]):(rim?[100,300,25,"5, 10, 15, 20"]:[100,600,50,"5, 10, 15, 20"]);
+  $("pFrom").value=cfg[0];$("pTo").value=cfg[1];$("pStep").value=cfg[2];$("pWinds").value=cfg[3];$("pList").value="";compute();save();renderTables();});
+/* tables personnalisées */
+function tblCfg(){return {from:$("pFrom").value,to:$("pTo").value,step:$("pStep").value,list:$("pList").value,winds:$("pWinds").value,dir:$("pDir").value};}
+function renderTables(){
+  const T=S.tables||[],cur=JSON.stringify(tblCfg());
+  $("tblList").innerHTML=T.length?"<span class='hint' style='margin:0 4px 0 0'>Mes tables :</span>"+T.map((t,i)=>{const on=JSON.stringify(t.cfg)===cur;
+    return `<span class="btn sm${on?" acc":""}" style="display:inline-flex;gap:10px;align-items:center"><span data-tl="${i}">${on?"✓ ":""}${esc(t.name)}</span><span data-td="${i}" title="Supprimer">✕</span></span>`;}).join(""):"";
+}
+$("tblSave").onclick=()=>{
+  const c0=tblCfg(),name=$("tblName").value.trim()||(c0.list?`Distances ${c0.list}`:`${c0.from}-${c0.to} m / ${c0.step} m`);
+  S.tables=(S.tables||[]).filter(t=>t.name!==name);S.tables.push({name,cfg:c0});$("tblName").value="";renderTables();save();};
+$("tblList").addEventListener("click",e=>{const t=e.target,T=S.tables||[];
+  if(t.dataset.tl!=null){const c0=T[+t.dataset.tl].cfg;$("pFrom").value=c0.from;$("pTo").value=c0.to;$("pStep").value=c0.step;$("pList").value=c0.list||"";$("pWinds").value=c0.winds;$("pDir").value=c0.dir;compute();save();renderTables();}
+  else if(t.dataset.td!=null){if(t.dataset.ok){T.splice(+t.dataset.td,1);renderTables();save();}else{t.dataset.ok=1;t.textContent="Supprimer ?";setTimeout(()=>{if(t.isConnected){delete t.dataset.ok;t.textContent="✕";}},3000);}}
+});
+["pFrom","pTo","pStep","pList","pWinds","pDir"].forEach(id=>$(id).addEventListener("change",renderTables));
+
+
+/* ================= cibles ================= */
+function tgtList(){return (window.TARGETS||[]).concat((S.customTargets||[]).map(t=>Object.assign({group:"Mes cibles",src:"cible perso"},t)));}
+function tgtFind(n){return tgtList().find(t=>t.name===n)||null;}
+function tgtSize(t,D){ // mm à la distance D
+  if(t.ang){const mm=t.ang*(t.angU==="MOA"?0.290888:1)*D;return {w:mm,h:mm};}
+  if(t.kind==="rings")return {w:t.rings[t.rings.length-1],h:t.rings[t.rings.length-1],black:t.black,ten:t.rings[0]};
+  return {w:t.w,h:t.h};
+}
+function fillTgtSelects(){
+  const L=tgtList(),groups=[...new Set(L.map(t=>t.group))];
+  const html=v=>`<option value="">— aucune —</option>`+groups.map(g=>`<optgroup label="${esc(g)}">${L.filter(t=>t.group===g).map(t=>`<option${t.name===v?" selected":""}>${esc(t.name)}</option>`).join("")}</optgroup>`).join("");
+  $("rTgt").innerHTML=html(S.tgt||"");$("pTgt").innerHTML=html(S.tgt||"");
+  const jv=S.tgt||"";$("jTgt").innerHTML=html(jv);
+  $("ctList").innerHTML=(S.customTargets||[]).map((t,i)=>`<span class="btn sm" style="display:inline-flex;gap:10px"><span>${esc(t.name)}</span><span data-ctd="${i}">✕</span></span>`).join("");
+}
+// dessine la cible centrée en (cx,cy) ; k = pixels par mm
+function drawTgt(g,t,cx,cy,k,D){
+  const s=tgtSize(t,D);g.save();
+  if(t.kind==="rings"){
+    const R=t.rings;g.fillStyle="#f4f1e8";g.beginPath();g.arc(cx,cy,R[R.length-1]/2*k*1.08,0,7);g.fill();
+    g.fillStyle="#111";g.beginPath();g.arc(cx,cy,t.black/2*k,0,7);g.fill();
+    R.forEach(d=>{g.strokeStyle=d<=t.black+0.01?"#f4f1e8":"#111";g.lineWidth=Math.max(1,Math.min(2,k*0.6));g.beginPath();g.arc(cx,cy,d/2*k,0,7);g.stroke();});
+    if(t.inner){g.strokeStyle="#f4f1e8";g.beginPath();g.arc(cx,cy,t.inner/2*k,0,7);g.stroke();}
+  }else{
+    g.fillStyle="#c2410c";g.strokeStyle="#7c2d12";g.lineWidth=2;
+    const w=s.w*k,h=s.h*k;g.beginPath();
+    if(t.kind==="gong")g.ellipse(cx,cy,w/2,h/2,0,0,7);
+    else if(t.kind==="ipsc"){const x=cx-w/2,y=cy-h/2,hw=w*0.33,hh=h*0.2,c=w*0.18; // tête + buste à pans coupés
+      g.moveTo(cx-hw/2,y);g.lineTo(cx+hw/2,y);g.lineTo(cx+hw/2,y+hh);g.lineTo(x+w-c,y+hh);g.lineTo(x+w,y+hh+c);g.lineTo(x+w,y+h-c);g.lineTo(x+w-c,y+h);g.lineTo(x+c,y+h);g.lineTo(x,y+h-c);g.lineTo(x,y+hh+c);g.lineTo(x+c,y+hh);g.lineTo(cx-hw/2,y+hh);g.closePath();}
+    else g.rect(cx-w/2,cy-h/2,w,h);
+    g.fill();g.stroke();
+  }
+  g.restore();
+}
+function tgtAngTxt(t,D,u){const s=tgtSize(t,D),a=mm=>radTo(mm/1000/D,u),f=v=>fx(v,u==="MOA"?1:2);
+  if(t.kind==="rings")return `visuel noir ${f(a(s.black))} ${u==="MOA"?"MOA":"mil"}, zone de 10 ${f(a(s.ten))}, cible entière ${f(a(s.w))}`;
+  return Math.abs(s.w-s.h)<1?`${f(a(s.w))} ${u==="MOA"?"MOA":"mil"} (${fx(s.w/10,1)} cm)`:`${f(a(s.w))} × ${f(a(s.h))} ${u==="MOA"?"MOA":"mil"} (${fx(s.w/10,1)} × ${fx(s.h/10,1)} cm)`;}
+document.querySelectorAll(".tgtSel").forEach(sel=>{if(sel.id!=="jTgt")sel.onchange=()=>{S.tgt=sel.value;fillTgtSelects();drawReticle();compute();save();};});
+$("ctSave").onclick=()=>{const w=num("ctW")*10,h=(num("ctH")||num("ctW"))*10;if(!(w>0))return;
+  const kind=$("ctKind").value,name=$("ctName").value.trim()||`${kind==="gong"?"Gong":kind==="rect"?"Plaque":"Silhouette"} ${fx(w/10,1)}${Math.abs(w-h)>0.5?"×"+fx(h/10,1):""} cm (perso)`;
+  S.customTargets=(S.customTargets||[]).filter(t=>t.name!==name);S.customTargets.push({name,kind,w,h});S.tgt=name;
+  $("ctW").value=$("ctH").value=$("ctName").value="";fillTgtSelects();drawReticle();compute();save();};
+$("ctList").addEventListener("click",e=>{const d=e.target.dataset.ctd;if(d==null)return;const t=S.customTargets[+d];S.customTargets.splice(+d,1);if(S.tgt===t.name)S.tgt="";fillTgtSelects();drawReticle();compute();save();});
+/* ================= journal de tir ================= */
+let jMap=null,jMk=null,jHist=null,jLoc=null,jWantGps=false;const jOpen=new Set();
+function jNowLocal(){const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16);}
+function jSync(){ // setup actif → formulaire
+  if(!$("jSetup"))return;
+  const act=S.activeSetup;
+  $("jSetup").innerHTML=`<option value="">— matériel actuel (non enregistré) —</option>`+S.setups.map(st=>`<option${st.name===act?" selected":""}>${esc(st.name)}</option>`).join("");
+  $("jSetupInfo").textContent=setupSummary(snapshot());
+  const cal=normCal(V("weapon","cal")),cur=S.sel.ammo;
+  const AL=list("ammo").filter(e=>normCal(e.cal)===cal||key(e)===cur);
+  $("jAmmo").innerHTML=AL.map(e=>`<option value="${esc(key(e))}"${key(e)===cur?" selected":""}>${esc(e.brand+" "+e.model)}</option>`).join("");
+  $("jMeteo").textContent=`Conditions enregistrées avec la séance : ${num("mT")} °C · ${num("mP")||1013} hPa · ${num("mH")} % · vent ${num("mWs")} km/h du ${num("mWd")}° (onglet Tir).`;
+  $("jRows").querySelectorAll("tr").forEach(jCalcRow);
+  document.querySelectorAll("#log .u").forEach(x=>x.textContent=P().unit);
+}
+function jCalcRow(tr){const d=parseFloat(tr.querySelector(".jd").value),out=tr.querySelector(".ja");
+  out.textContent=d>0?elevAt(P(),d,conditions()).toFixed(P().unit==="MOA"?1:1):"–";}
+function jAddRow(d,e,w){
+  const tr=document.createElement("tr");
+  tr.innerHTML=`<td><input class="jd" type="number" inputmode="decimal" value="${d||""}" placeholder="m"></td><td class="ja">–</td><td><input class="je" type="number" inputmode="decimal" step="0.1" value="${e??""}"></td><td><input class="jw" type="number" inputmode="decimal" step="0.1" value="${w??""}"></td><td><span class="btn sm" data-x>✕</span></td>`;
+  tr.querySelector(".jd").oninput=()=>jCalcRow(tr);tr.querySelector("[data-x]").onclick=()=>tr.remove();
+  $("jRows").appendChild(tr);jCalcRow(tr);
+}
+function jSetLoc(lat,lon,src){jLoc={lat,lon};$("jLocInfo").textContent=`Lieu : ${lat.toFixed(5)}, ${lon.toFixed(5)} (${src})`;
+  if(jMap){if(jMk)jMap.removeLayer(jMk);jMk=L.circleMarker([lat,lon],{radius:9,color:"#fff",weight:2,fillColor:"#f59e0b",fillOpacity:1}).addTo(jMap);jMap.setView([lat,lon],Math.max(jMap.getZoom(),15));}}
+function jInitMap(){
+  if(jMap)return;if(!window.L){$("jMap").innerHTML='<p class="hint" style="padding:12px">Carte indisponible.</p>';return;}
+  const c0=jLoc||S.shooter;jMap=L.map("jMap").setView(c0?[c0.lat,c0.lon]:[46.6,2.4],c0?15:5);
+  const sat=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"Esri"});
+  const osm=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"});
+  sat.addTo(jMap);L.control.layers({"Satellite":sat,"Plan":osm},null,{position:"topright"}).addTo(jMap);
+  jMap.on("click",e=>jSetLoc(e.latlng.lat,e.latlng.lng,"placé sur la carte"));
+  if(jLoc)jSetLoc(jLoc.lat,jLoc.lon,"placé");renderLog();
+}
+function jSessions(){const f=$("jFilter").value,L=S.log||[];return f==="*"?L:L.filter(s=>(s.setup||"")===(f==="-"?"":f));}
+function renderLog(){
+  if(!$("jFilter"))return;const LG=S.log||[],f=$("jFilter").value||"*";
+  const names=[...new Set(LG.map(s=>s.setup||""))];
+  $("jFilter").innerHTML=`<option value="*">Toutes les séances</option>`+names.map(n=>`<option value="${n?esc(n):"-"}"${(n||"-")===f?" selected":""}>${n?"Setup « "+esc(n)+" »":"Matériel non enregistré"}</option>`).join("");
+  if(![...$("jFilter").options].some(o=>o.value===f))$("jFilter").value="*";
+  const SS=jSessions().slice().sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+  const tot=SS.reduce((a,s)=>a+(+s.count||0),0),byA={},byW={};
+  SS.forEach(s=>{const a=(s.ammo||"").replace("|"," "),w=((s.snap&&s.snap.sel.weapon)||"").split("|")[1]||"?";byA[a]=(byA[a]||0)+(+s.count||0);byW[w]=(byW[w]||0)+(+s.count||0);});
+  $("jKpi").innerHTML=`<div><b>${SS.length}</b>séances</div><div><b>${tot}</b>cartouches</div><div><b>${Object.keys(byA).length}</b>munitions</div>`;
+  const li=o=>Object.entries(o).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`${esc(k)} : <b>${v}</b>`).join(" · ");
+  $("jStats").innerHTML=SS.length?`Par munition : ${li(byA)}<br>Par arme (usure du canon) : ${li(byW)}`:"Aucune séance enregistrée pour l'instant.";
+  $("jList").innerHTML=SS.map(s=>{const i=LG.indexOf(s),u=s.unit||"MRAD";
+    const rows=(s.corr||[]).map((r,k)=>{const dE=r.eReal!=null&&r.eApp!=null?r.eReal-r.eApp:null;
+      return `<tr><td>${r.d}</td><td>${r.eApp!=null?r.eApp.toFixed(1):"–"}</td><td>${r.eReal!=null?r.eReal.toFixed(1):"–"}</td><td style="color:${dE&&Math.abs(dE)>=0.15?"var(--acc)":"inherit"}">${dE!=null?(dE>0?"+":"")+dE.toFixed(1):"–"}</td><td>${r.wReal!=null?r.wReal.toFixed(1):"–"}</td><td>${r.eReal!=null?`<span class="btn sm" data-tr="${i}:${k}">Truing</span>`:""}</td></tr>`;}).join("");
+    return `<details class="fold sub" data-j="${s.id}"${jOpen.has(s.id)?" open":""}><summary>${esc(new Date(s.date).toLocaleDateString("fr-FR"))} · ${esc(s.place||"lieu ?")} · ${+s.count||0} × ${esc((s.ammo||"").split("|")[1]||"")}</summary>
+      <div class="hint" style="margin:2px 0 6px">Setup : ${esc(s.setup||"matériel non enregistré")} — ${esc(s.snap?setupSummary(s.snap):"")}<br>${esc((s.ammo||"").replace("|"," "))}${s.lot?" · lot "+esc(s.lot):""}${s.tgt?" · cible "+esc(s.tgt):""}<br>${s.loc?`📍 ${s.loc.lat.toFixed(5)}, ${s.loc.lon.toFixed(5)} · `:""}${s.met?`${s.met.T} °C · ${s.met.P} hPa · ${s.met.H} % · vent ${s.met.ws} km/h du ${s.met.wd}°`:""}${s.note?"<br>📝 "+esc(s.note):""}</div>
+      ${rows?`<div class="scroll"><table class="jc"><thead><tr><th>m</th><th>Appli</th><th>Réelle</th><th>Écart</th><th>Vent</th><th></th></tr></thead><tbody>${rows}</tbody></table></div><p class="hint" style="margin:4px 0">Valeurs en ${u}. Écart = réelle − appli.</p>`:""}
+      <div class="chips" style="margin:0 0 8px">${s.loc?`<button class="btn sm" data-show="${i}">Voir sur la carte</button>`:""}<button class="btn sm" data-jdel="${i}">🗑 Supprimer</button></div></details>`;}).join("");
+  if(jMap){if(jHist)jMap.removeLayer(jHist);jHist=L.layerGroup(SS.filter(s=>s.loc).map(s=>L.circleMarker([s.loc.lat,s.loc.lon],{radius:6,color:"#fff",weight:1,fillColor:"#2563eb",fillOpacity:.9}).bindTooltip(`${new Date(s.date).toLocaleDateString("fr-FR")} · ${s.place||""} · ${s.count||0} coups`))).addTo(jMap);}
+}
+$("jSetup").onchange=e=>{if(e.target.value)applySetup(e.target.value);else{S.activeSetup="";changed();}};
+$("jGps").onclick=()=>{if(gpsFix&&Date.now()-gpsFix.time<120e3){jSetLoc(gpsFix.lat,gpsFix.lon,"GPS ±"+Math.round(gpsFix.acc)+" m");return;}
+  jWantGps=true;$("jLocInfo").textContent="Recherche de la position GPS…";
+  if(window.Android&&Android.requestGps)Android.requestGps();
+  else if(navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>onGps(p.coords.latitude,p.coords.longitude,p.coords.altitude,p.coords.accuracy),e=>onGpsError("GPS indisponible : "+e.message),{enableHighAccuracy:true});};
+$("jFromTir").onclick=()=>{if(S.shooter)jSetLoc(S.shooter.lat,S.shooter.lon,"position du tireur");else $("jLocInfo").textContent="Aucune position de tireur dans l'onglet Tir.";};
+$("jAddRow").onclick=()=>{const last=[...$("jRows").querySelectorAll(".jd")].map(x=>+x.value).filter(Boolean).pop();jAddRow(last?last+50:100);};
+$("jSave").onclick=()=>{
+  const n=parseInt($("jCount").value)||0;if(!n&&!$("jRows").children.length){$("jMsg").textContent="Indiquez au moins le nombre de cartouches.";return;}
+  const corr=[...$("jRows").querySelectorAll("tr")].map(tr=>{const d=parseFloat(tr.querySelector(".jd").value),e=parseFloat(tr.querySelector(".je").value),w=parseFloat(tr.querySelector(".jw").value);
+    return d>0?{d,eApp:elevAt(P(),d,conditions()),eReal:isNaN(e)?null:e,wReal:isNaN(w)?null:w}:null;}).filter(Boolean);
+  const s={id:Date.now().toString(36),date:$("jDate").value||jNowLocal(),place:$("jPlace").value.trim(),loc:jLoc,setup:S.activeSetup||"",snap:snapshot(),
+    ammo:$("jAmmo").value,tgt:$("jTgt").value,count:n,lot:$("jLot").value.trim(),unit:P().unit,corr,note:$("jNote").value.trim(),
+    met:{T:num("mT"),P:num("mP")||1013,H:num("mH"),ws:num("mWs"),wd:num("mWd")}};
+  (S.log=S.log||[]).push(s);S.lastPlace={place:s.place,loc:jLoc};
+  $("jCount").value="";$("jNote").value="";$("jRows").innerHTML="";$("jDate").value=jNowLocal();
+  $("jMsg").textContent="Séance enregistrée ✓";setTimeout(()=>$("jMsg").textContent="",3000);jOpen.add(s.id);renderLog();save();};
+$("jFilter").onchange=renderLog;
+$("jList").addEventListener("toggle",e=>{const d=e.target;if(!d.dataset||!d.dataset.j)return;d.open?jOpen.add(d.dataset.j):jOpen.delete(d.dataset.j);},true);
+$("jList").addEventListener("click",e=>{const b=e.target.closest("[data-tr],[data-jdel],[data-show]");if(!b)return;const LG=S.log;
+  if(b.dataset.jdel!=null){if(b.dataset.ok){LG.splice(+b.dataset.jdel,1);renderLog();save();}else{b.dataset.ok=1;b.textContent="Confirmer ?";}}
+  else if(b.dataset.show!=null){const s=LG[+b.dataset.show];if(jMap){jMap.setView([s.loc.lat,s.loc.lon],16);$("jMap").scrollIntoView({behavior:"smooth"});}}
+  else if(b.dataset.tr){const [i,k]=b.dataset.tr.split(":").map(Number),s=LG[i],r=s.corr[k];
+    if(s.setup&&s.setup!==S.activeSetup&&S.setups.some(x=>x.name===s.setup))applySetup(s.setup);
+    if(s.ammo&&s.ammo!==S.sel.ammo&&find("ammo",s.ammo)){S.sel.ammo=s.ammo;S.val.ammo={};changed();}
+    $("trD").value=r.d;$("trE").value=r.eReal;document.querySelector('nav button[data-t=table]').click();
+    setTimeout(()=>{$("trD").closest(".card").scrollIntoView();$("trGo").click();},60);}
+});
+function csvCell(v){v=v==null?"":String(v);return /[";\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}
+$("jCsv").onclick=()=>{
+  const H=["date","lieu","latitude","longitude","setup","arme","lunette","munition","cible","lot","cartouches","temp_C","pression_hPa","humidite","vent_kmh","vent_dir","distance_m","elev_appli","elev_reelle","ecart","vent_reel","unite","notes"],R=[H];
+  jSessions().forEach(s=>{const base=[s.date,s.place,s.loc?s.loc.lat.toFixed(6):"",s.loc?s.loc.lon.toFixed(6):"",s.setup,(s.snap.sel.weapon||"").replace("|"," "),(s.snap.sel.scope||"").replace("|"," "),(s.ammo||"").replace("|"," "),s.tgt||"",s.lot,s.count,s.met.T,s.met.P,s.met.H,s.met.ws,s.met.wd];
+    const cs=s.corr&&s.corr.length?s.corr:[null];
+    cs.forEach((r,k)=>R.push(base.map((v,j)=>k&&j===10?"":v).concat(r?[r.d,r.eApp!=null?r.eApp.toFixed(2):"",r.eReal??"",r.eReal!=null&&r.eApp!=null?(r.eReal-r.eApp).toFixed(2):"",r.wReal??"",s.unit]:["","","","","",s.unit],[k?"":s.note])));});
+  const txt="﻿"+R.map(r=>r.map(csvCell).join(";")).join("\r\n"),name=`journal-tir-${new Date().toISOString().slice(0,10)}.csv`;
+  if(window.Android&&Android.saveText)$("jCsvMsg").textContent=Android.saveText(txt,name,"text/csv");
+  else shareFile(new Blob([txt],{type:"text/csv"}),name,$("jCsvMsg"),"Fichier");
+};
+/* partage / téléchargement hors Android (iPhone : feuille de partage → Photos, Fichiers…) */
+async function shareFile(blob,name,msgEl,label){
+  try{const f=new File([blob],name,{type:blob.type});
+    if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],title:name});msgEl.textContent="Partagé : "+name;return;}}catch(e){if(e&&e.name==="AbortError"){msgEl.textContent="Partage annulé.";return;}}
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();msgEl.textContent="Téléchargé : "+name;
+}
+/* export de la carte de tir en image */
+function exportCard(){
+  const D=dopeData(),p=D.p,u=D.u,cols=3+D.winds.length,rowH=34,W=1400,top=150;
+  const WD=windDirData(),hs=[12,1,2,3,4,5,6],roseS=560;
+  const chartH=520,wdTop=top+rowH*(D.rows.length+1)+chartH+60,H=wdTop+60+rowH*(WD.rows.length+1)+roseS+90;
+  const cv=document.createElement("canvas");cv.width=W;cv.height=H;const g=cv.getContext("2d");
+  g.fillStyle="#fff";g.fillRect(0,0,W,H);g.fillStyle="#111";
+  g.font="bold 34px sans-serif";g.fillText("Carte de tir "+(S.activeSetup?"— "+S.activeSetup:""),30,50);
+  g.font="20px sans-serif";
+  g.fillText(`${(S.sel.weapon||"").replace("|"," ")} · ${(S.sel.scope||"").replace("|"," ")}`,30,84);
+  g.fillText(`${S.sel.ammo.replace("|"," ")} · V0 ${fx(p.v0,0)} m/s · CB ${fx(p.bc,3)} · zéro ${p.zero} m · clic ${p.click} ${u}`,30,112);
+  g.fillText(`${fx(num("mT"),0)} °C · ${fx(num("mP"),0)} hPa · ${fx(num("mH"),0)} % · vent ${$("pDir").selectedOptions[0].text} · ${new Date().toLocaleDateString("fr-FR")}`,30,140);
+  const heads=["Dist. m",`Élév. ${u}`,"Clics ↑",...D.winds.map(w=>`Vent ${w} km/h`)],cw=(W-60)/cols;
+  g.font="bold 21px sans-serif";heads.forEach((h,i)=>{g.textAlign="center";g.fillText(h,30+cw*i+cw/2,top+24);});
+  D.rows.forEach((r,j)=>{const y=top+rowH*(j+1);if(j%2===0){g.fillStyle="#f1f3f5";g.fillRect(30,y,W-60,rowH);}g.fillStyle="#111";
+    const vals=[r.d,fx(Math.round(r.e/p.click)*p.click,u==="MOA"?2:1),r.cl,...r.ws.map(w=>isNaN(w)?"—":fx(w,1))];
+    vals.forEach((v,i)=>{g.font=(i===1||i===2?"bold ":"")+"24px sans-serif";g.textAlign="center";g.fillText(String(v),30+cw*i+cw/2,y+25);});});
+  const cc=document.createElement("canvas");cc.width=W-60;cc.height=chartH;drawChart(cc,D,true);
+  g.drawImage(cc,30,top+rowH*(D.rows.length+1)+20);
+  g.fillStyle="#111";g.textAlign="left";g.font="bold 28px sans-serif";g.fillText(`Abaque vent selon sa direction — ${fx(WD.speed,0)} km/h (${u}, → corriger à droite, ← à gauche)`,30,wdTop+30);
+  const cw2=(W-60)/(hs.length+1),t2=wdTop+50;
+  g.font="bold 21px sans-serif";["Dist. m",...hs.map(h=>h===12||h===6?h+" h":h+" h / "+(12-h)+" h")].forEach((h,i)=>{g.textAlign="center";g.fillText(h,30+cw2*i+cw2/2,t2+24);});
+  WD.rows.forEach((r,j)=>{const y=t2+rowH*(j+1);if(j%2===0){g.fillStyle="#f1f3f5";g.fillRect(30,y,W-60,rowH);}g.fillStyle="#111";
+    g.font="24px sans-serif";g.textAlign="center";g.fillText(String(r.d),30+cw2/2,y+25);
+    hs.forEach((h,i)=>{const c=cellFor(r,h),t=c?fmtW(c.w)+(fmtE(c.e)?"  "+fmtE(c.e):""):"—";g.font="22px sans-serif";g.fillText(t,30+cw2*(i+1)+cw2/2,y+25);});});
+  g.font="18px sans-serif";g.fillStyle="#555";g.textAlign="left";g.fillText("Pour 7 h à 11 h : mêmes valeurs, flèches inversées (vent venant de gauche → corriger à gauche).",30,t2+rowH*(WD.rows.length+1)+26);
+  const rc2=document.createElement("canvas");rc2.width=700;rc2.height=700;drawRose(rc2,WD,+$("wdDist").value,true);
+  g.drawImage(rc2,(W-roseS)/2,t2+rowH*(WD.rows.length+1)+40,roseS,roseS);
+  g.font="18px sans-serif";g.textAlign="left";g.fillStyle="#555";
+  g.fillText("Valeurs calculées (modèle G1) à confirmer au tir. Vent : corriger du côté d'où il vient. Réglage Lunette.",30,H-24);
+  const data=cv.toDataURL("image/png"),name=`carte-tir-${new Date().toISOString().slice(0,10)}-${D.rows[0]?D.rows[0].d:0}-${D.rows.length?D.rows[D.rows.length-1].d:0}m.png`;
+  if(window.Android&&Android.saveImage){const r=Android.saveImage(data.split(",")[1],name);$("pExportMsg").textContent=r;}
+  else cv.toBlob(b=>shareFile(b,name,$("pExportMsg"),"Image"),"image/png");
+}
+$("pExport").onclick=exportCard;
+function stage(){
+  const p=P(),c=conditions(),u=p.unit,ds=String($("stDist").value).split(/[ ,;]+/).map(parseFloat).filter(v=>v>0).slice(0,12);
+  const sel=$("stBase"),prev=sel.value;
+  sel.innerHTML=`<option value="each">chaque cible (je clique entre les cibles)</option>`+ds.map((d,i)=>`<option value="${i}">cible ${i+1} (${d} m)</option>`).join("");
+  sel.value=[...sel.options].some(o=>o.value===prev)?prev:"each";
+  const el=ds.map(d=>elevAt(p,d,c)),b=sel.value==="each"?null:el[+sel.value];
+  $("stTable").innerHTML=ds.map((d,i)=>{const e=el[i];if(isNaN(e))return `<tr><td>${i+1}</td><td>${d}</td><td colspan="2">hors portée</td></tr>`;
+    const cl=Math.round(e/p.click);
+    return `<tr><td>${i+1}</td><td>${d} m</td><td>${b===null||i===+sel.value?`↑${cl}`:"—"}</td><td>${b===null?"0":fx(-(e-b),u==="MOA"?1:1)}</td></tr>`;}).join("");
+}
+$("stBase").onchange=()=>{stage();save();};
+let trResult=null;
+$("trGo").onclick=()=>{
+  const p=P(),c=conditions(),d=num("trD"),target=num("trE"),what=seg("trWhat");
+  if(!(d>0&&target>0)){$("trRes").textContent="Indiquez une distance et l'élévation qui a touché.";return;}
+  let lo=what==="v0"?150:0.03,hi=what==="v0"?1300:1.2;
+  const f=v=>{const q=Object.assign({},p);q[what]=v;return elevAt(q,d,c);};
+  for(let i=0;i<50;i++){const m=(lo+hi)/2,e=f(m);if(isNaN(e)||e>target)lo=m;else hi=m;}
+  const v=(lo+hi)/2,before=elevAt(p,d,c),ok=Math.abs(f(v)-target)<0.05;
+  if(!ok){$("trRes").textContent="Pas de solution réaliste : vérifiez la distance, l'élévation et la distance de zéro.";$("trApply").style.display="none";return;}
+  trResult={what,v};
+  $("trRes").innerHTML=`Calculé : ${fx(before,2)} ${p.unit} · réel : ${fx(target,2)} ${p.unit}. `+
+    (what==="v0"?`Vitesse ajustée : <b>${fx(v,0)} m/s</b> (au lieu de ${fx(p.v0,0)}).`:`CB ajusté : <b>${fx(v,3)}</b> (au lieu de ${fx(p.bc,3)}).`)+
+    " Ajustez de préférence la V0 avec un tir vers 150–200 m, puis le CB avec un tir à 250–300 m.";
+  $("trApply").style.display="";
+};
+$("trApply").onclick=()=>{if(!trResult)return;S.val.ammo[trResult.what]=trResult.what==="v0"?String(Math.round(trResult.v)):trResult.v.toFixed(3);
+  $("trApply").style.display="none";$("trRes").innerHTML+=" ✓ Appliqué (pensez à « Enregistrer » la munition ou à mettre à jour votre setup).";changed();};
+
+/* ================= table ================= */
+function table(){
+  const p=P(),c=conditions(),alpha=zeroAngle(p),u=p.unit;
+  const from=Math.max(1,num("bFrom")),to=Math.min(2000,Math.max(from,num("bTo"))),step=Math.max(5,num("bStep"));
+  const tr=fly(Object.assign({p,alpha,maxX:to+1},c,{site:0}));
+  document.querySelectorAll(".u").forEach(e=>e.textContent=u);
+  let rows="";
+  for(let d=from;d<=to+1e-6;d+=step){
+    const r=tr(d);if(!r)break;
+    const corr=toUnit(-r.y/d,u),wc=toUnit(-r.z/d,u),cE=corr/p.click,cW=wc/p.click,E=p.gr?0.5*p.gr*6.479891e-5*r.v*r.v:0;
+    const re=Math.round(cE),rw=Math.round(cW);
+    rows+=`<tr class="${Math.abs(d-p.zero)<0.5?"zero":""}"><td>${d}</td><td>${fx(r.y*100,1)}</td><td>${fx(corr,2)}</td>`+
+      `<td>${re===0?"0":(re>0?"↑":"↓")+Math.abs(re)}</td><td>${fx(r.z*100,1)}</td><td>${rw===0?"0":(rw>0?"→":"←")+Math.abs(rw)}</td>`+
+      `<td>${fx(r.v,0)}</td><td>${E?fx(E,0):"-"}</td></tr>`;
+  }
+  $("bTable").innerHTML=rows;
+  $("bInfo").textContent=`Zéro ${p.zero} m · ${fx(num("mT"),0)} °C · ${fx(num("mP"),0)} hPa · vent ${fx(num("mWs"),0)} km/h · azimut ${fx(num("tAz"),0)}°`;
+}
+
+/* ================= zérotage ================= */
+function zeroCalc(){
+  const p=P(),d=num("zDist"),v=num("zV")*seg("zVs"),h=num("zH")*seg("zHs");
+  const av=cmUnit(Math.abs(v),d,p.unit),ah=cmUnit(Math.abs(h),d,p.unit),cv=av/p.click,ch=ah/p.click;
+  $("rV").textContent=Math.round(cv);$("rH").textContent=Math.round(ch);
+  $("rVd").textContent=Math.round(cv)===0?"OK":(v>0?"⬇ vers le BAS":"⬆ vers le HAUT");
+  $("rHd").textContent=Math.round(ch)===0?"OK":(h>0?"⬅ vers la GAUCHE":"➡ vers la DROITE");
+  $("rVa").textContent=`${av.toFixed(2)} ${p.unit} · ${cv.toFixed(1)} clics`;
+  $("rHa").textContent=`${ah.toFixed(2)} ${p.unit} · ${ch.toFixed(1)} clics`;
+  const cm1=d>0?p.click/cmUnit(1,d,p.unit):0;
+  $("zInfo").textContent=`À ${d} m, 1 clic = ${cm1.toFixed(2)} cm. Tournez la tourelle dans le sens indiqué (repères U/D, L/R gravés sur la tourelle).`+
+    (Math.abs(d-p.zero)>0.5?` Attention : vous tirez à ${d} m alors que le zéro prévu est à ${p.zero} m.`:"");
+}
+const cv=$("tgt"),ctx=cv.getContext("2d");
+function mean(){const n=S.impacts.length;return[S.impacts.reduce((a,p)=>a+p[0],0)/n,S.impacts.reduce((a,p)=>a+p[1],0)/n];}
+function drawTarget(){
+  const W=cv.width,c=W/2,hc=S.halfCm,px=W/(2*hc),g=parseFloat($("zGrid").value);
+  ctx.fillStyle="#f4f1e8";ctx.fillRect(0,0,W,W);ctx.lineWidth=1;
+  for(let k=-Math.floor(hc/g);k<=hc/g;k++){const q=c+k*g*px;ctx.strokeStyle=k%5===0?"#b9b3a2":"#ddd7c6";
+    ctx.beginPath();ctx.moveTo(q,0);ctx.lineTo(q,W);ctx.moveTo(0,q);ctx.lineTo(W,q);ctx.stroke();}
+  ctx.strokeStyle="#222";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(c,0);ctx.lineTo(c,W);ctx.moveTo(0,c);ctx.lineTo(W,c);ctx.stroke();
+  ctx.fillStyle="#d33";ctx.beginPath();ctx.arc(c,c,6,0,7);ctx.fill();
+  ctx.fillStyle="#555";ctx.font="20px sans-serif";ctx.fillText(`±${hc} cm · carreau ${g} cm`,10,W-12);
+  S.impacts.forEach(p=>{ctx.fillStyle="#1d4ed8";ctx.beginPath();ctx.arc(c+p[0]*px,c-p[1]*px,9,0,7);ctx.fill();});
+  if(S.impacts.length){const m=mean(),x=c+m[0]*px,y=c-m[1]*px;ctx.strokeStyle="#e8890b";ctx.lineWidth=4;
+    ctx.beginPath();ctx.moveTo(x-16,y);ctx.lineTo(x+16,y);ctx.moveTo(x,y-16);ctx.lineTo(x,y+16);ctx.stroke();ctx.beginPath();ctx.arc(x,y,12,0,7);ctx.stroke();}
+}
+function syncImpacts(){if(!S.impacts.length){$("zH").value=0;$("zV").value=0;return;}const m=mean();
+  $("zH").value=Math.abs(m[0]).toFixed(1);setSeg("zHs",m[0]>=0?1:-1);$("zV").value=Math.abs(m[1]).toFixed(1);setSeg("zVs",m[1]>=0?1:-1);}
+cv.addEventListener("pointerdown",e=>{const r=cv.getBoundingClientRect(),W=cv.width,x=(e.clientX-r.left)*W/r.width,y=(e.clientY-r.top)*W/r.height,px=W/(2*S.halfCm);
+  S.impacts.push([+((x-W/2)/px).toFixed(2),+((W/2-y)/px).toFixed(2)]);syncImpacts();compute();save();});
+$("undo").onclick=()=>{S.impacts.pop();syncImpacts();compute();save();};
+$("clear").onclick=()=>{S.impacts=[];syncImpacts();compute();save();};
+$("zoomIn").onclick=()=>{S.halfCm=Math.max(2,S.halfCm/2);compute();save();};
+$("zoomOut").onclick=()=>{S.halfCm=Math.min(80,S.halfCm*2);compute();save();};
+document.querySelectorAll(".zd").forEach(b=>b.onclick=()=>{$("zDist").value=b.textContent;compute();save();});
+document.querySelectorAll(".zc").forEach(b=>b.onclick=()=>{$("zeroD").value=b.textContent;compute();save();});
+
+/* ================= carte, GPS, météo ================= */
+let map=null,mShooter=null,mTarget=null,line=null,gpsFix=null,gpsFirst=true;
+function initMap(){
+  if(!window.L){$("map").innerHTML='<p class="hint" style="padding:12px">Carte indisponible.</p>';return;}
+  map=L.map("map",{zoomControl:true,attributionControl:true}).setView(S.shooter?[S.shooter.lat,S.shooter.lon]:[46.6,2.4],S.shooter?16:5);
+  const sat=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"Esri"});
+  const osm=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"});
+  sat.addTo(map);L.control.layers({"Satellite":sat,"Plan":osm},null,{position:"topright"}).addTo(map);
+  map.on("click",e=>{
+    const pt={lat:e.latlng.lat,lon:e.latlng.lng,alt:null};
+    if(seg("placeMode")==="shooter"){S.shooter=pt;S.shooterManual=true;setSeg("placeMode","target");}else S.target=pt;
+    drawMarkers();updateGeo(true);
+  });
+  drawMarkers();
+}
+function drawMarkers(){
+  if(!map)return;
+  [mShooter,mTarget,line].forEach(m=>m&&map.removeLayer(m));mShooter=mTarget=line=null;
+  if(S.shooter)mShooter=L.circleMarker([S.shooter.lat,S.shooter.lon],{radius:9,color:"#fff",weight:2,fillColor:"#2563eb",fillOpacity:1}).addTo(map).bindTooltip("Tireur");
+  if(S.target)mTarget=L.circleMarker([S.target.lat,S.target.lon],{radius:9,color:"#fff",weight:2,fillColor:"#dc2626",fillOpacity:1}).addTo(map).bindTooltip("Cible");
+  if(S.shooter&&S.target)line=L.polyline([[S.shooter.lat,S.shooter.lon],[S.target.lat,S.target.lon]],{color:"#f59e0b",weight:3,dashArray:"6 6"}).addTo(map);
+}
+function bearing(a,b){const f1=a.lat*DEG,f2=b.lat*DEG,dl=(b.lon-a.lon)*DEG;
+  return (Math.atan2(Math.sin(dl)*Math.cos(f2),Math.cos(f1)*Math.sin(f2)-Math.sin(f1)*Math.cos(f2)*Math.cos(dl))/DEG+360)%360;}
+function haversine(a,b){const R=6371008.8,f1=a.lat*DEG,f2=b.lat*DEG,df=f2-f1,dl=(b.lon-a.lon)*DEG;
+  const h=Math.sin(df/2)**2+Math.cos(f1)*Math.cos(f2)*Math.sin(dl/2)**2;return 2*R*Math.asin(Math.sqrt(h));}
+let elevSeq=0;
+async function updateGeo(fetchElev){
+  if(S.shooter)$("tLat").value=S.shooter.lat.toFixed(4);
+  if(!(S.shooter&&S.target)){compute();save();return;}
+  const h=haversine(S.shooter,S.target),az=bearing(S.shooter,S.target);
+  $("tAz").value=az.toFixed(0);
+  const apply=()=>{
+    const dz=(S.target.alt!=null&&S.shooter.alt!=null)?S.target.alt-S.shooter.alt:0;
+    $("tDist").value=Math.hypot(h,dz).toFixed(0);$("tSite").value=(Math.atan2(dz,h)/DEG).toFixed(1);
+    $("geoInfo").textContent=`Distance horizontale ${h.toFixed(0)} m · azimut ${az.toFixed(0)}° · dénivelé `+
+      ((S.target.alt!=null&&S.shooter.alt!=null)?`${dz>=0?"+":""}${dz.toFixed(1)} m (relief)`:"inconnu (hors ligne)");
+    compute();save();
+  };
+  apply();
+  if(fetchElev){
+    const seq=++elevSeq;
+    try{
+      const r=await fetch(`https://api.open-meteo.com/v1/elevation?latitude=${S.shooter.lat},${S.target.lat}&longitude=${S.shooter.lon},${S.target.lon}`);
+      const j=await r.json();if(seq!==elevSeq||!j.elevation)return;
+      S.shooter.alt=j.elevation[0];S.target.alt=j.elevation[1];apply();
+    }catch(e){$("geoInfo").textContent+=" — relief non disponible sans réseau.";}
+  }
+}
+// appelé par l'application Android (GPS natif) ou par le navigateur
+window.onGps=function(lat,lon,alt,acc){
+  gpsFix={lat,lon,alt,acc,time:Date.now()};
+  if(jWantGps){jWantGps=false;jSetLoc(lat,lon,"GPS ±"+Math.round(acc)+" m");}
+  $("gpsInfo").textContent=`GPS : ${lat.toFixed(5)}, ${lon.toFixed(5)} · précision ±${Math.round(acc)} m`;
+  if(!S.shooterManual){
+    const moved=!S.shooter||haversine(S.shooter,{lat,lon})>3;
+    S.shooter={lat,lon,alt:S.shooter&&!moved?S.shooter.alt:null};
+    if(moved){drawMarkers();updateGeo(true);}
+    if(gpsFirst&&map){map.setView([lat,lon],Math.max(map.getZoom(),16));gpsFirst=false;}
+    if(!S.meteoTime||Date.now()-S.meteoTime>3600e3)meteo();
+  }
+};
+window.onGpsError=function(msg){$("gpsInfo").textContent=msg;};
+$("gpsBtn").onclick=()=>{
+  S.shooterManual=false;gpsFirst=true;
+  if(gpsFix)window.onGps(gpsFix.lat,gpsFix.lon,gpsFix.alt,gpsFix.acc);
+  if(window.Android&&Android.requestGps)Android.requestGps();
+  else if(navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>onGps(p.coords.latitude,p.coords.longitude,p.coords.altitude,p.coords.accuracy),e=>onGpsError("GPS indisponible : "+e.message),{enableHighAccuracy:true});
+};
+let meteoBusy=false;
+async function meteo(){
+  const pos=S.shooter;if(!pos){$("meteoInfo").textContent="Position du tireur inconnue : activez le GPS ou placez le tireur sur la carte.";return;}
+  if(meteoBusy)return;meteoBusy=true;S.meteoTime=Date.now();
+  $("meteoInfo").textContent="Récupération de la météo…";
+  try{
+    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${pos.lat}&longitude=${pos.lon}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m,wind_direction_10m,wind_gusts_10m&wind_speed_unit=kmh`);
+    const j=await r.json(),c=j.current;
+    $("mT").value=c.temperature_2m.toFixed(1);$("mP").value=c.surface_pressure.toFixed(0);$("mH").value=Math.round(c.relative_humidity_2m);
+    $("mWs").value=Math.round(c.wind_speed_10m);$("mWd").value=Math.round(c.wind_direction_10m);
+    const t=new Date();
+    $("meteoInfo").textContent=`Météo Open-Meteo à ${t.getHours()}h${String(t.getMinutes()).padStart(2,"0")} : vent ${Math.round(c.wind_speed_10m)} km/h (rafales ${Math.round(c.wind_gusts_10m)}) venant de ${Math.round(c.wind_direction_10m)}°. Vent mesuré à 10 m : ajustez selon ce que vous ressentez.`;
+    compute();save();
+  }catch(e){$("meteoInfo").textContent="Météo indisponible (pas de réseau ?). Saisissez les valeurs à la main.";S.meteoTime=null;}
+  meteoBusy=false;
+}
+$("meteoBtn").onclick=()=>{S.meteoTime=null;meteo();};
+
+/* ================= setups ================= */
+function snapshot(){return {sel:JSON.parse(JSON.stringify(S.sel)),val:JSON.parse(JSON.stringify(S.val)),zeroD:$("zeroD").value,zeroT:$("zeroT").value,zeroP:$("zeroP").value};}
+function setupSummary(st){return [st.sel.weapon,st.sel.scope,st.sel.ammo].map(k=>(k||"").split("|")[1]||"").join(" · ")+` · zéro ${st.zeroD} m`;}
+function applySetup(name){
+  const st=S.setups.find(x=>x.name===name);if(!st)return;
+  S.sel=JSON.parse(JSON.stringify(st.sel));S.val=JSON.parse(JSON.stringify(st.val));
+  $("zeroD").value=st.zeroD;$("zeroT").value=st.zeroT||"";$("zeroP").value=st.zeroP||"";
+  S.activeSetup=name;S.tf={weapon:"",ammo:""};changed();
+}
+const setupOpen=new Set(); // setups dépliés (non mémorisé)
+$("setupBox").addEventListener("toggle",()=>{if(S.setupsOpen!==$("setupBox").open){S.setupsOpen=$("setupBox").open;save();}});
+$("setupList").addEventListener("toggle",e=>{const d=e.target;if(!d.dataset||d.dataset.name==null)return;d.open?setupOpen.add(d.dataset.name):setupOpen.delete(d.dataset.name);},true);
+function renderSetups(){
+  const l=$("setupList"),sn=JSON.stringify(snapshot()),act=S.setups.find(x=>x.name===S.activeSetup);
+  if(act&&JSON.stringify({sel:act.sel,val:act.val,zeroD:act.zeroD,zeroT:act.zeroT,zeroP:act.zeroP})!==sn)S.activeSetup="";
+  $("setupSum").textContent=`Setups enregistrés (${S.setups.length})`+(act&&S.activeSetup?` · actif : ${S.activeSetup}`:"");
+  $("setupBox").open=!!S.setupsOpen;
+  l.innerHTML=S.setups.length?S.setups.map((st,i)=>`<details class="fold sub" data-name="${esc(st.name)}"${setupOpen.has(st.name)?" open":""}>
+    <summary style="font-weight:700;color:${st.name===S.activeSetup?"var(--acc)":"var(--txt)"}">${st.name===S.activeSetup?"✓ ":""}${esc(st.name)}</summary>
+    <div class="hint" style="margin:2px 0 6px">${esc(setupSummary(st))}${st.note?"<br>📝 "+esc(st.note):""}<br>${esc(st.date||"")}</div>
+    <div class="chips" style="margin:0 0 6px"><button class="btn sm acc" data-load="${i}">Rappeler</button><button class="btn sm" data-upd="${i}">Mettre à jour</button><button class="btn sm" data-del="${i}">🗑</button></div></details>`).join("")
+    :'<p class="hint">Aucun setup enregistré pour l\'instant.</p>';
+  const q=$("quickSetup");
+  q.innerHTML=`<option value="">${S.activeSetup?"— matériel modifié —":"— matériel actuel (non enregistré) —"}</option>`+
+    S.setups.map(st=>`<option${st.name===S.activeSetup?" selected":""}>${esc(st.name)}</option>`).join("");
+}
+$("setupSave").onclick=()=>{
+  const name=$("setupName").value.trim()||setupSummary(snapshot());
+  const st=Object.assign(snapshot(),{name,note:$("setupNote").value.trim(),date:"Enregistré le "+new Date().toLocaleString("fr-FR")});
+  S.setups=S.setups.filter(x=>x.name!==name);S.setups.push(st);S.activeSetup=name;S.setupsOpen=true;
+  $("setupName").value="";$("setupNote").value="";renderSetups();save();
+};
+$("setupList").addEventListener("click",e=>{
+  const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.load!=null)applySetup(S.setups[+b.dataset.load].name);
+  else if(b.dataset.upd!=null){const st=S.setups[+b.dataset.upd];Object.assign(st,snapshot(),{date:"Mis à jour le "+new Date().toLocaleString("fr-FR")});S.activeSetup=st.name;renderSetups();save();}
+  else if(b.dataset.del!=null){const st=S.setups[+b.dataset.del];
+    if(b.dataset.confirm){S.setups.splice(+b.dataset.del,1);if(S.activeSetup===st.name)S.activeSetup="";renderSetups();save();}
+    else{b.dataset.confirm="1";b.textContent="Confirmer ?";b.classList.add("acc");}}
+});
+$("quickSetup").onchange=e=>{if(e.target.value)applySetup(e.target.value);};
+
+/* ================= réticule ================= */
+let LAST=null;
+const rc=$("retc"),rctx=rc.getContext("2d");
+/* photo du réticule réel, par lunette */
+let calib=null;const photoCache={};
+function photo(){let r=(S.retPhoto||{})[S.sel.scope];if(!r){const sc=find("scope",S.sel.scope);if(sc&&sc.photo)r=Object.assign({official:true},sc.photo);}if(!r)return null;
+  if(!photoCache[S.sel.scope]||photoCache[S.sel.scope].src!==r.img){const el=new Image();el.onload=()=>drawReticle();el.src=r.img;photoCache[S.sel.scope]={src:r.img,el};}
+  return Object.assign({el:photoCache[S.sel.scope].el},r);}
+$("rImport").onclick=()=>$("rFile").click();
+$("rFile").onchange=e=>{const f=e.target.files[0];if(!f)return;const rd=new FileReader();
+  rd.onload=()=>{const im=new Image();im.onload=()=>{const m=900,s=Math.min(1,m/Math.max(im.width,im.height)),cv2=document.createElement("canvas");
+    cv2.width=Math.round(im.width*s);cv2.height=Math.round(im.height*s);cv2.getContext("2d").drawImage(im,0,0,cv2.width,cv2.height);
+    S.retPhoto=S.retPhoto||{};S.retPhoto[S.sel.scope]={img:cv2.toDataURL("image/jpeg",0.85),cx:cv2.width/2,cy:cv2.height/2,ppu:0};
+    try{save();}catch(err){}startCalib();};im.src=rd.result;};rd.readAsDataURL(f);e.target.value="";};
+function startCalib(){if(!photo()){$("rCalibMsg").textContent="Importez d'abord une image du réticule.";return;}
+  calib={pts:[]};$("rCalibRow").style.display="";$("rCalibMsg").textContent="Étape 1/2 : touchez le CENTRE du réticule sur l'image.";drawReticle();}
+$("rCalib").onclick=startCalib;
+$("rPhotoToggle").onclick=()=>{S.retPhotoOn=S.retPhotoOn===false;drawReticle();save();};
+$("rPhotoDel").onclick=()=>{if(S.retPhoto)delete S.retPhoto[S.sel.scope];calib=null;$("rCalibRow").style.display="none";$("rCalibMsg").textContent="";drawReticle();save();};
+$("retc").addEventListener("pointerdown",e=>{
+  if(!calib)return;const ph=photo(),r=$("retc").getBoundingClientRect(),W=$("retc").width,c=W/2,s0=W/Math.max(ph.el.width,ph.el.height);
+  const x=(e.clientX-r.left)*W/r.width,y=(e.clientY-r.top)*W/r.height,ix=(x-c)/s0+ph.el.width/2,iy=(y-c)/s0+ph.el.height/2;
+  calib.pts.push([ix,iy]);
+  if(calib.pts.length===1)$("rCalibMsg").textContent="Étape 2/2 : touchez une graduation chiffrée (par ex. le « 5 » à droite), puis indiquez sa valeur ci-dessous si ce n'est pas 5.";
+  else{const [a,b]=calib.pts,v=num("rCalVal")||5,d=Math.hypot(b[0]-a[0],b[1]-a[1]);
+    S.retPhoto=S.retPhoto||{};if(!S.retPhoto[S.sel.scope])S.retPhoto[S.sel.scope]={img:ph.img};Object.assign(S.retPhoto[S.sel.scope],{cx:a[0],cy:a[1],ppu:d/v});calib=null;S.retPhotoOn=true;S.retZoom=0;
+    $("rCalibRow").style.display="none";$("rCalibMsg").textContent="Étalonnage enregistré pour cette lunette.";save();}
+  drawReticle();
+});
+function retInfo(){
+  const type=V("scope","reticle")||"mrad-hash",R=RETICLES[type]||RETICLES["mrad-hash"];
+  const focal=V("scope","focal")||"FFP",cal=parseFloat(V("scope","calMag"))||0,mag=num("rMag")||cal||10;
+  const k=focal==="SFP"&&cal?cal/mag:1; // facteur d'échelle apparent des graduations (SFP)
+  return {type,R,focal,cal,mag,k,u:R.unit};
+}
+const radTo=(rad,u)=>u==="MOA"?rad/DEG*60:rad*1000;
+function drawReticle(){
+  const I=retInfo(),u=I.u,W=rc.width,c=W/2,k=I.k;
+  // champ affiché (en unités vraies du réticule)
+  let hold=null;if(LAST)hold={x:radTo(-LAST.wRad,u),y:radTo(-LAST.eRad,u)};
+  const base=u==="MOA"?30:10;
+  let half=base;if(S.retZoom)half=S.retZoom;else if(hold)half=Math.max(base*0.5,Math.min(base*3,Math.max(Math.abs(hold.x),Math.abs(hold.y))*1.25));
+  half=Math.max(half,u==="MOA"?3:1);
+  const px=c/half,X=v=>c+v*px,Y=v=>c-v*px;
+  rctx.clearRect(0,0,W,W);rctx.save();rctx.beginPath();rctx.arc(c,c,c,0,7);rctx.clip();
+  const tg=tgtFind(S.tgt),tD=LAST?LAST.D:num("tDist");
+  const under=()=>{if(!(tg&&tD>0))return;const off=document.createElement("canvas");off.width=off.height=W; // cible derrière le réticule
+    drawTgt(off.getContext("2d"),tg,hold?X(hold.x):c,hold?Y(hold.y):c,px*radTo(1/1000/tD,u),tD);rctx.drawImage(off,0,0);};
+  $("rTgtInfo").textContent=tg&&tD>0?`${tg.name} à ${fx(tD,0)} m (distance de l'onglet Tir) : ${tgtAngTxt(tg,tD,u)}. La cible est centrée sur le point de tenue.`:"";
+  const ph=photo();
+  if(ph&&ph.el.complete&&(calib||(ph.ppu&&S.retPhotoOn!==false))){
+    if(calib){const s0=W/Math.max(ph.el.width,ph.el.height);rctx.drawImage(ph.el,c-ph.el.width*s0/2,c-ph.el.height*s0/2,ph.el.width*s0,ph.el.height*s0);
+      calib.pts.forEach(q=>{rctx.fillStyle="#dc2626";rctx.beginPath();rctx.arc(c+(q[0]-ph.el.width/2)*s0,c+(q[1]-ph.el.height/2)*s0,8,0,7);rctx.fill();});
+      rctx.restore();return;}
+    rctx.fillStyle="#e9edf0";rctx.fillRect(0,0,W,W);under();
+    const sc=k*px/ph.ppu;rctx.globalCompositeOperation="multiply";rctx.drawImage(ph.el,c-ph.cx*sc,c-ph.cy*sc,ph.el.width*sc,ph.el.height*sc);
+    rctx.globalCompositeOperation="source-over";
+  }else{
+  rctx.strokeStyle="#111";rctx.fillStyle="#111";rctx.lineCap="butt";
+  const line=(x1,y1,x2,y2,w)=>{rctx.lineWidth=w;rctx.beginPath();rctx.moveTo(X(x1),Y(y1));rctx.lineTo(X(x2),Y(y2));rctx.stroke();};
+  const dot=(x,y,r)=>{rctx.beginPath();rctx.arc(X(x),Y(y),r,0,7);rctx.fill();};
+  const big=half*2;
+  const label=(t,x,y,dx,dy)=>{rctx.font="bold 20px sans-serif";rctx.textAlign="center";rctx.textBaseline="middle";rctx.fillText(t,X(x)+dx,Y(y)+dy);};
+  const hashes=(step,maxV,lenMaj,lenMid,lenMin,majorEvery,labEvery)=>{
+    for(let i=1;i*step<=maxV+1e-9;i++){const v=i*step*k;if(v>big)break;
+      const isMaj=Math.abs(i*step/majorEvery-Math.round(i*step/majorEvery))<1e-6,isMid=!isMaj&&Math.abs(i*step/(majorEvery/2)-Math.round(i*step/(majorEvery/2)))<1e-6;
+      const L=(isMaj?lenMaj:isMid?lenMid:lenMin)*k;
+      [1,-1].forEach(s=>{line(s*v,-L,s*v,L,2);line(-L,s*v,L,s*v,2);});
+      if(isMaj&&Math.abs(i*step/labEvery-Math.round(i*step/labEvery))<1e-6&&px*step*k>4){const n=String(Math.round(i*step));
+        label(n,v,0,0,-22);label(n,-v,0,0,-22);label(n,0,-v,26,0);label(n,0,v,26,0);}
+    }
+  };
+  line(-big,0,big,0,1.6);line(0,-big,0,big,1.6);
+  if(I.type==="disc-ffpz"){
+    const R="#d11",B="#111",tk=(x1,y1,x2,y2,w,col)=>{rctx.strokeStyle=col;line(x1,y1,x2,y2,w);};
+    rctx.clearRect(0,0,0,0);
+    // on redessine les axes sans la partie centrale
+    rctx.clearRect(X(-1.1*k),Y(1.1*k),2.2*k*px,2.2*k*px);
+    const L=0.18*k,M=0.12*k,Sm=0.07*k;
+    // horizontale noire 1→9 mil
+    [1,-1].forEach(s=>{tk(s*1.1*k,0,s*9*k,0,1.6,B);
+      for(let i=6;i<=45;i++){const v=i*0.2;if(v>9.001)break;const x=s*v*k,isInt=Math.abs(v-Math.round(v))<1e-6,isHalf=Math.abs(v*2-Math.round(v*2))<1e-6;
+        if(isInt)tk(x,-L,x,L,2,B);else{tk(x,0,x,-Sm,1.4,B);if(isHalf)tk(x,0,x,M,1.6,B);}}
+      if(9*k<big)tk(s*9*k,-L,s*9*k,L,2,B);
+      [2,4,6,8].forEach(n=>{rctx.fillStyle=B;label(String(n),s*n*k,0,0,-Math.max(18,0.6*k*px));});});
+    // verticale noire : 1→4 mil en haut, 1→11 mil en bas, échelle tous les 0,2 mil
+    tk(0,1.1*k,0,4*k,1.6,B);tk(0,-1.1*k,0,-11*k,1.6,B);
+    for(let i=6;i<=55;i++){const v=i*0.2,isInt=Math.abs(v-Math.round(v))<1e-6,w=(isInt?0.2:0.13)*k;
+      if(v<=4.001)tk(-w,v*k,w,v*k,isInt?2:1.4,B);if(v<=11.001)tk(-w,-v*k,w,-v*k,isInt?2:1.4,B);}
+    // centre rouge
+    [1,-1].forEach(s=>{tk(s*0.2*k,0,s*1*k,0,1.8,R);tk(s*k,-0.2*k,s*k,0.2*k,2.4,R);tk(0,s*0.2*k,0,s*1*k,1.8,R);tk(-0.2*k,s*k,0.2*k,s*k,2.4,R);
+      for(let i=1;i<=4;i++){const v=i*0.2;tk(s*v*k,0,s*v*k,-Sm,1.4,R);tk(-0.1*k,s*v*k,0.1*k,s*v*k,1.4,R);}
+      tk(s*0.5*k,0,s*0.5*k,M,1.6,R);});
+    rctx.fillStyle=R;dot(0,0,Math.max(2.5,0.05*k*px));
+    // arbre de tenue 2→10 mil
+    const HW=[1.6,2,2.6,3,3.6,4,4.6,5,5.6];
+    HW.forEach((hw,j)=>{const y=-(j+2)*k;tk(-hw*k,y,hw*k,y,1.5,B);
+      [1,-1].forEach(s=>{tk(s*hw*k,y-L*0.8,s*hw*k,y+L*0.8,2,B);
+        for(let i=1;i<=Math.round(hw*5);i++){const v=i*0.2;if(v>=hw-1e-6)break;const f=+(v%1).toFixed(1),x=s*v*k;
+          if(Math.abs(v-Math.round(v))<1e-6)tk(x,y-L,x,y+L,2,B);else if(f===0.4||f===0.6)tk(x,y,x,y+Sm,1.3,B);else tk(x,y,x,y-Sm,1.3,B);}});
+      if((j+2)%2===0){rctx.fillStyle=B;label(String(j+2),-(hw+0.5)*k,y,-6,0);}});
+    // montants épais avec flèches creuses (10 mil horizontale, 12 mil en bas)
+    const ptr=(ax,ay,dx,dy)=>{const a=(v,w)=>[X(ax+dx*v-dy*w),Y(ay+dy*v+dx*w)];rctx.strokeStyle=B;rctx.lineWidth=2;rctx.beginPath();
+      let q=a(0,0);rctx.moveTo(q[0],q[1]);q=a(0.5*k,0.15*k);rctx.lineTo(q[0],q[1]);q=a(1.85*k,0.15*k);rctx.lineTo(q[0],q[1]);q=a(1.85*k,-0.15*k);rctx.lineTo(q[0],q[1]);q=a(0.5*k,-0.15*k);rctx.lineTo(q[0],q[1]);rctx.closePath();rctx.stroke();
+      rctx.strokeStyle=B;line(ax+dx*1.85*k,ay+dy*1.85*k,ax+dx*big,ay+dy*big,0.3*k*px);};
+    // on efface les lignes fines au-delà des graduations
+    rctx.clearRect(X(-big),Y(0.05*k)-1,(big-9.05*k)*px,0.1*k*px+2);rctx.clearRect(X(9.05*k),Y(0.05*k)-1,(big-9.05*k)*px,0.1*k*px+2);
+    rctx.clearRect(X(-0.05*k)-1,Y(big),0.1*k*px+2,(big-4.05*k)*px);rctx.clearRect(X(-0.05*k)-1,Y(-11.05*k),0.1*k*px+2,(big-11.05*k)*px);
+    ptr(-10*k,0,-1,0);ptr(10*k,0,1,0);ptr(0,-12*k,0,-1);
+  }else if(I.type==="mrad-hash"||I.type==="mrad-tree"){
+    const step=px*0.2*k>6?0.2:0.5;hashes(step,30,0.35,0.22,0.12,1,px*k>40?1:2);
+    if(I.type==="mrad-tree")for(let j=1;j<=10;j++){const w=Math.min(j,6);for(let i=-w;i<=w;i++)if(i!==0)dot(i*k,-j*k,Math.max(2,Math.min(4,px*k*0.04)));}
+    dot(0,0,3);
+  }else if(I.type==="moa-hash"){
+    hashes(px*k>12?1:2,60,1.6,1.0,0.6,5,px*k>8?5:10);
+  }else if(I.type==="mildot"){
+    for(let i=1;i<=4;i++)[1,-1].forEach(s=>{dot(s*i*k,0,Math.max(3,px*k*0.12));dot(0,s*i*k,Math.max(3,px*k*0.12));});
+    [1,-1].forEach(s=>{line(s*5*k,0,s*big,0,10);line(0,s*5*k,0,s*big,10);});
+  }else{ // duplex / bdc
+    const post=(u==="MOA"?15:4.5)*k;[1,-1].forEach(s=>{line(s*post,0,s*big,0,10);line(0,s*post,0,s*big,10);});
+    if(I.type==="bdc")[2.5,5,7.5,10].forEach((v,i)=>{rctx.lineWidth=2;rctx.beginPath();rctx.arc(X(0),Y(-v*k),Math.max(4,px*k*0.5),0,7);rctx.stroke();line(-1.2*k,-v*k,1.2*k,-v*k,1.5);});
+  }
+  }
+  if(!(ph&&ph.el.complete&&ph.ppu&&S.retPhotoOn!==false)){ // dessin vectoriel : cible et fond glissés dessous
+    rctx.globalCompositeOperation="destination-over";under();rctx.fillStyle="#e9edf0";rctx.fillRect(0,0,W,W);rctx.globalCompositeOperation="source-over";}
+  // point de visée (tenue)
+  if(hold){
+    if(tg&&tD>0){const s=tgtSize(tg,tD),r=Math.max(s.w,s.h)/2*px*radTo(1/1000/tD,u)+10; // cible affichée : simple repère autour
+      rctx.strokeStyle="rgba(245,158,11,.95)";rctx.lineWidth=4;rctx.setLineDash([10,8]);rctx.beginPath();rctx.arc(X(hold.x),Y(hold.y),Math.max(r,16),0,7);rctx.stroke();rctx.setLineDash([]);}
+    else{rctx.fillStyle="rgba(245,158,11,.95)";rctx.strokeStyle="#7c2d12";rctx.lineWidth=3;
+    rctx.beginPath();rctx.arc(X(hold.x),Y(hold.y),11,0,7);rctx.fill();rctx.stroke();}
+  }
+  rctx.restore();
+  rctx.fillStyle="#555";rctx.font="18px sans-serif";rctx.textAlign="left";
+  // textes
+  const sc=find("scope",S.sel.scope)||{},ph2=photo();
+  $("rReal").innerHTML=`<b>${esc((S.sel.scope||"").replace("|"," "))}</b> : réticule ${esc(sc.retName||"non renseigné")}.`+
+    (ph2&&ph2.official?" Schéma constructeur intégré ✓ (bouton Photo / dessin pour basculer).":ph2&&ph2.ppu?" Photo étalonnée enregistrée ✓":ph2?" Photo importée, à étalonner.":"");
+  $("rName").textContent=I.R.name;$("rText").textContent=I.R.text;
+  document.querySelectorAll(".ru").forEach(e=>e.textContent=u==="MOA"?"MOA":"mil");
+  $("rFocal").innerHTML=I.focal==="FFP"
+    ?"<b>Premier plan focal (FFP)</b> : le réticule grossit avec l'image, les graduations sont justes à tous les grossissements."
+    :`<b>Second plan focal (SFP)</b> : le réticule garde la même taille à l'écran, les graduations ne sont justes qu'au grossissement de calibration${I.cal?` (×${I.cal})`:" (voir la notice, souvent le grossissement maximal)"}. À ×${I.mag}, une graduation vaut ${fx(I.k,2)} fois sa valeur nominale.`;
+  if(hold){
+    const p=P(),hx=hold.x/k,hy=hold.y/k; // lecture sur les graduations
+    const sideTxt=Math.abs(hx)<(u==="MOA"?0.5:0.05)?"":` et ${fx(Math.abs(hx),u==="MOA"?1:2)} ${u==="MOA"?"MOA":"mil"} ${hx>0?"à droite":"à gauche"}`;
+    $("rHold").innerHTML=`<b>Tenue pour ${fx(LAST.D,0)} m</b> (onglet Tir) : placez la cible sur le point orange, `+
+      `${fx(Math.abs(hy),u==="MOA"?1:2)} ${u==="MOA"?"MOA":"mil"} ${hy<=0?"sous le":"au-dessus du"} centre${sideTxt} (graduations du réticule${I.focal==="SFP"?` à ×${I.mag}`:""}). `+
+      `Ou bien affichez les clics aux tourelles et visez au centre.`+(u!==p.unit?` <span class="warn">Attention : réticule en ${u}, tourelles en ${p.unit}.</span>`:"");
+  }else $("rHold").textContent="Renseignez une distance dans l'onglet Tir pour voir le point de visée.";
+  // estimation de distance
+  const read=num("rRead")*k,size=num("rSize");let d=0;
+  if(read>0&&size>0)d=u==="MOA"?size/(read*2.9089)*100:size*10/read;
+  $("rDist").textContent=d?`${fx(d,0)} m`:"—";
+  $("rDistInfo").textContent=u==="MOA"?"Distance (m) = taille (cm) × 100 ÷ (lecture MOA × 2,91)":"Distance (m) = taille (cm) × 10 ÷ lecture (mil)";
+  rDistVal=d;
+}
+let rDistVal=0;
+$("rUse").onclick=()=>{if(rDistVal){$("tDist").value=Math.round(rDistVal);S.target=null;drawMarkers();compute();save();document.querySelector('nav button[data-t=tir]').click();}};
+$("rZoomIn").onclick=()=>{const I=retInfo();S.retZoom=Math.max(I.u==="MOA"?3:1,(S.retZoom||(I.u==="MOA"?30:10))/1.5);drawReticle();save();};
+$("rZoomOut").onclick=()=>{const I=retInfo();S.retZoom=Math.min(I.u==="MOA"?120:40,(S.retZoom||(I.u==="MOA"?30:10))*1.5);drawReticle();save();};
+$("rFit").onclick=()=>{S.retZoom=0;drawReticle();save();};
+["rMag","rSize","rRead"].forEach(id=>$(id).addEventListener("input",()=>{drawReticle();save();}));
+$("rType").onchange=e=>{S.val.scope.reticle=e.target.value;changed();};
+(function(){const o=Object.entries(RETICLES).map(([k,r])=>`<option value="${k}">${esc(r.name)}</option>`).join("");$("retSel").innerHTML=o;$("rType").innerHTML=o;})();
+
+/* ================= interface ================= */
+function compute(){
+  const p=P();
+  $("setupLine").textContent=`${S.sel.weapon.split("|")[1]||""} · ${S.sel.scope.split("|")[1]||""} · ${S.sel.ammo.replace("|"," ")} · zéro ${p.zero} m`;
+  try{solve();}catch(e){console.log(e);}
+  try{table();}catch(e){console.log(e);}
+  try{dope();stage();windDir();}catch(e){console.log(e);}
+  zeroCalc();drawTarget();try{travelReport();}catch(e){console.log(e);}
+  $("rType").value=V("scope","reticle")||"mrad-hash";drawReticle();renderSetups();
+}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x===b));
+  document.querySelectorAll("section").forEach(s=>s.classList.toggle("on",s.id===b.dataset.t));
+  window.scrollTo(0,0);if(b.dataset.t==="tir"&&map)setTimeout(()=>map.invalidateSize(),50);
+  if(b.dataset.t==="log"){jSync();setTimeout(()=>{jInitMap();jMap&&jMap.invalidateSize();},50);}
+});
+SEGS.forEach(id=>$(id).querySelectorAll("button").forEach(b=>b.onclick=()=>{setSeg(id,b.dataset.v);compute();save();}));
+FIELDS.forEach(f=>$(f).addEventListener("input",()=>{if(["tDist","tAz","tSite"].includes(f)){S.target=null;drawMarkers();}compute();save();}));
+load();
+{ // modèle disparu du catalogue → modèle le plus proche (même calibre pour les munitions)
+  ["weapon","scope","ammo"].forEach(k=>{if(find(k,S.sel[k]))return;
+    const cal=k==="ammo"?String(V("weapon","cal")):"",brand=(S.sel[k]||"").split("|")[0],L=list(k).filter(e=>!cal||e.cal===cal);
+    const e=L.find(e=>e.brand===brand)||L[0]||list(k)[0];if(e){S.sel[k]=key(e);S.val[k]={};}});
+}
+$("jDate").value=jNowLocal();if(S.lastPlace){$("jPlace").value=S.lastPlace.place||"";if(S.lastPlace.loc)jSetLoc(S.lastPlace.loc.lat,S.lastPlace.loc.lon,"dernier lieu utilisé");}
+fillTgtSelects();changed();renderTables();renderLog();initMap();
+if(S.shooter&&S.target)updateGeo(false);
+if(window.Android&&Android.requestGps)Android.requestGps();else $("gpsBtn").click();
+if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js").catch(()=>{});
+</script>
+</body>
+</html>
