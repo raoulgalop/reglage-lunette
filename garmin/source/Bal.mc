@@ -51,7 +51,7 @@ module Bal {
         var k0 = 2.08551e-4 * 3.28084 / p[1] * p[3];
         var snd = p[4];
         var g = 9.80665;
-        var dt = 0.004;
+        var dt = 0.01;  // pas plus fin inutile (écart < 0,01 mil à 300 m) et trop lent pour la montre
         var h = dt / 2.0;
         var n = (maxX / step + 0.001).toNumber() + 1;
         var ys = new [n];
