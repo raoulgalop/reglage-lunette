@@ -67,9 +67,22 @@ jobs:
           xdotool key Up; sleep 1; xdotool key Up; sleep 2; shot 2-distance-plus
           xdotool key Return; sleep 3; shot 3-table
           xdotool key Escape; sleep 2; shot 4-retour
-          xdotool mousemove 325 665 click 1; sleep 3; shot 5-menu
-          xdotool key Return; sleep 3; shot 6-munitions
-          cat out/monkeydo.log /tmp/sim.log | tail -40
+          # 2e essai : version de test qui ouvre le menu au démarrage
+          rm -rf /tmp/gt && cp -r garmin /tmp/gt && rm -rf /tmp/gt/bin
+          sed -i 's/    function onShow() {/    function onShow() {\n        if (!TESTED) { TESTED = true; openMenu(); }/' /tmp/gt/source/MainView.mc
+          echo 'var TESTED = false;' >> /tmp/gt/source/MainView.mc
+          /connectiq/bin/monkeyc -d epix2 -f /tmp/gt/monkey.jungle -o /tmp/test.prg -y /tmp/k.der -l 0 -w
+          timeout 120 "$MD" /tmp/test.prg epix2 > out/monkeydo-test.log 2>&1 &
+          sleep 20
+          k() { for x in "$@"; do xdotool key $x; sleep 1; done; }
+          shot m1-menu
+          k Return; sleep 2; shot m2-munitions
+          k Down Down Return; sleep 2; shot m3-menu-apres-choix
+          k Down Return; sleep 2; k Up Up; shot m4-editeur-v0
+          k Return Down Down Down Down Down Down Down Return; sleep 2; k Up Up Up Up Up Up Up Up Up Up; shot m5-editeur-vent
+          k Return Escape; sleep 2; shot m6-principal-vent
+          k Return; sleep 2; shot m7-table-vent
+          cat out/monkeydo.log out/monkeydo-test.log /tmp/sim.log | tail -60
       - uses: actions/upload-artifact@v4
         if: always()
         with:
