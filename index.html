@@ -330,9 +330,9 @@ tr.zero td{color:var(--ok)}
     <div class="row"><label>Type d'arme<select class="cType"></select></label></div>
     <div class="cFindW"><input class="cFind" type="search" placeholder="🔍 Rechercher (ex. PGM, Glock 17, Hécate…)" autocomplete="off"><div class="cHits"></div></div>
     <div class="row"><label>Marque<select class="cBrand"></select></label><label>Modèle<select class="cModel"></select></label></div>
-    <div class="row"><label>Calibre<input data-f="cal" type="text"></label><label>Hauteur de visée (cm)<input data-f="sight" type="number" inputmode="decimal" step="0.1"></label></div>
-    <div class="row"><label>Canon (mm)<input data-f="barrel" type="number" inputmode="decimal"></label><label>Pas de rayure (1:x")<input data-f="twist" type="number" inputmode="decimal" step="0.5"></label></div>
-    <div class="row"><label>Rail / embase pentée (MOA)<input data-f="rail" type="number" inputmode="decimal" placeholder="0"></label><label>&nbsp;<div class="chips" style="margin-top:3px"><button class="btn sm rl">0</button><button class="btn sm rl">20</button><button class="btn sm rl">30</button></div></label></div>
+    <div class="row"><label>Calibre<input data-f="cal" type="text"></label><label>Hauteur de visée (cm)<input data-f="sight" type="text" inputmode="decimal" step="0.1"></label></div>
+    <div class="row"><label>Canon (mm)<input data-f="barrel" type="text" inputmode="decimal"></label><label>Pas de rayure (1:x")<input data-f="twist" type="text" inputmode="decimal" step="0.5"></label></div>
+    <div class="row"><label>Rail / embase pentée (MOA)<input data-f="rail" type="text" inputmode="decimal" placeholder="0"></label><label>&nbsp;<div class="chips" style="margin-top:3px"><button class="btn sm rl">0</button><button class="btn sm rl">20</button><button class="btn sm rl">30</button></div></label></div>
     <div class="cSave"></div>
   </div>
 
@@ -345,8 +345,8 @@ tr.zero td{color:var(--ok)}
     <div class="row"><label>Plan focal<select data-f="focal"><option value="FFP">1er plan (FFP)</option><option value="SFP">2e plan (SFP)</option></select></label>
       <label>Grossissement<input data-f="mag" type="text"></label></div>
     <div class="row"><label>Réticule<select data-f="reticle" id="retSel"></select></label>
-      <label>Gross. de calibration (SFP)<input data-f="calMag" type="number" inputmode="decimal"></label></div>
-    <div class="row"><label>Course totale élévation (unité tourelle)<input data-f="travelE" type="number" inputmode="decimal" placeholder="voir notice"></label></div>
+      <label>Gross. de calibration (SFP)<input data-f="calMag" type="text" inputmode="decimal"></label></div>
+    <div class="row"><label>Course totale élévation (unité tourelle)<input data-f="travelE" type="text" inputmode="decimal" placeholder="voir notice"></label></div>
     <p class="hint" id="scopeSrc"></p>
     <div class="cSave"></div>
   </div>
@@ -356,8 +356,8 @@ tr.zero td{color:var(--ok)}
     <div class="row"><label>Type de munition<select class="cType"></select></label></div>
     <div class="cFindW"><input class="cFind" type="search" placeholder="🔍 Rechercher (ex. PGM, Glock 17, Hécate…)" autocomplete="off"><div class="cHits"></div></div>
     <div class="row"><label>Marque<select class="cBrand"></select></label><label>Modèle<select class="cModel"></select></label></div>
-    <div class="row"><label>Calibre<input data-f="cal" type="text"></label><label>Poids (grains)<input data-f="gr" type="number" inputmode="decimal"></label></div>
-    <div class="row"><label>Vitesse V0 (m/s)<input data-f="v0" type="number" inputmode="decimal"></label><label>Coef. balistique G1<input data-f="bc" type="number" inputmode="decimal" step="0.001"></label></div>
+    <div class="row"><label>Calibre<input data-f="cal" type="text"></label><label>Poids (grains)<input data-f="gr" type="text" inputmode="decimal"></label></div>
+    <div class="row"><label>Vitesse V0 (m/s)<input data-f="v0" type="text" inputmode="decimal"></label><label>Coef. balistique G1<input data-f="bc" type="text" inputmode="decimal" step="0.001"></label></div>
     <p class="hint" id="ammoSrc"></p>
     <div class="cSave"></div>
   </div>
@@ -417,6 +417,7 @@ tr.zero td{color:var(--ok)}
 <script src="catalog.js"></script>
 <script>
 const $=id=>document.getElementById(id);
+const pf=v=>{const x=parseFloat(String(v==null?"":v).replace(",",".").trim());return isFinite(x)?x:NaN;}; // nombre saisi avec virgule ou point
 const num=id=>{const e=typeof id==="string"?$(id):id;const v=parseFloat(String(e.value).replace(",","."));return isFinite(v)?v:0;};
 const fx=(x,n)=>(Math.abs(x)<0.5*Math.pow(10,-n)?0:x).toFixed(n);
 const DEG=Math.PI/180;
@@ -460,14 +461,14 @@ function renderCard(kind){
   if(tSel){
     const types=[...new Set(items.map(e=>e.type).filter(Boolean))],tf=S.tf[kind]||"";
     tSel.innerHTML=`<option value="">Tous les types</option>`+types.map(t=>`<option${t===tf?" selected":""}>${esc(t)}</option>`).join("");
-    if(tf)pool=items.filter(e=>e.type===tf||e===cur);
+    if(tf)pool=items.filter(e=>e.type===tf||key(e)===key(cur));
   }
   const bSort=a=>a.sort((x,y)=>x===y?0:x==="Générique"?1:y==="Générique"?-1:x.localeCompare(y,"fr",{sensitivity:"base"})); // ordre alphabétique, Générique à la fin
   let brands=bSort([...new Set(pool.map(e=>e.brand))]);
   let models=pool.filter(e=>e.brand===cur.brand);
   if(kind==="ammo"){ // munitions filtrées par calibre de l'arme
     const cal=String(V("weapon","cal")).toLowerCase().replace(/\s/g,"");
-    const ok=e=>!cal||String(e.cal).toLowerCase().replace(/\s/g,"")===cal||e===cur;
+    const ok=e=>!cal||String(e.cal).toLowerCase().replace(/\s/g,"")===cal||key(e)===key(cur);
     brands=[...new Set(pool.filter(ok).map(e=>e.brand))];if(!brands.includes(cur.brand))brands.push(cur.brand);bSort(brands);
     models=models.filter(ok);
   }
@@ -476,19 +477,32 @@ function renderCard(kind){
   { // regroupe les modèles par famille (texte avant la parenthèse du calibre)
     const fam=e=>e.model.replace(/\s*\([^)]*\)\s*$/,"")||e.model,groups=new Map();
     models.forEach(e=>{const f=fam(e);if(!groups.has(f))groups.set(f,[]);groups.get(f).push(e);});
-    const opt=e=>`<option value="${esc(key(e))}"${e===cur?" selected":""}>${esc(e.model)}${e.custom?" ★":""}</option>`;
+    const opt=e=>`<option value="${esc(key(e))}"${key(e)===key(cur)?" selected":""}>${esc(e.model)}${e.custom?" ★":""}</option>`;
     c.querySelector(".cModel").innerHTML=[...groups].sort((x,y)=>x[0].localeCompare(y[0],"fr",{numeric:true})).map(([f,es])=>es.length>1&&groups.size>1?`<optgroup label="${esc(f)}">${es.map(opt).join("")}</optgroup>`:es.map(opt).join("")).join("");
   }
   KINDS[kind].f.forEach(f=>{const el=c.querySelector(`[data-f=${f}]`);el.value=V(kind,f);});
   const modified=Object.values(S.val[kind]).some(v=>v!=null&&v!=="");
-  c.querySelector(".cSave").innerHTML=
-    `<div class="row" style="margin:4px 0 0"><label>Enregistrer sous : marque<input class="nBrand" value="${esc(cur.brand)}"></label><label>Modèle<input class="nModel" value="${esc(cur.model)}"></label></div>`+
-    `<div class="chips"><button class="btn sm acc sv">💾 Enregistrer</button>${modified?'<button class="btn sm rs">↺ Valeurs catalogue</button>':""}${cur.custom?'<button class="btn sm dl">🗑 Supprimer</button>':""}</div>`+
-    (modified?'<p class="hint warn">Valeurs modifiées par rapport au catalogue.</p>':"");
+  const ob=c.querySelector(".nBrand"),om=c.querySelector(".nModel"),keep=ob&&ob.dataset.k===S.sel[kind]&&ob.dataset.dirty; // nom en cours de saisie conservé
+  const nb=keep?ob.value:cur.brand,nm=keep?om.value:cur.model;
+  const cat=cur.custom?CATALOG[kind].find(e=>key(e)===key(cur)||key(e)===cur.base):null; // fiche du catalogue d'origine
+  const diff=cat?KINDS[kind].f.filter(f=>String(cat[f]==null?"":cat[f])!==String(cur[f]==null?"":cur[f])).map(f=>`${f==="bc"?"CB":f==="v0"?"V0":f} ${esc(cat[f]==null?"—":cat[f])} → ${esc(cur[f]==null?"—":cur[f])}`):[];
+  const cs=c.querySelector(".cSave");
+  if(!cs.querySelector(".nBrand"))cs.innerHTML=`<p class="hint cOwn"></p><div class="row" style="margin:4px 0 0"><label>Enregistrer sous : marque<input class="nBrand"></label><label>Modèle<input class="nModel"></label></div><div class="chips cBtns"></div><p class="hint warn cMod"></p>`;
+  // les champs ne sont pas recréés : la saisie (et le clavier) restent en place
+  cs.querySelector(".cOwn").innerHTML=cur.custom?`★ Fiche personnelle${cat?(key(cat)===key(cur)?" qui remplace celle du catalogue":` créée à partir de « ${esc(cat.brand+" "+cat.model)} »`)+(diff.length?` (différences : ${diff.join(", ")})`:" (valeurs identiques au catalogue)"):""}.`:"";
+  const nB=cs.querySelector(".nBrand"),nM=cs.querySelector(".nModel");
+  if(!keep){nB.value=nb;nM.value=nm;delete nB.dataset.dirty;}nB.dataset.k=S.sel[kind];
+  { // boutons toujours présents, seulement masqués : les recréer ferait perdre le tap en cours
+    const B=cs.querySelector(".cBtns");if(!B.querySelector(".sv"))B.innerHTML='<button class="btn sm acc sv">💾 Enregistrer</button><button class="btn sm rs">↺ Valeurs catalogue</button><button class="btn sm dl"></button>';
+    B.querySelector(".rs").style.display=modified?"":"none";const dl=B.querySelector(".dl");dl.style.display=cur.custom?"":"none";
+    dl.textContent=cat&&key(cat)===key(cur)?"↺ Revenir au catalogue":"🗑 Supprimer";}
+  cs.querySelector(".cMod").textContent=modified?"Valeurs modifiées par rapport au catalogue.":"";
   if(kind==="scope"){$("scopeSrc").textContent=(cur.retName?`Réticule réel : ${cur.retName}. `:"")+(cur.src?`Source : ${cur.src}. Vérifiez sur la notice de votre lunette.`:"");
     c.querySelector("[data-f=calMag]").disabled=V("scope","focal")!=="SFP";}
   const ammoMsg={C:"✅ CB publié par le fabricant",V:"🔢 CB calculé d'après les vitesses publiées par le fabricant",E:"⚠️ CB estimé : le fabricant ne publie pas de CB G1"};
-  if(kind==="ammo")$("ammoSrc").innerHTML=cur.custom?"Munition personnelle.":`<b>${ammoMsg[cur.bcK]||ammoMsg.E}</b>${S.val.ammo.bc!=null&&S.val.ammo.bc!==""?" (valeur catalogue, remplacée par la vôtre)":""}.<br>${esc(cur.src||"")}. Mesurez votre V0 au chrono si possible, et affinez le CB avec l'outil « truing » de l'onglet Table.`;
+  ammoMsg.P="✏️ CB saisi par vous";
+  const bcNow=pf(V("ammo","bc")),bcBad=kind==="ammo"&&!(bcNow>0.02&&bcNow<1.5);
+  if(kind==="ammo")$("ammoSrc").innerHTML=(bcBad?`<b class="warn">⚠ CB illisible ou hors limites (« ${esc(V("ammo","bc"))} ») : le calcul utilise 0.13 tant qu'il n'est pas corrigé.</b><br>`:"")+(cur.custom?`<b>${ammoMsg[cur.bcK]||"Munition personnelle"}</b>${cur.bcK&&cur.bcK!=="P"?" (repris du catalogue)":""}. CB utilisé : ${fx(P().bc,3)}.`:`<b>${ammoMsg[cur.bcK]||ammoMsg.E}</b>${S.val.ammo.bc!=null&&S.val.ammo.bc!==""?" (valeur catalogue, remplacée par la vôtre)":""}.<br>${esc(cur.src||"")}. Mesurez votre V0 au chrono si possible, et affinez le CB avec l'outil « truing » de l'onglet Table.`);
   const unit=c.querySelector("[data-f=unit]");if(unit)filterClicks();
 }
 function filterClicks(){
@@ -520,13 +534,17 @@ Object.keys(KINDS).forEach(kind=>{
   KINDS[kind].f.forEach(f=>{const el=c.querySelector(`[data-f=${f}]`);
     el.addEventListener(el.tagName==="SELECT"?"change":"input",()=>{S.val[kind][f]=el.value;if(f==="unit")filterClicks();compute();save();});
     el.addEventListener("change",()=>renderCard(kind));});
+  c.querySelector(".cSave").addEventListener("input",e=>{if(e.target.matches(".nBrand,.nModel"))c.querySelector(".nBrand").dataset.dirty="1";});
   c.addEventListener("click",e=>{
     if(e.target.classList.contains("sv")){
       const brand=c.querySelector(".nBrand").value.trim()||"Perso",model=c.querySelector(".nModel").value.trim()||"Sans nom";
-      const cur=find(kind,S.sel[kind])||{};const ent={brand,model,type:S.tf[kind]||cur.type||""};KINDS[kind].f.forEach(f=>{const v=c.querySelector(`[data-f=${f}]`).value;ent[f]=isNaN(parseFloat(v))||STRF.includes(f)?v:parseFloat(v);});
+      const cur=find(kind,S.sel[kind])||{};const ent=Object.assign({},cur,{brand,model,type:cur.type||S.tf[kind]||""});delete ent.custom;ent.base=cur.custom?cur.base||"":key(cur);
+      if(kind==="ammo"&&S.val.ammo.bc!=null&&S.val.ammo.bc!==""&&pf(S.val.ammo.bc)!==pf(cur.bc))ent.bcK="P";
+      KINDS[kind].f.forEach(f=>{const v=String(c.querySelector(`[data-f=${f}]`).value).replace(",",".");ent[f]=isNaN(parseFloat(v))||STRF.includes(f)?v:parseFloat(v);});
       S.custom[kind]=S.custom[kind].filter(x=>key(x)!==key(ent));S.custom[kind].push(ent);S.sel[kind]=key(ent);S.val[kind]={};changed();
     }else if(e.target.classList.contains("rs")){S.val[kind]={};changed();}
-    else if(e.target.classList.contains("dl")){S.custom[kind]=S.custom[kind].filter(x=>key(x)!==S.sel[kind]);S.sel[kind]="";S.val[kind]={};changed();}
+    else if(e.target.classList.contains("dl")){const cur=find(kind,S.sel[kind])||{};S.custom[kind]=S.custom[kind].filter(x=>key(x)!==S.sel[kind]);
+      if(!find(kind,S.sel[kind]))S.sel[kind]=cur.base&&find(kind,cur.base)?cur.base:"";S.val[kind]={};changed();}
   });
 });
 const normCal=c=>String(c||"").toLowerCase().replace(/\s/g,"");
@@ -568,9 +586,9 @@ function ironAuto(){ // arme choisie à la main : visée ouverte d'office pour l
 /* ================= profil actif ================= */
 function P(){
   const unit=V("scope","unit")||"MRAD";
-  return {unit,click:parseFloat(V("scope","click"))||0.1,sight:parseFloat(V("weapon","sight"))||5,
-    v0:parseFloat(V("ammo","v0"))||330,bc:parseFloat(V("ammo","bc"))||0.13,gr:parseFloat(V("ammo","gr"))||0,
-    rail:parseFloat(V("weapon","rail"))||0,iron:ironOf(),travel:parseFloat(V("scope","travelE"))||0,
+  return {unit,click:pf(V("scope","click"))||0.1,sight:pf(V("weapon","sight"))||5,
+    v0:pf(V("ammo","v0"))||330,bc:pf(V("ammo","bc"))||0.13,gr:pf(V("ammo","gr"))||0,
+    rail:pf(V("weapon","rail"))||0,iron:ironOf(),travel:pf(V("scope","travelE"))||0,
     zero:num("zeroD")||50,zT:$("zeroT").value===""?num("mT"):num("zeroT"),zP:$("zeroP").value===""?(num("mP")||1013):num("zeroP")};
 }
 const toUnit=(rad,u)=>u==="MOA"?rad/DEG*60:rad*1000; // angle en MOA ou MRAD
@@ -1190,20 +1208,31 @@ async function meteo(){
 $("meteoBtn").onclick=()=>{S.meteoTime=null;meteo();};
 
 /* ================= setups ================= */
+function cleanVal(v){const o={};["weapon","scope","ammo"].forEach(k=>{o[k]={};Object.keys((v||{})[k]||{}).sort().forEach(f=>{const x=v[k][f];if(x!=null&&x!=="")o[k][f]=String(x).replace(",",".");});});return o;}
+function sameSetup(a,b){const n=x=>JSON.stringify([x.sel.weapon,x.sel.scope,x.sel.ammo,cleanVal(x.val),String(x.zeroD||""),String(x.zeroT||""),String(x.zeroP||"")]);return n(a)===n(b);}
 function snapshot(){return {sel:JSON.parse(JSON.stringify(S.sel)),val:JSON.parse(JSON.stringify(S.val)),zeroD:$("zeroD").value,zeroT:$("zeroT").value,zeroP:$("zeroP").value};}
 function setupSummary(st){return [st.sel.weapon,st.sel.scope,st.sel.ammo].map(k=>(k||"").split("|")[1]||"").join(" · ")+` · zéro ${st.zeroD} m`;}
 function applySetup(name){
   const st=S.setups.find(x=>x.name===name);if(!st)return;
-  S.sel=JSON.parse(JSON.stringify(st.sel));S.val=JSON.parse(JSON.stringify(st.val));
+  S.sel=JSON.parse(JSON.stringify(st.sel));S.val=cleanVal(st.val);
   $("zeroD").value=st.zeroD;$("zeroT").value=st.zeroT||"";$("zeroP").value=st.zeroP||"";
-  S.activeSetup=name;S.tf={weapon:"",ammo:""};changed();
+  const ren=window.SCOPE_REN||{},aren=window.AMMO_REN||{};if(ren[S.sel.scope])S.sel.scope=ren[S.sel.scope];if(aren[S.sel.ammo])S.sel.ammo=aren[S.sel.ammo];
+  const miss0=["weapon","scope","ammo"].filter(k=>!find(k,S.sel[k]));fixMissing();
+  S.activeSetup=name;S.tf={weapon:"",ammo:""};lastCal=null;
+  if(miss0.length){Object.assign(st,{sel:JSON.parse(JSON.stringify(S.sel)),val:cleanVal(S.val)});} // le setup suit le remplacement
+  changed();
+  if(miss0.length)toast(`Setup « ${name} » : ${miss0.map(k=>({weapon:"arme",scope:"lunette",ammo:"munition"})[k]).join(", ")} introuvable(s) dans le catalogue, remplacé(s) par le plus proche.`);
 }
+function toast(t){let el=$("toast");if(!el){el=document.createElement("div");el.id="toast";el.style.cssText="position:fixed;left:12px;right:12px;bottom:calc(16px + env(safe-area-inset-bottom));background:#7c2d12;color:#fff;padding:10px 12px;border-radius:8px;z-index:3000;font-size:14px";document.body.appendChild(el);}
+  el.textContent=t;el.style.display="";clearTimeout(el._t);el._t=setTimeout(()=>el.style.display="none",6000);}
 const setupOpen=new Set(); // setups dépliés (non mémorisé)
 $("setupBox").addEventListener("toggle",()=>{if(S.setupsOpen!==$("setupBox").open){S.setupsOpen=$("setupBox").open;save();}});
 $("setupList").addEventListener("toggle",e=>{const d=e.target;if(!d.dataset||d.dataset.name==null)return;d.open?setupOpen.add(d.dataset.name):setupOpen.delete(d.dataset.name);},true);
 function renderSetups(){
-  const l=$("setupList"),sn=JSON.stringify(snapshot()),act=S.setups.find(x=>x.name===S.activeSetup);
-  if(act&&JSON.stringify({sel:act.sel,val:act.val,zeroD:act.zeroD,zeroT:act.zeroT,zeroP:act.zeroP})!==sn)S.activeSetup="";
+  const l=$("setupList"),act=S.setups.find(x=>x.name===S.activeSetup);
+  if(act&&!sameSetup(act,snapshot()))S.activeSetup="";
+  const nmEl=$("setupName");if(document.activeElement!==nmEl&&document.activeElement!==$("setupNote")){ // nom du setup actif dans les champs
+    const a=S.setups.find(x=>x.name===S.activeSetup);nmEl.value=a?a.name:"";$("setupNote").value=a?a.note||"":"";}
   $("setupSum").textContent=`Setups enregistrés (${S.setups.length})`+(act&&S.activeSetup?` · actif : ${S.activeSetup}`:"");
   $("setupBox").open=!!S.setupsOpen;
   l.innerHTML=S.setups.length?S.setups.map((st,i)=>`<details class="fold sub" data-name="${esc(st.name)}"${setupOpen.has(st.name)?" open":""}>
@@ -1217,14 +1246,14 @@ function renderSetups(){
 }
 $("setupSave").onclick=()=>{
   const name=$("setupName").value.trim()||setupSummary(snapshot());
-  const st=Object.assign(snapshot(),{name,note:$("setupNote").value.trim(),date:"Enregistré le "+new Date().toLocaleString("fr-FR")});
+  const st=Object.assign(snapshot(),{val:cleanVal(S.val)},{name,note:$("setupNote").value.trim(),date:"Enregistré le "+new Date().toLocaleString("fr-FR")});
   S.setups=S.setups.filter(x=>x.name!==name);S.setups.push(st);S.activeSetup=name;S.setupsOpen=true;
-  $("setupName").value="";$("setupNote").value="";renderSetups();save();
+  $("setupName").blur();$("setupNote").blur();renderSetups();save();
 };
 $("setupList").addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b)return;
   if(b.dataset.load!=null)applySetup(S.setups[+b.dataset.load].name);
-  else if(b.dataset.upd!=null){const st=S.setups[+b.dataset.upd];Object.assign(st,snapshot(),{date:"Mis à jour le "+new Date().toLocaleString("fr-FR")});S.activeSetup=st.name;renderSetups();save();}
+  else if(b.dataset.upd!=null){const st=S.setups[+b.dataset.upd];Object.assign(st,snapshot(),{val:cleanVal(S.val)},{date:"Mis à jour le "+new Date().toLocaleString("fr-FR")});S.activeSetup=st.name;renderSetups();save();}
   else if(b.dataset.del!=null){const st=S.setups[+b.dataset.del];
     if(b.dataset.confirm){S.setups.splice(+b.dataset.del,1);if(S.activeSetup===st.name)S.activeSetup="";renderSetups();save();}
     else{b.dataset.confirm="1";b.textContent="Confirmer ?";b.classList.add("acc");}}
@@ -1262,7 +1291,7 @@ $("retc").addEventListener("pointerdown",e=>{
 });
 function retInfo(){
   const type=V("scope","reticle")||"mrad-hash",R=RETICLES[type]||RETICLES["mrad-hash"];
-  const focal=V("scope","focal")||"FFP",cal=parseFloat(V("scope","calMag"))||0,mag=num("rMag")||cal||10;
+  const focal=V("scope","focal")||"FFP",cal=pf(V("scope","calMag"))||0,mag=num("rMag")||cal||10;
   const k=focal==="SFP"&&cal?cal/mag:1; // facteur d'échelle apparent des graduations (SFP)
   return {type,R,focal,cal,mag,k,u:R.unit};
 }
@@ -1287,7 +1316,10 @@ function drawReticle(){
       calib.pts.forEach(q=>{rctx.fillStyle="#dc2626";rctx.beginPath();rctx.arc(c+(q[0]-ph.el.width/2)*s0,c+(q[1]-ph.el.height/2)*s0,8,0,7);rctx.fill();});
       rctx.restore();return;}
     rctx.fillStyle="#e9edf0";rctx.fillRect(0,0,W,W);under();
-    const sc=k*px/ph.ppu;rctx.globalCompositeOperation="multiply";rctx.drawImage(ph.el,c-ph.cx*sc,c-ph.cy*sc,ph.el.width*sc,ph.el.height*sc);
+    const sc=k*px/ph.ppu;rctx.globalCompositeOperation="multiply";
+    { // seule la partie visible de l'image est dessinée : une image agrandie des dizaines de fois n'est pas affichée par certains téléphones
+      const sx=Math.max(0,ph.cx-c/sc),sy=Math.max(0,ph.cy-c/sc),ex=Math.min(ph.el.width,ph.cx+c/sc),ey=Math.min(ph.el.height,ph.cy+c/sc);
+      if(ex>sx&&ey>sy)rctx.drawImage(ph.el,sx,sy,ex-sx,ey-sy,c+(sx-ph.cx)*sc,c+(sy-ph.cy)*sc,(ex-sx)*sc,(ey-sy)*sc);}
     rctx.globalCompositeOperation="source-over";
   }else{
   rctx.strokeStyle="#111";rctx.fillStyle="#111";rctx.lineCap="butt";
@@ -1382,6 +1414,11 @@ function drawReticle(){
       rctx.strokeStyle="rgba(245,158,11,.95)";rctx.lineWidth=4;rctx.setLineDash([10,8]);rctx.beginPath();rctx.arc(X(hold.x),Y(hold.y),Math.max(r,16),0,7);rctx.stroke();rctx.setLineDash([]);}
     else{rctx.fillStyle="rgba(245,158,11,.95)";rctx.strokeStyle="#7c2d12";rctx.lineWidth=3;
     rctx.beginPath();rctx.arc(X(hold.x),Y(hold.y),11,0,7);rctx.fill();rctx.stroke();}
+    const hx=X(hold.x)-c,hy=Y(hold.y)-c,hr=Math.hypot(hx,hy);
+    if(hr>c-14){ // point de tenue hors du champ zoomé : flèche au bord
+      const a=Math.atan2(hy,hx),bx=c+Math.cos(a)*(c-22),by=c+Math.sin(a)*(c-22);
+      rctx.fillStyle="rgba(245,158,11,.95)";rctx.strokeStyle="#7c2d12";rctx.lineWidth=2;rctx.beginPath();
+      rctx.moveTo(bx+Math.cos(a)*16,by+Math.sin(a)*16);rctx.lineTo(bx+Math.cos(a+2.5)*16,by+Math.sin(a+2.5)*16);rctx.lineTo(bx+Math.cos(a-2.5)*16,by+Math.sin(a-2.5)*16);rctx.closePath();rctx.fill();rctx.stroke();}
   }
   rctx.restore();
   rctx.fillStyle="#555";rctx.font="18px sans-serif";rctx.textAlign="left";
@@ -1449,11 +1486,18 @@ document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
 SEGS.forEach(id=>$(id).querySelectorAll("button").forEach(b=>b.onclick=()=>{setSeg(id,b.dataset.v);compute();save();}));
 FIELDS.forEach(f=>$(f).addEventListener("input",()=>{if(["tDist","tAz","tSite"].includes(f)){S.target=null;drawMarkers();}compute();save();}));
 load();
-{ // modèle disparu du catalogue → modèle le plus proche (même calibre pour les munitions)
+function fixMissing(){ // modèle disparu du catalogue → modèle le plus proche (même calibre pour les munitions)
   ["weapon","scope","ammo"].forEach(k=>{if(find(k,S.sel[k]))return;
     const cal=k==="ammo"?String(V("weapon","cal")):"",brand=(S.sel[k]||"").split("|")[0],L=list(k).filter(e=>!cal||e.cal===cal);
     const e=L.find(e=>e.brand===brand)||L[0]||list(k)[0];if(e){S.sel[k]=key(e);S.val[k]={};}});
 }
+fixMissing();
+(function audit(){ // vérification des données enregistrées
+  S.val=cleanVal(S.val);
+  ["weapon","scope","ammo"].forEach(k=>S.custom[k].forEach(e=>KINDS[k].f.forEach(f=>{if(!STRF.includes(f)&&typeof e[f]==="string"&&e[f]!==""){const x=pf(e[f]);if(!isNaN(x))e[f]=x;}})));
+  const over=S.custom.ammo.filter(e=>{const c=CATALOG.ammo.find(x=>key(x)===key(e));return c&&(pf(c.bc)!==pf(e.bc)||pf(c.v0)!==pf(e.v0));});
+  if(over.length)setTimeout(()=>toast(`${over.length} munition(s) perso remplace(nt) le catalogue avec un CB ou une V0 différents : ${over.slice(0,3).map(e=>e.model+" (CB "+e.bc+")").join(", ")}${over.length>3?"…":""}. Onglet Matériel → « ↺ Revenir au catalogue » pour reprendre les valeurs du fabricant.`),800);
+})();
 $("jDate").value=jNowLocal();if(S.lastPlace){$("jPlace").value=S.lastPlace.place||"";if(S.lastPlace.loc)jSetLoc(S.lastPlace.loc.lat,S.lastPlace.loc.lon,"dernier lieu utilisé");}
 fillTgtSelects();changed();renderTables();renderLog();initMap();
 if(S.shooter&&S.target)updateGeo(false);
