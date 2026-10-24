@@ -41,10 +41,18 @@ class BalApp extends Application.AppBase {
             "dFrom" => 100, "dTo" => 300, "dStep" => 25,
             "profs" => [
                 ["SK Standard Plus", 327, 0.167],
+                ["SK Rifle Match", 327, 0.167],
+                ["SK Long Range Match", 335, 0.155],
+                ["SK High Velocity Match", 385, 0.192],
+                ["Lapua Center-X", 327, 0.172],
+                ["Lapua Midas+", 327, 0.172],
+                ["Lapua X-Act", 327, 0.172],
                 ["Top Shot SV Target", 326, 0.167],
                 ["Geco Semi Auto", 350, 0.151],
-                ["Lapua Center-X", 327, 0.172],
-                ["Perso", 330, 0.150]
+                ["RWS R50", 330, 0.136],
+                ["CCI Standard Velocity", 326, 0.120],
+                ["Perso 1", 330, 0.150],
+                ["Perso 2", 330, 0.150]
             ]
         };
     }
@@ -182,7 +190,7 @@ class BalApp extends Application.AppBase {
         if (key.equals("temp")) { return ["Température", -25, 50, 1, 0]; }
         if (key.equals("press")) { return ["Pression", 700, 1100, 1, 0]; }
         if (key.equals("zero")) { return ["Distance de zéro", 10, 300, 5, 0]; }
-        if (key.equals("sight")) { return ["Hauteur lunette", 1.0, 15.0, 0.1, 1]; }
+        if (key.equals("sight")) { return ["Hauteur lunette / canon", 1.0, 15.0, 0.1, 1]; }
         if (key.equals("dFrom")) { return ["Table : de", 10, TABLE_MAX, 5, 0]; }
         if (key.equals("dTo")) { return ["Table : à", 10, TABLE_MAX, 5, 0]; }
         if (key.equals("dStep")) { return ["Table : pas", 5, 100, 5, 0]; }

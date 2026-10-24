@@ -39,11 +39,38 @@ jobs:
           done
           ls -la out
           [ $ok = 1 ]
+      - name: Essai dans le simulateur (captures d'écran)
+        continue-on-error: true
+        shell: bash
+        run: |
+          command -v Xvfb >/dev/null && command -v xdotool >/dev/null && command -v convert >/dev/null || \
+            (apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq xvfb xdotool imagemagick x11-apps >/dev/null)
+          export DISPLAY=:99
+          pgrep Xvfb >/dev/null || (Xvfb :99 -screen 0 1280x1024x24 & sleep 3)
+          SIM=$(find /connectiq/bin -name simulator -type f | head -1)
+          "$SIM" > /tmp/sim.log 2>&1 &
+          sleep 12
+          MD=/connectiq/bin/monkeydo
+          timeout 60 "$MD" out/ReglageLunette-epix2.prg epix2 > out/monkeydo.log 2>&1 &
+          sleep 25
+          mkdir -p out/shots
+          shot() { import -window root "out/shots/$1.png" || xwd -root -silent | convert xwd:- "out/shots/$1.png"; }
+          shot 1-principal
+          W=$(xdotool search --name "Simulator" | head -1); echo "fenêtre : $W"
+          [ -n "$W" ] && xdotool windowactivate --sync $W || true
+          xdotool key Up; sleep 1; xdotool key Up; sleep 2; shot 2-distance-plus
+          xdotool key Return; sleep 3; shot 3-table
+          xdotool key Escape; sleep 2
+          xdotool key Escape; sleep 2; shot 4-retour
+          cat out/monkeydo.log /tmp/sim.log | tail -40
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: prg
-          path: out/
+          path: |
+            out/*.prg
+            out/*.log
+            out/shots/
 
   publish:
     needs: build

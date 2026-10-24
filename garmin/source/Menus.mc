@@ -4,8 +4,8 @@ import Toybox.Math;
 import Toybox.System;
 import Toybox.WatchUi;
 
-const MENU_KEYS = ["prof", "ws", "wc", "temp", "pAuto", "press", "zero", "sight", "moa", "click", "step", "dFrom", "dTo", "dStep", "v0", "bc"];
-const MENU_NAMES = ["Munition", "Vent (vitesse)", "Vent (direction)", "Température", "Pression auto", "Pression manuelle", "Distance de zéro", "Hauteur lunette", "Unité", "Valeur du clic", "Pas de distance", "Table : de", "Table : à", "Table : pas", "V0 de la munition", "CB G1 de la munition"];
+const MENU_KEYS = ["prof", "sight", "ws", "wc", "temp", "pAuto", "press", "zero", "moa", "click", "step", "dFrom", "dTo", "dStep", "v0", "bc"];
+const MENU_NAMES = ["Munition", "Hauteur lunette / canon", "Vent (vitesse)", "Vent (direction)", "Température", "Pression auto", "Pression manuelle", "Distance de zéro", "Unité", "Valeur du clic", "Pas de distance", "Table : de", "Table : à", "Table : pas", "V0 de la munition", "CB G1 de la munition"];
 
 function openMenu() {
     var a = app();
