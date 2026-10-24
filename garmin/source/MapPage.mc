@@ -17,6 +17,8 @@ class MapPage extends WatchUi.MapView {
         MapView.initialize();
         MAP = self;
         setMapMode(WatchUi.MAP_MODE_PREVIEW);
+        var ds = System.getDeviceSettings();
+        setScreenVisibleArea(0, (ds.screenHeight * 0.18).toNumber(), ds.screenWidth, (ds.screenHeight * 0.80).toNumber());
         refresh();
     }
 
@@ -66,8 +68,6 @@ class MapPage extends WatchUi.MapView {
         var mLa = (la1 - la0) * 0.4 + 0.0008;
         var mLo = (lo1 - lo0) * 0.4 + 0.0011;
         setMapVisibleArea(loc([la1 + mLa, lo0 - mLo]), loc([la0 - mLa, lo1 + mLo]));
-        var ds = System.getDeviceSettings();
-        setScreenVisibleArea(0, ds.screenHeight * 0.18, ds.screenWidth, ds.screenHeight * 0.80);
     }
 
     function onUpdate(dc) {

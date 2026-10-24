@@ -94,14 +94,15 @@ jobs:
           sleep 20
           k() { for x in "$@"; do xdotool key $x; sleep 1; done; }
           shot m1-menu
-          k Return; sleep 3; shot m2-calibres
-          k Down Down Return; sleep 2; shot m3-catalogue
+          k Return; sleep 8; shot m2-calibres
+          k Down Down Return; sleep 5; shot m3-catalogue
           k Down Return; sleep 2; shot m4-menu-apres-catalogue
           k Down Down Down Down Return; sleep 2; shot m5-munitions
           k Escape Down Return; sleep 2; k Up Up; shot m6-editeur-v0
           k Return Down Down Down Down Down Down Down Return; sleep 2; k Up Up Up Up Up Up Up Up Up Up; shot m7-editeur-vent
           k Return Escape; sleep 2; shot m8-principal-vent
           k Return; sleep 2; shot m9-ecran-vent
+          sleep 3; pkill -f monkeydo || true; sleep 2
           cat out/monkeydo.log out/monkeydo-test.log /tmp/sim.log | tail -60
       - uses: actions/upload-artifact@v4
         if: always()

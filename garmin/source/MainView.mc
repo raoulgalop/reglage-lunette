@@ -73,7 +73,7 @@ function pageDots(dc, page) {
 
 function hint(dc, txt) {
     dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_TRANSPARENT);
-    dc.drawText(dc.getWidth() / 2, dc.getHeight() * 0.93, Graphics.FONT_XTINY, txt, CJ);
+    dc.drawText(dc.getWidth() / 2, dc.getHeight() * 0.915, Graphics.FONT_XTINY, txt, CJ);
 }
 
 function title(dc, txt) {

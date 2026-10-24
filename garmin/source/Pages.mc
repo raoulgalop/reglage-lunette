@@ -70,9 +70,9 @@ function drawWind(dc, a) {
     var r2 = a.sol(d);
     if (dr != null && r2 != null && s["ws"] > 0) {
         dc.setColor(Graphics.COLOR_YELLOW, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(cx, h * 0.84, Graphics.FONT_XTINY, "à " + d + " m : " + cm(dr) + (dr > 0 ? " à gauche" : " à droite") + " · " + r2[3].abs() + " clics", CJ);
+        dc.drawText(cx, h * 0.84, Graphics.FONT_XTINY, "" + d + " m : " + cm(dr) + (dr > 0 ? " à gauche" : " à droite"), CJ);
     }
-    hint(dc, "HAUT / BAS : vitesse du vent");
+    hint(dc, "+/- : vitesse");
 }
 
 // ---------- écran Boussole : cap, azimut de la cible, Coriolis ----------
@@ -107,12 +107,12 @@ function drawCompass(dc, a) {
     dc.setColor(Graphics.COLOR_ORANGE, Graphics.COLOR_TRANSPARENT);
     dc.drawText(cx, h * 0.78, Graphics.FONT_XTINY, "cible " + s["az"] + "° (" + a.azTxt(s["az"]) + ")", CJ);
     dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
-    var cor = "Coriolis désactivé";
+    var cor = "BAS : Coriolis non";
     if (s["corOn"]) {
-        cor = "Coriolis " + a.fmt("lat", s["lat"]);
+        cor = "Coriolis oui · " + a.fmt("lat", s["lat"]);
     }
     dc.drawText(cx, h * 0.85, Graphics.FONT_XTINY, cor, CJ);
-    hint(dc, "HAUT : cap = azimut · BAS : Coriolis");
+    hint(dc, "HAUT = azimut");
 }
 
 // ---------- écran Météo ----------
@@ -133,14 +133,13 @@ function drawMeteo(dc, a) {
     rows.add(["Vitesse du son", a.atm[1].format("%.0f") + " m/s"]);
     var gw = a.garminWeather();
     if (gw != null) {
-        if (gw[0] != null) { rows.add(["Garmin : temp.", gw[0].format("%.0f") + " °C"]); }
-        if (gw[1] != null) { rows.add(["Garmin : vent", gw[1].format("%.0f") + " km/h" + (gw[2] != null ? " de " + gw[2].format("%.0f") + "°" : "")]); }
-        if (gw[3] != null) { rows.add(["Humidité", gw[3].format("%.0f") + " %"]); }
+        rows.add(["Garmin", (gw[0] != null ? gw[0].format("%.0f") + " °C" : "") + (gw[3] != null ? " · " + gw[3].format("%.0f") + " %" : "")]);
+        if (gw[1] != null) { rows.add(["Vent Garmin", gw[1].format("%.0f") + " km/h" + (gw[2] != null ? " " + gw[2].format("%.0f") + "°" : "")]); }
     } else {
         rows.add(["Météo Garmin", "indisponible"]);
     }
     var y = h * 0.19;
-    var rh = Graphics.getFontHeight(Graphics.FONT_XTINY) + 4;
+    var rh = Graphics.getFontHeight(Graphics.FONT_XTINY) + 1;
     for (var i = 0; i < rows.size(); i++) {
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
         dc.drawText(w * 0.50 - 6, y, Graphics.FONT_XTINY, rows[i][0], Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER);
@@ -148,7 +147,7 @@ function drawMeteo(dc, a) {
         dc.drawText(w * 0.50 + 6, y, Graphics.FONT_XTINY, rows[i][1], Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
         y += rh;
     }
-    hint(dc, "HAUT : appliquer · BAS : baro");
+    hint(dc, "HAUT : appliquer");
 }
 
 // ---------- écran Trajectoire : chute par rapport à la ligne de visée ----------
@@ -216,5 +215,5 @@ function drawTraj(dc, a) {
             dc.drawText(w / 2, h * 0.82, Graphics.FONT_XTINY, fmtA(r[0]) + " " + a.unit() + " · " + r[2].abs() + " clics · " + r[4].format("%.2f") + " s", CJ);
         }
     }
-    hint(dc, "HAUT / BAS : distance · zéro " + z + " m");
+    hint(dc, "+/- : distance");
 }
