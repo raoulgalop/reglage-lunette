@@ -1,0 +1,63 @@
+name: Appli Garmin (Connect IQ)
+
+on:
+  push:
+    paths:
+      - 'garmin/source/**'
+      - 'garmin/resources/**'
+      - 'garmin/manifest.xml'
+      - 'garmin/monkey.jungle'
+      - '.github/workflows/garmin.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: ghcr.io/matco/connectiq-tester:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compiler pour Epix 2 / Epix Pro
+        shell: bash
+        run: |
+          MC=$(command -v monkeyc || find / -name monkeyc -type f 2>/dev/null | head -1)
+          echo "monkeyc : $MC"
+          "$MC" --version || true
+          DEV=$(find / -type d -name Devices -path '*ConnectIQ*' 2>/dev/null | head -1)
+          echo "appareils : $DEV"; ls "$DEV" | grep -i -E 'epix|fenix7' | tr '\n' ' '; echo
+          openssl genrsa -out /tmp/k.pem 4096
+          openssl pkcs8 -topk8 -inform PEM -outform DER -in /tmp/k.pem -out /tmp/k.der -nocrypt
+          mkdir -p out
+          ok=0
+          for d in epix2 epix2pro42mm epix2pro47mm epix2pro51mm; do
+            echo "=== $d"
+            if "$MC" -d $d -f garmin/monkey.jungle -o out/ReglageLunette-$d.prg -y /tmp/k.der -l 0 -r -w 2>&1 | tee -a out/build.log; then
+              [ -f out/ReglageLunette-$d.prg ] && ok=1
+            fi
+          done
+          ls -la out
+          [ $ok = 1 ]
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: prg
+          path: out/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: prg
+          path: garmin/bin
+      - name: Enregistrer les .prg dans le dépôt
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add garmin/bin
+          git commit -m "Appli Garmin : fichiers .prg compilés [skip ci]" || exit 0
+          git push
