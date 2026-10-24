@@ -40,7 +40,12 @@ class MapPage extends WatchUi.MapView {
         var sh = a.shooter();
         var tg = a.target();
         clear();
-        if (sh == null) { return; }
+        if (sh == null) {
+            // pas encore de GPS : dernière latitude connue (la carte exige une zone)
+            var la = a.s["lat"].toFloat();
+            setMapVisibleArea(loc([la + 0.01, -0.01]), loc([la - 0.01, 0.01]));
+            return;
+        }
         var markers = [];
         var m = new WatchUi.MapMarker(loc(sh));
         m.setIcon(WatchUi.MAP_MARKER_ICON_PIN, 0, 0);

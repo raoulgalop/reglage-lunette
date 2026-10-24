@@ -56,7 +56,9 @@ class MenuDelegate extends WatchUi.Menu2InputDelegate {
         var s = a.s;
         var key = item.getId();
         if (key.equals("cat")) {
+            System.println("catalogue : chargement");
             var data = WatchUi.loadResource(Rez.JsonData.Ammo);
+            System.println("catalogue : " + data["a"].size() + " munitions");
             var cals = data["c"];
             var n = new [cals.size()];
             for (var i = 0; i < n.size(); i++) { n[i] = 0; }
