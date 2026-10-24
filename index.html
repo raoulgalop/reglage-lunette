@@ -318,7 +318,7 @@ tr.zero td{color:var(--ok)}
     <div class="row"><label>Type d'arme<select class="cType"></select></label></div>
     <div class="cFindW"><input class="cFind" type="search" placeholder="🔍 Rechercher (ex. PGM, Glock 17, Hécate…)" autocomplete="off"><div class="cHits"></div></div>
     <div class="row"><label>Marque<select class="cBrand"></select></label><label>Modèle<select class="cModel"></select></label></div>
-    <div class="row"><label>Calibre<input data-f="cal" type="text"></label><label>Hauteur lunette (cm)<input data-f="sight" type="number" inputmode="decimal" step="0.1"></label></div>
+    <div class="row"><label>Calibre<input data-f="cal" type="text"></label><label>Hauteur de visée (cm)<input data-f="sight" type="number" inputmode="decimal" step="0.1"></label></div>
     <div class="row"><label>Canon (mm)<input data-f="barrel" type="number" inputmode="decimal"></label><label>Pas de rayure (1:x")<input data-f="twist" type="number" inputmode="decimal" step="0.5"></label></div>
     <div class="row"><label>Rail / embase pentée (MOA)<input data-f="rail" type="number" inputmode="decimal" placeholder="0"></label><label>&nbsp;<div class="chips" style="margin-top:3px"><button class="btn sm rl">0</button><button class="btn sm rl">20</button><button class="btn sm rl">30</button></div></label></div>
     <div class="cSave"></div>
@@ -437,7 +437,9 @@ function list(kind){ // catalogue + perso (le perso remplace une entrée de mêm
 }
 function find(kind,k){return list(kind).find(e=>key(e)===k);}
 function V(kind,f){ // valeur active = valeur modifiée sinon catalogue
-  const v=S.val[kind][f];if(v!=null&&v!=="")return v;const e=find(kind,S.sel[kind]);return e?e[f]:"";
+  const v=S.val[kind][f];if(v!=null&&v!=="")return v;
+  if(kind==="weapon"&&f==="sight"){const io=ironOf();if(io&&io.h)return io.h;}
+  const e=find(kind,S.sel[kind]);return e?e[f]:"";
 }
 function renderCard(kind){
   const c=$(KINDS[kind].card),items=list(kind),cur=find(kind,S.sel[kind])||items[0];
@@ -488,9 +490,9 @@ Object.keys(KINDS).forEach(kind=>{
   c.querySelector(".cBrand").onchange=e=>{
     let b=e.target.value;
     if(b.startsWith("➕")){S.val[kind]={};const cur=find(kind,S.sel[kind]);renderCard(kind);c.querySelector(".nBrand").value="";c.querySelector(".nModel").value="";c.querySelector(".nBrand").focus();return;}
-    const first=list(kind).find(x=>x.brand===b);S.sel[kind]=key(first);S.val[kind]={};changed();
+    const first=list(kind).find(x=>x.brand===b);S.sel[kind]=key(first);S.val[kind]={};if(kind==="weapon")ironAuto();changed();
   };
-  c.querySelector(".cModel").onchange=e=>{S.sel[kind]=e.target.value;S.val[kind]={};changed();};
+  c.querySelector(".cModel").onchange=e=>{S.sel[kind]=e.target.value;S.val[kind]={};if(kind==="weapon")ironAuto();changed();};
   const fIn=c.querySelector(".cFind"),hits=c.querySelector(".cHits");
   const norm=t=>String(t).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
   fIn.oninput=()=>{ // recherche dans tout le catalogue, sans tenir compte du type ni du calibre
@@ -498,7 +500,7 @@ Object.keys(KINDS).forEach(kind=>{
     const r=list(kind).filter(e=>{const t=norm(e.brand+" "+e.model+" "+(e.cal||"")+" "+(e.type||""));return ws.every(w=>t.includes(w));});
     hits.innerHTML=r.slice(0,40).map(e=>`<button class="hit" data-k="${esc(key(e))}">${esc(e.brand)} · ${esc(e.model)}</button>`).join("")+(r.length>40?`<p class="hint">${r.length} résultats : précisez la recherche.</p>`:r.length?"":`<p class="hint">Aucun résultat.</p>`);};
   hits.onclick=e=>{const b=e.target.closest(".hit");if(!b)return;const it=find(kind,b.dataset.k);
-    if(it&&S.tf[kind]&&it.type!==S.tf[kind])S.tf[kind]="";S.sel[kind]=b.dataset.k;S.val[kind]={};fIn.value="";hits.innerHTML="";changed();};
+    if(it&&S.tf[kind]&&it.type!==S.tf[kind])S.tf[kind]="";S.sel[kind]=b.dataset.k;S.val[kind]={};if(kind==="weapon")ironAuto();fIn.value="";hits.innerHTML="";changed();};
   const tSel=c.querySelector(".cType");
   if(tSel)tSel.onchange=e=>{S.tf[kind]=e.target.value;const cur=find(kind,S.sel[kind]);
     if(e.target.value&&cur&&cur.type!==e.target.value){const f=list(kind).find(x=>x.type===e.target.value);if(f){S.sel[kind]=key(f);S.val[kind]={};}}
@@ -526,12 +528,37 @@ function changed(){
   lastCal=cal;
   Object.keys(KINDS).forEach(renderCard);renderSetups();jSync();compute();save();}
 
+/* ================= visée ouverte ================= */
+function ironOf(){ // organes de visée actifs (null si lunette) : t = fixe / hausse / clics, g = graduations, gm = graduations en m
+  const sc=find("scope",S.sel.scope);if(!sc||!sc.iron)return null;
+  const wi=(find("weapon",S.sel.weapon)||{}).iron||{},g=wi.g||[100,200,300,400,500,600,700,800,900,1000],gu=wi.g?wi.gu:"m";
+  return {t:sc.iron,g,gu,gm:g.map(v=>gu==="yd"?v*0.9144:v),h:wi.h||0};
+}
+function hausseFor(io,d){let i=0;io.gm.forEach((m,j)=>{if(Math.abs(m-d)<Math.abs(io.gm[i]-d))i=j;});return {v:io.g[i],m:io.gm[i],u:io.gu};}
+const uRad=(v,u)=>u==="MOA"?v*DEG/60:v/1000;
+const holdTxt=cm=>Math.abs(cm)<0.5?"viser au centre":`viser ${fx(Math.abs(cm),Math.abs(cm)<10?1:0)} cm plus ${cm>0?"HAUT":"BAS"}`;
+const sideTxt=cm=>Math.abs(cm)<0.5?"":`${fx(Math.abs(cm),Math.abs(cm)<10?1:0)} cm à ${cm>0?"DROITE":"GAUCHE"}`;
+let zCache={};
+function ironHold(p,d,c){ // tenue verticale (cm, + = viser plus haut) et graduation de hausse, sans vent ni site
+  const io=p.iron,h=io.t==="hausse"?hausseFor(io,d):null,q=h?Object.assign({},p,{zero:h.m}):p;
+  const k=[q.zero,q.v0,q.bc,q.sight,q.zT,q.zP].join("|");const a=zCache[k]!=null?zCache[k]:(zCache[k]=zeroAngle(q));
+  const r=fly(Object.assign({p:q,alpha:a,maxX:d+1},c,{wind:{d:0,r:0},site:0,cor:false}))(d);
+  return r?{h,cm:-r.y*100}:null;
+}
+const IRON_SC={fixe:"Visée ouverte|Organes fixes (tenue en cm)",hausse:"Visée ouverte|Hausse graduée en distance (arme réglementaire)",clics:"Visée ouverte|Hausse ou dioptre à clics 1 MOA (Garand, M14, AR-15…)"};
+function ironAuto(){ // arme choisie à la main : visée ouverte d'office pour les armes à organes métalliques, lunette précédente sinon
+  const w=find("weapon",S.sel.weapon),sc=find("scope",S.sel.scope),wi=w&&w.iron;
+  if(wi&&wi.auto){if(!sc||!sc.iron){S.lastOptic=S.sel.scope;S.lastZero=$("zeroD").value;}
+    S.sel.scope=IRON_SC[wi.t];S.val.scope={};if(wi.t==="fixe"&&wi.z)$("zeroD").value=wi.z;}
+  else if(sc&&sc.iron&&S.lastOptic&&find("scope",S.lastOptic)){S.sel.scope=S.lastOptic;S.val.scope={};if(S.lastZero)$("zeroD").value=S.lastZero;S.lastOptic=null;}
+}
+
 /* ================= profil actif ================= */
 function P(){
   const unit=V("scope","unit")||"MRAD";
   return {unit,click:parseFloat(V("scope","click"))||0.1,sight:parseFloat(V("weapon","sight"))||5,
     v0:parseFloat(V("ammo","v0"))||330,bc:parseFloat(V("ammo","bc"))||0.13,gr:parseFloat(V("ammo","gr"))||0,
-    rail:parseFloat(V("weapon","rail"))||0,travel:parseFloat(V("scope","travelE"))||0,
+    rail:parseFloat(V("weapon","rail"))||0,iron:ironOf(),travel:parseFloat(V("scope","travelE"))||0,
     zero:num("zeroD")||50,zT:$("zeroT").value===""?num("mT"):num("zeroT"),zP:$("zeroP").value===""?(num("mP")||1013):num("zeroP")};
 }
 const toUnit=(rad,u)=>u==="MOA"?rad/DEG*60:rad*1000; // angle en MOA ou MRAD
@@ -608,7 +635,8 @@ document.querySelectorAll(".rl").forEach(b=>b.onclick=()=>{S.val.weapon.rail=b.t
 /* ================= solution de tir ================= */
 function clickTxt(n,pos,neg){const r=Math.round(n);return r===0?"OK":(r>0?pos:neg);}
 function solve(){
-  const p=P(),c=conditions(),D=num("tDist"),alpha=zeroAngle(p);
+  const p=P(),c=conditions(),D=num("tDist"),io=p.iron&&p.iron.t!=="clics"?p.iron:null,hz=io&&io.t==="hausse"&&D>0?hausseFor(io,D):null;
+  const alpha=zeroAngle(hz?Object.assign({},p,{zero:hz.m}):p);
   LAST=null;if(D<=0){return;}
   const full=fly(Object.assign({p,alpha,maxX:D+1},c))(D);
   const noCor=fly(Object.assign({p,alpha,maxX:D+1},c,{cor:false}))(D);
@@ -621,6 +649,12 @@ function solve(){
   $("sWd").textContent=clickTxt(wC,"➡ à DROITE","⬅ à GAUCHE");
   $("sEa").textContent=`${fx(Math.abs(eU),2)} ${p.unit} · ${fx(Math.abs(eC),1)} clics`;
   $("sWa").textContent=`${fx(Math.abs(wU),2)} ${p.unit} · ${fx(Math.abs(wC),1)} clics`;
+  if(io){ // visée ouverte sans clics : hausse + tenue en cm
+    const hc=eRad*D*100,wc=wRad*D*100;
+    if(hz){$("sE").textContent=hz.v;$("sEd").textContent=`Hausse ${hz.u==="yd"?"(yards)":"(m)"}`;$("sEa").textContent=`puis ${holdTxt(hc)}`;}
+    else{$("sE").textContent=fx(Math.abs(hc),Math.abs(hc)<10?1:0);$("sEd").textContent=Math.abs(hc)<0.5?"viser au centre":`cm ${hc>0?"⬆ viser plus HAUT":"⬇ viser plus BAS"}`;$("sEa").textContent=`${fx(Math.abs(eU),1)} ${p.unit} · zéro ${p.zero} m`;}
+    $("sW").textContent=fx(Math.abs(wc),Math.abs(wc)<10?1:0);$("sWd").textContent=Math.abs(wc)<0.5?"viser au centre":`cm ${wc>0?"➡ viser à DROITE":"⬅ viser à GAUCHE"}`;$("sWa").textContent=`${fx(Math.abs(wU),1)} ${p.unit}`;
+  }
   const windCm=noCor.z*100,corH=(full.z-noCor.z)*100,corV=(full.y-noCor.y)*100;
   const ws=num("mWs"),rel=((num("mWd")-num("tAz"))%360+360)%360,hour=Math.round(rel/30)%12||12;
   const E=p.gr?0.5*p.gr*6.479891e-5*full.v*full.v:0;
@@ -635,6 +669,7 @@ function solve(){
     ["Énergie à l'impact",E?`${fx(E,0)} J`:"—"],
     ...(()=>{const T=travel(p,alpha);if(!T)return [];
       const ok=eRad<=T.upRad;return [["Course restante vers le haut",`${fx(T.up,1)} ${p.unit}${ok?" ✓":` <span class="warn">⚠ insuffisante : il manque ${fx(toUnit(eRad-T.upRad,p.unit),1)} ${p.unit}, complétez en tenue au réticule</span>`}`]];})(),
+    io?["Visée ouverte",hz?`hausse sur ${hz.v} ${hz.u}, le reste en tenue`:`organes fixes réglés à ${p.zero} m : on corrige en visant plus haut ou plus bas`]:
     ["1 clic à cette distance",`${fx(cmUnit(1,D,p.unit)?(p.click/cmUnit(1,D,p.unit)):0,2)} cm`]];
   $("sDetail").innerHTML=rows.map(r=>`<span>${r[0]}</span><span>${r[1]}</span>`).join("");
 }
@@ -663,6 +698,12 @@ function dope(){
   const D=dopeData(),u=D.u,p=D.p;
   const tg=tgtFind(S.tgt),tA=d=>{const s=tgtSize(tg,d),a=mm=>radTo(mm/1000/d,u);return fx(a(tg.kind==="rings"?s.black:s.w),u==="MOA"?1:2)+(tg.kind!=="rings"&&Math.abs(s.w-s.h)>1?"×"+fx(a(s.h),u==="MOA"?1:2):"");};
   $("pHead").innerHTML=`<tr><th>Dist.<br>m</th><th>Élév.<br>${u}</th><th>Clics<br>↑</th>${D.winds.map(w=>`<th>Vent<br>${w} km/h</th>`).join("")}<th>V<br>m/s</th>${tg?`<th>Cible<br>${u}</th>`:""}</tr>`;
+  const io=p.iron&&p.iron.t!=="clics"?p.iron:null;
+  if(io){const c=conditions(),cm=(v,d)=>uRad(v,u)*d*100,f=v=>isNaN(v)?"—":fx(v,Math.abs(v)<10?1:0);
+    $("pHead").innerHTML=`<tr><th>Dist.<br>m</th>${io.t==="hausse"?`<th>Hausse<br>${io.gu}</th>`:""}<th>Tenue<br>cm ↑</th>${D.winds.map(w=>`<th>Vent<br>${w} km/h<br>cm</th>`).join("")}<th>V<br>m/s</th></tr>`;
+    $("pTable").innerHTML=D.rows.map(r=>{const ih=ironHold(p,r.d,c);return `<tr><td>${r.d}</td>${io.t==="hausse"?`<td>${ih&&ih.h?ih.h.v:"—"}</td>`:""}<td>${ih?f(ih.cm):"—"}</td>${r.ws.map(w=>`<td>${isNaN(w)?"—":f(cm(w,r.d))}</td>`).join("")}<td>${fx(r.v,0)}</td></tr>`;}).join("");
+    $("pInfo").textContent=`Visée ouverte : ${io.t==="hausse"?"réglez la hausse sur la graduation indiquée, puis ":""}visez plus haut (ou plus bas si négatif) du nombre de cm indiqué ; vent en cm à tenir du côté d'où il vient. Zéro ${p.zero} m · ${fx(num("mT"),0)} °C · ${fx(num("mP"),0)} hPa · ${S.sel.ammo.replace("|"," ")}.`;
+    drawChart($("pChart"),D,false);return;}
   $("pTable").innerHTML=D.rows.map(r=>`<tr><td>${r.d}</td><td>${fx(Math.round(r.e/p.click)*p.click,u==="MOA"?2:1)}</td><td>${r.cl}</td>${r.ws.map(w=>`<td>${isNaN(w)?"—":fx(w,1)}</td>`).join("")}<td>${fx(r.v,0)}</td>${tg?`<td>${tA(r.d)}</td>`:""}</tr>`).join("");
   $("pInfo").textContent=`Lecture directe : élévation à afficher (ou à tenir) + correction de vent en ${u} pour chaque vitesse, direction ${$("pDir").selectedOptions[0].text}. Corrigez le vent dans le sens d'où il vient. Zéro ${p.zero} m · ${fx(num("mT"),0)} °C · ${fx(num("mP"),0)} hPa · ${S.sel.ammo.replace("|"," ")}.`;
   if(tg)$("pInfo").textContent+=` Colonne Cible : ${tg.kind==="rings"?"diamètre du visuel noir":"taille"} de « ${tg.name} » vue à chaque distance, à comparer à la correction de vent (si le vent dépasse la demi-taille de la cible, il faut corriger).`;
@@ -942,6 +983,8 @@ function stage(){
   const sel=$("stBase"),prev=sel.value;
   sel.innerHTML=`<option value="each">chaque cible (je clique entre les cibles)</option>`+ds.map((d,i)=>`<option value="${i}">cible ${i+1} (${d} m)</option>`).join("");
   sel.value=[...sel.options].some(o=>o.value===prev)?prev:"each";
+  if(p.iron&&p.iron.t!=="clics"){$("stTable").innerHTML=ds.map((d,i)=>{const ih=ironHold(p,d,c);
+    return `<tr><td>${i+1}</td><td>${d} m</td><td>${ih&&ih.h?"hausse "+ih.h.v:"—"}</td><td>${ih?(Math.abs(ih.cm)<0.5?"0":(ih.cm>0?"↑":"↓")+fx(Math.abs(ih.cm),Math.abs(ih.cm)<10?1:0)+" cm"):"hors portée"}</td></tr>`;}).join("");return;}
   const el=ds.map(d=>elevAt(p,d,c)),b=sel.value==="each"?null:el[+sel.value];
   $("stTable").innerHTML=ds.map((d,i)=>{const e=el[i];if(isNaN(e))return `<tr><td>${i+1}</td><td>${d}</td><td colspan="2">hors portée</td></tr>`;
     const cl=Math.round(e/p.click);
@@ -972,13 +1015,17 @@ function table(){
   const from=Math.max(1,num("bFrom")),to=Math.min(2000,Math.max(from,num("bTo"))),step=Math.max(5,num("bStep"));
   const tr=fly(Object.assign({p,alpha,maxX:to+1},c,{site:0}));
   document.querySelectorAll(".u").forEach(e=>e.textContent=u);
+  const io=p.iron&&p.iron.t!=="clics"?p.iron:null,th=$("bTable").closest("table").querySelectorAll("thead th");
+  th[3].innerHTML=io?(io.t==="hausse"?"Hausse<br>+ tenue cm":"Tenue<br>cm"):"Clics<br>élév.";th[5].innerHTML=io?"Tenue<br>dérive cm":"Clics<br>dérive";
   let rows="";
   for(let d=from;d<=to+1e-6;d+=step){
     const r=tr(d);if(!r)break;
     const corr=toUnit(-r.y/d,u),wc=toUnit(-r.z/d,u),cE=corr/p.click,cW=wc/p.click,E=p.gr?0.5*p.gr*6.479891e-5*r.v*r.v:0;
     const re=Math.round(cE),rw=Math.round(cW);
     rows+=`<tr class="${Math.abs(d-p.zero)<0.5?"zero":""}"><td>${d}</td><td>${fx(r.y*100,1)}</td><td>${fx(corr,2)}</td>`+
-      `<td>${re===0?"0":(re>0?"↑":"↓")+Math.abs(re)}</td><td>${fx(r.z*100,1)}</td><td>${rw===0?"0":(rw>0?"→":"←")+Math.abs(rw)}</td>`+
+      (io?(()=>{const ih=ironHold(p,d,c),hc=ih?ih.cm:NaN,wc=-r.z*100,a=v=>isNaN(v)?"—":Math.abs(v)<0.5?"0":(v>0?"↑":"↓")+fx(Math.abs(v),Math.abs(v)<10?1:0);
+        return `<td>${ih&&ih.h?ih.h.v+" "+(ih.h.u==="yd"?"yd":"m")+" ":""}${a(hc)}</td><td>${fx(r.z*100,1)}</td><td>${Math.abs(wc)<0.5?"0":(wc>0?"→":"←")+fx(Math.abs(wc),Math.abs(wc)<10?1:0)}</td>`;})():
+      `<td>${re===0?"0":(re>0?"↑":"↓")+Math.abs(re)}</td><td>${fx(r.z*100,1)}</td><td>${rw===0?"0":(rw>0?"→":"←")+Math.abs(rw)}</td>`)+
       `<td>${fx(r.v,0)}</td><td>${E?fx(E,0):"-"}</td></tr>`;
   }
   $("bTable").innerHTML=rows;
@@ -1286,6 +1333,10 @@ function drawReticle(){
     label("10",-10*k,0.8*k,0,-18);label("10",10*k,0.8*k,0,-18);
     rctx.lineWidth=1.8;rctx.beginPath();for(let d=2;d<=10;d+=0.25){const h=1.7/(d*100)*1000;const x=-9*k+(d-2)*0.6*k,y=-6*k;if(d===2)rctx.moveTo(X(x),Y(y+h*k));else rctx.lineTo(X(x),Y(y+h*k));}rctx.stroke();
     line(-9*k,-6*k,-4.2*k,-6*k,1.5);[2,4,6,8,10].forEach(d=>label(String(d),-9*k+(d-2)*0.6*k,-6*k,0,16));
+  }else if(I.type==="iron"){ // visée ouverte : guidon au centre du cran de mire
+    rctx.clearRect(0,0,W,W);const pw=W*0.045,nw=W*0.13,nd=W*0.16;
+    rctx.fillStyle="#3f3f46";rctx.fillRect(c-pw/2,c,pw,W); // guidon
+    rctx.fillStyle="#18181b";rctx.beginPath();rctx.moveTo(0,c);rctx.lineTo(c-nw/2,c);rctx.lineTo(c-nw/2,c+nd);rctx.lineTo(c+nw/2,c+nd);rctx.lineTo(c+nw/2,c);rctx.lineTo(W,c);rctx.lineTo(W,W);rctx.lineTo(0,W);rctx.closePath();rctx.fill(); // hausse et son cran
   }else{ // duplex / bdc
     const post=(u==="MOA"?15:4.5)*k;[1,-1].forEach(s=>{line(s*post,0,s*big,0,10);line(0,s*post,0,s*big,10);});
     if(I.type==="bdc")[2.5,5,7.5,10].forEach((v,i)=>{rctx.lineWidth=2;rctx.beginPath();rctx.arc(X(0),Y(-v*k),Math.max(4,px*k*0.5),0,7);rctx.stroke();line(-1.2*k,-v*k,1.2*k,-v*k,1.5);});
@@ -1311,7 +1362,9 @@ function drawReticle(){
   $("rFocal").innerHTML=I.focal==="FFP"
     ?"<b>Premier plan focal (FFP)</b> : le réticule grossit avec l'image, les graduations sont justes à tous les grossissements."
     :`<b>Second plan focal (SFP)</b> : le réticule garde la même taille à l'écran, les graduations ne sont justes qu'au grossissement de calibration${I.cal?` (×${I.cal})`:" (voir la notice, souvent le grossissement maximal)"}. À ×${I.mag}, une graduation vaut ${fx(I.k,2)} fois sa valeur nominale.`;
-  if(hold){
+  if(hold&&I.type==="iron"){const D=LAST.D,cy=-uRad(hold.y,u)*D*100,cx=-uRad(hold.x,u)*D*100,io=P().iron,hz=io&&io.t==="hausse"?hausseFor(io,D):null;
+    $("rHold").innerHTML=`<b>Visée pour ${fx(D,0)} m</b> (onglet Tir) : ${hz?`hausse sur ${hz.v} ${hz.u}, puis `:""}${Math.abs(cy)<0.5&&sideTxt(cx)?"viser "+sideTxt(cx):holdTxt(cy)+(sideTxt(cx)?" et "+sideTxt(cx):"")}. Sur le schéma, la cible est sous le repère orange et le haut du guidon (au centre) montre où viser.`;
+  }else if(hold){
     const p=P(),hx=hold.x/k,hy=hold.y/k; // lecture sur les graduations
     const sideTxt=Math.abs(hx)<(u==="MOA"?0.5:0.05)?"":` et ${fx(Math.abs(hx),u==="MOA"?1:2)} ${u==="MOA"?"MOA":"mil"} ${hx>0?"à droite":"à gauche"}`;
     $("rHold").innerHTML=`<b>Tenue pour ${fx(LAST.D,0)} m</b> (onglet Tir) : placez la cible sur le point orange, `+
@@ -1346,7 +1399,7 @@ $("rType").onchange=e=>{S.val.scope.reticle=e.target.value;changed();};
 
 /* ================= interface ================= */
 function compute(){
-  const p=P();
+  zCache={};const p=P();
   $("setupLine").textContent=`${S.sel.weapon.split("|")[1]||""} · ${S.sel.scope.split("|")[1]||""} · ${S.sel.ammo.replace("|"," ")} · zéro ${p.zero} m`;
   try{solve();}catch(e){console.log(e);}
   try{table();}catch(e){console.log(e);}

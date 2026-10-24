@@ -707,6 +707,12 @@ const scope=[
   Object.assign(S("Sig Sauer","Romeo 1 Pro","MOA",1,"FFP","dot","1","",SRC),{retName:"Point 3/6 MOA"}),
   Object.assign(S("Sig Sauer","Romeo 5","MOA",0.5,"FFP","dot","1","",SRC),{retName:"Point 2 MOA"}),
   Object.assign(S("Shield","SMS 2","MOA",1,"FFP","dot","1","",SRC),{retName:"Point 4 MOA"}),
+  Object.assign(S("Visée ouverte","Organes fixes (tenue en cm)","MOA",1,"SFP","iron","1"),{iron:"fixe",src:"pas de réglage en tir : on décale le point visé (tenue)"}),
+  Object.assign(S("Visée ouverte","Hausse graduée en distance (arme réglementaire)","MOA",1,"SFP","iron","1"),{iron:"hausse",src:"graduations de la hausse d'après l'arme choisie"}),
+  Object.assign(S("Visée ouverte","Hausse ou dioptre à clics 1 MOA (Garand, M14, AR-15…)","MOA",1,"SFP","iron","1"),{iron:"clics",src:"clic de 1 MOA ≈ usuel, à vérifier sur la notice"}),
+  Object.assign(S("Visée ouverte","Hausse réglable à clics 1/2 MOA","MOA",0.5,"SFP","iron","1"),{iron:"clics",src:"valeur de clic à vérifier sur la notice"}),
+  Object.assign(S("Visée ouverte","Dioptre match à clics 1/4 MOA","MOA",0.25,"SFP","iron","1"),{iron:"clics",src:"valeur de clic à vérifier sur la notice"}),
+  Object.assign(S("Visée ouverte","Dioptre à clics 0,1 MRAD","MRAD",0.1,"SFP","iron","1"),{iron:"clics",src:"valeur de clic à vérifier sur la notice"}),
   S("Générique","Tourelles 0.1 MRAD, réticule MRAD FFP","MRAD",0.1,"FFP","mrad-hash",""),
   S("Générique","Tourelles 1/4 MOA, réticule Mil-Dot SFP","MOA",0.25,"SFP","mildot","",10),
   S("Générique","Tourelles 1/4 MOA, réticule Duplex","MOA",0.25,"SFP","duplex","")
@@ -997,6 +1003,33 @@ scope.forEach(e=>{e.retName=e.retName||RN[e.model]||"";});
   const u=weapon.filter(e=>{const k=e.brand+"|"+e.model;if(seen.has(k))return false;seen.add(k);return true;});weapon.length=0;weapon.push(...u);}
 {const seen=new Set(); // même nom chez une marque pour deux calibres : le calibre est ajouté au nom
   ammo.forEach(e=>{let k=e.brand+"|"+e.model;if(seen.has(k)){e.model+=` (${e.cal})`;k=e.brand+"|"+e.model;}seen.add(k);});}
+{ // organes de visée d'origine : h = hauteur de la ligne de mire (cm, ≈), t = type, g = graduations de la hausse, gu = unité des graduations
+  const R=(a,b,s)=>{const r=[];for(let d=a;d<=b;d+=s)r.push(d);return r;};
+  const IR=[ // [marque, début du modèle, organes] ; auto = visée ouverte choisie d'office avec l'arme
+    ["MAS","Lebel",{t:"hausse",h:2.6,g:[250].concat(R(400,2400,100)),gu:"m"}],["MAS","Berthier",{t:"hausse",h:2.6,g:[250].concat(R(400,2400,100)),gu:"m"}],
+    ["MAS","MAS 36",{t:"hausse",h:2.8,g:R(200,1200,100),gu:"m"}],["MAS","MAS 49",{t:"hausse",h:3.0,g:R(200,1200,100),gu:"m"}],
+    ["GIAT","FAMAS",{t:"fixe",h:7.5,z:300}],
+    ["Mauser","Gewehr 98",{t:"hausse",h:2.5,g:[200].concat(R(400,2000,100)),gu:"m"}],["Mauser","Karabiner 98k",{t:"hausse",h:2.5,g:R(100,2000,100),gu:"m"}],
+    ["Mauser","Mle 1893",{t:"hausse",h:2.5,g:R(200,2000,100),gu:"m"}],["Walther","Gewehr 43",{t:"hausse",h:3.0,g:R(100,1200,100),gu:"m"}],
+    ["Mosin-Nagant","M91/30 (",{t:"hausse",h:2.7,g:R(100,2000,100),gu:"m"}],["Mosin-Nagant","M44",{t:"hausse",h:2.7,g:R(100,1000,100),gu:"m"}],
+    ["Izhmash","SVT-40",{t:"hausse",h:3.0,g:R(100,1500,100),gu:"m"}],
+    ["Springfield","M1903 (",{t:"hausse",h:2.8,g:R(100,2800,100),gu:"yd"}],["Springfield","M1 Garand",{t:"hausse",h:3.3,g:R(100,1200,100),gu:"yd",c:1}],
+    ["Winchester","M1 Carbine",{t:"hausse",h:2.8,g:[100,150,200,250,300],gu:"yd"}],["Springfield Armory","M1A",{t:"clics",h:3.5,c:1}],
+    ["Enfield","SMLE",{t:"hausse",h:2.6,g:R(200,2000,100),gu:"yd"}],["Enfield","No4 Mk I (",{t:"hausse",h:2.8,g:[300].concat(R(200,1300,100)).sort((a,b)=>a-b).filter((v,i,a)=>a.indexOf(v)===i),gu:"yd"}],
+    ["Waffenfabrik Bern","K31",{t:"hausse",h:2.7,g:R(100,1500,100),gu:"m"}],["SIG","Stgw 57",{t:"hausse",h:6.0,g:[100,200,300,400,500,600,640],gu:"m"}],
+    ["Carcano","M91/38",{t:"fixe",h:2.6,z:200}],["Arisaka","Type 99",{t:"hausse",h:2.8,g:R(300,1500,100),gu:"m"}],["Carl Gustaf","m/96",{t:"hausse",h:2.7,g:R(300,2000,100),gu:"m"}],
+    ["Simonov","SKS",{t:"hausse",h:3.0,g:R(100,1000,100),gu:"m"}],["Kalachnikov","AK",{t:"hausse",h:5.3,g:R(100,1000,100),gu:"m"}],
+    ["CZ","Vz.58",{t:"hausse",h:4.5,g:R(100,800,100),gu:"m"}],["FN Herstal","FAL",{t:"hausse",h:5.5,g:[150,200,300,400,500,600],gu:"m"}],
+    ["Heckler & Koch","G3 ",{t:"hausse",h:5.5,g:[100,200,300,400],gu:"m"}],["Heckler & Koch","HK33",{t:"hausse",h:5.5,g:[100,200,300,400],gu:"m"}],
+    ["Heckler & Koch","MP5",{t:"fixe",h:5.0,z:25,auto:0}],["Heckler & Koch","SP5",{t:"fixe",h:5.0,z:25,auto:0}],
+    ["Colt","M4",{t:"clics",h:6.6,c:1,auto:0}],["Colt","AR-15A4",{t:"clics",h:6.6,c:1,auto:0}],["Ruger","Mini-14",{t:"clics",h:3.0,c:1,auto:0}],
+    ["Winchester","Lebel",{t:"hausse",h:2.6,g:[250].concat(R(400,2400,100)),gu:"m"}]];
+  weapon.forEach(e=>{
+    const m=IR.find(([b,f])=>e.brand===b&&e.model.startsWith(f));
+    if(m){if(/PU|\(T\)|M1903A4|tireur/.test(e.model))return;e.iron=Object.assign({auto:1},m[2]);return;}
+    if(e.type==="Arme de poing"||(e.type==="Arme réglementaire / TAR"&&e.sight<=2.5))e.iron={t:"fixe",h:e.sight,z:25,auto:1};
+  });
+}
 window.CATALOG={weapon,scope,ammo};
 // anciennes clés de lunettes (avant v4.0) → nouvelles
 window.AMMO_REN={"Top Shot|Standard Velocity 40 gr": "Top Shot|SV Target 40 gr", "SK|Magazine Rifle Match 40 gr": "SK|Magazine 40 gr", "CCI|Suppressor 45 gr": "CCI|22 Suppressor 45 gr", "Federal|Gold Medal UltraMatch 40 gr": "Federal|Gold Medal Match 40 gr", "American Eagle|Suppressor 45 gr": "Federal|American Eagle Suppressor 45 gr", "Eley|Biathlon Match 40 gr": "Eley|Tenex Biathlon 40 gr"};
@@ -1025,6 +1058,8 @@ window.RETICLES={
     text:"Chevron éclairé réglé au zéro (souvent 100 m), puis barres de compensation pour 400 à 800 m dont la largeur correspond à une silhouette de 48 cm à cette distance. Valable pour la munition prévue (5,56 M855) : utilisez la table de l'appli pour votre munition réelle."},
   "pso1":{name:"PSO-1 (Dragunov) : chevrons + télémètre",unit:"MRAD",
     text:"Chevron principal pour la hausse affichée (tambour de 1 à 10 = 100 à 1000 m), trois chevrons inférieurs pour 1100, 1200 et 1300 m. Échelle horizontale de dérive graduée en millièmes « russes » (1/6000 de tour ≈ 1,047 mrad), chiffre 10 aux extrémités. En bas à gauche, télémètre : on encadre une cible de 1,7 m entre la ligne et la courbe, la distance se lit en centaines de mètres. Dessin indicatif."},
+  "iron":{name:"Visée ouverte (cran de mire + guidon)",unit:"MOA",
+    text:"Pas de réticule : on aligne le guidon dans le cran de mire (ou au centre du dioptre). Avec des organes fixes, on corrige en visant plus haut ou plus bas (tenue en cm) ; avec une hausse graduée, on règle la graduation la plus proche de la distance puis on tient le reste. Le schéma montre où placer le guidon par rapport à la cible."},
   "bdc":{name:"BDC (compensation de chute par repères)",unit:"MOA",
     text:"Repères sous le centre prévus pour des distances données avec une munition « type ». Les distances réelles dépendent de VOTRE munition et du grossissement (SFP) : utilisez la position du point orange plutôt que les distances gravées par le fabricant."}
 };
