@@ -64,6 +64,7 @@ td:first-child,th:first-child{text-align:left}
 tr.zero td{color:var(--ok)}
 .scroll{overflow-x:auto}
 .leaflet-container{font:inherit}
+.cHits{display:flex;flex-direction:column;gap:2px;max-height:260px;overflow:auto;margin:4px 0}.cHits .hit{text-align:left;padding:8px;border:1px solid var(--line,#444);border-radius:6px;background:transparent;color:inherit;font:inherit}.cFind{width:100%;box-sizing:border-box}
 </style>
 </head>
 <body>
@@ -315,6 +316,7 @@ tr.zero td{color:var(--ok)}
   <div class="card" id="cWeapon">
     <h2>Arme</h2>
     <div class="row"><label>Type d'arme<select class="cType"></select></label></div>
+    <div class="cFindW"><input class="cFind" type="search" placeholder="🔍 Rechercher (ex. PGM, Glock 17, Hécate…)" autocomplete="off"><div class="cHits"></div></div>
     <div class="row"><label>Marque<select class="cBrand"></select></label><label>Modèle<select class="cModel"></select></label></div>
     <div class="row"><label>Calibre<input data-f="cal" type="text"></label><label>Hauteur lunette (cm)<input data-f="sight" type="number" inputmode="decimal" step="0.1"></label></div>
     <div class="row"><label>Canon (mm)<input data-f="barrel" type="number" inputmode="decimal"></label><label>Pas de rayure (1:x")<input data-f="twist" type="number" inputmode="decimal" step="0.5"></label></div>
@@ -324,6 +326,7 @@ tr.zero td{color:var(--ok)}
 
   <div class="card" id="cScope">
     <h2>Lunette</h2>
+    <div class="cFindW"><input class="cFind" type="search" placeholder="🔍 Rechercher (ex. PGM, Glock 17, Hécate…)" autocomplete="off"><div class="cHits"></div></div>
     <div class="row"><label>Marque<select class="cBrand"></select></label><label>Modèle<select class="cModel"></select></label></div>
     <div class="row"><label>Unité tourelles<select data-f="unit"><option>MRAD</option><option>MOA</option></select></label>
       <label>Valeur d'un clic<select data-f="click"><option value="0.1">0.1 MRAD</option><option value="0.05">0.05 MRAD</option><option value="0.2">0.2 MRAD</option><option value="0.25">1/4 MOA</option><option value="0.125">1/8 MOA</option><option value="0.5">1/2 MOA</option><option value="1">1 MOA</option></select></label></div>
@@ -339,6 +342,7 @@ tr.zero td{color:var(--ok)}
   <div class="card" id="cAmmo">
     <h2>Munition</h2>
     <div class="row"><label>Type de munition<select class="cType"></select></label></div>
+    <div class="cFindW"><input class="cFind" type="search" placeholder="🔍 Rechercher (ex. PGM, Glock 17, Hécate…)" autocomplete="off"><div class="cHits"></div></div>
     <div class="row"><label>Marque<select class="cBrand"></select></label><label>Modèle<select class="cModel"></select></label></div>
     <div class="row"><label>Calibre<input data-f="cal" type="text"></label><label>Poids (grains)<input data-f="gr" type="number" inputmode="decimal"></label></div>
     <div class="row"><label>Vitesse V0 (m/s)<input data-f="v0" type="number" inputmode="decimal"></label><label>Coef. balistique G1<input data-f="bc" type="number" inputmode="decimal" step="0.001"></label></div>
@@ -444,12 +448,13 @@ function renderCard(kind){
     tSel.innerHTML=`<option value="">Tous les types</option>`+types.map(t=>`<option${t===tf?" selected":""}>${esc(t)}</option>`).join("");
     if(tf)pool=items.filter(e=>e.type===tf||e===cur);
   }
-  let brands=[...new Set(pool.map(e=>e.brand))];
+  const bSort=a=>a.sort((x,y)=>x===y?0:x==="Générique"?1:y==="Générique"?-1:x.localeCompare(y,"fr",{sensitivity:"base"})); // ordre alphabétique, Générique à la fin
+  let brands=bSort([...new Set(pool.map(e=>e.brand))]);
   let models=pool.filter(e=>e.brand===cur.brand);
   if(kind==="ammo"){ // munitions filtrées par calibre de l'arme
     const cal=String(V("weapon","cal")).toLowerCase().replace(/\s/g,"");
     const ok=e=>!cal||String(e.cal).toLowerCase().replace(/\s/g,"")===cal||e===cur;
-    brands=[...new Set(pool.filter(ok).map(e=>e.brand))];if(!brands.includes(cur.brand))brands.push(cur.brand);
+    brands=[...new Set(pool.filter(ok).map(e=>e.brand))];if(!brands.includes(cur.brand))brands.push(cur.brand);bSort(brands);
     models=models.filter(ok);
   }
   brands.push("➕ Nouvelle marque…");
@@ -486,6 +491,14 @@ Object.keys(KINDS).forEach(kind=>{
     const first=list(kind).find(x=>x.brand===b);S.sel[kind]=key(first);S.val[kind]={};changed();
   };
   c.querySelector(".cModel").onchange=e=>{S.sel[kind]=e.target.value;S.val[kind]={};changed();};
+  const fIn=c.querySelector(".cFind"),hits=c.querySelector(".cHits");
+  const norm=t=>String(t).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+  fIn.oninput=()=>{ // recherche dans tout le catalogue, sans tenir compte du type ni du calibre
+    const ws=norm(fIn.value).split(/\s+/).filter(Boolean);if(!ws.length){hits.innerHTML="";return;}
+    const r=list(kind).filter(e=>{const t=norm(e.brand+" "+e.model+" "+(e.cal||"")+" "+(e.type||""));return ws.every(w=>t.includes(w));});
+    hits.innerHTML=r.slice(0,40).map(e=>`<button class="hit" data-k="${esc(key(e))}">${esc(e.brand)} · ${esc(e.model)}</button>`).join("")+(r.length>40?`<p class="hint">${r.length} résultats : précisez la recherche.</p>`:r.length?"":`<p class="hint">Aucun résultat.</p>`);};
+  hits.onclick=e=>{const b=e.target.closest(".hit");if(!b)return;const it=find(kind,b.dataset.k);
+    if(it&&S.tf[kind]&&it.type!==S.tf[kind])S.tf[kind]="";S.sel[kind]=b.dataset.k;S.val[kind]={};fIn.value="";hits.innerHTML="";changed();};
   const tSel=c.querySelector(".cType");
   if(tSel)tSel.onchange=e=>{S.tf[kind]=e.target.value;const cur=find(kind,S.sel[kind]);
     if(e.target.value&&cur&&cur.type!==e.target.value){const f=list(kind).find(x=>x.type===e.target.value);if(f){S.sel[kind]=key(f);S.val[kind]={};}}
