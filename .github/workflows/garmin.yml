@@ -25,14 +25,23 @@ jobs:
       - uses: actions/checkout@v4
       - name: Compiler pour Epix 2 / Epix Pro
         shell: bash
+        env:
+          # clé de développeur de Regis (base64 du .der), indispensable pour la boutique Connect IQ
+          GARMIN_DEV_KEY: ${{ secrets.GARMIN_DEV_KEY }}
         run: |
           MC=$(command -v monkeyc || find / -name monkeyc -type f 2>/dev/null | head -1)
           echo "monkeyc : $MC"
           "$MC" --version || true
           DEV=$(find / -type d -name Devices -path '*ConnectIQ*' 2>/dev/null | head -1)
           echo "appareils : $DEV"; ls "$DEV" | grep -i -E 'epix|fenix7' | tr '\n' ' '; echo
-          openssl genrsa -out /tmp/k.pem 4096
-          openssl pkcs8 -topk8 -inform PEM -outform DER -in /tmp/k.pem -out /tmp/k.der -nocrypt
+          if [ -n "$GARMIN_DEV_KEY" ]; then
+            echo "$GARMIN_DEV_KEY" | base64 -d > /tmp/k.der
+            echo "clé de développeur : secret GARMIN_DEV_KEY"
+          else
+            openssl genrsa -out /tmp/k.pem 4096
+            openssl pkcs8 -topk8 -inform PEM -outform DER -in /tmp/k.pem -out /tmp/k.der -nocrypt
+            echo "clé de développeur : temporaire (pas de paquet .iq pour la boutique)"
+          fi
           mkdir -p out
           ok=0
           for d in epix2 epix2pro42mm epix2pro47mm epix2pro51mm; do
@@ -41,6 +50,10 @@ jobs:
               [ -f out/ReglageLunette-$d.prg ] && ok=1
             fi
           done
+          # paquet pour la boutique Connect IQ (toutes les montres du manifeste), seulement avec la clé permanente
+          if [ -n "$GARMIN_DEV_KEY" ]; then
+            "$MC" -e -f garmin/monkey.jungle -o out/ReglageLunette.iq -y /tmp/k.der -l 0 -r -w 2>&1 | tee -a out/build.log
+          fi
           ls -la out
           [ $ok = 1 ]
       - name: Essai dans le simulateur (captures d'écran)
@@ -89,6 +102,7 @@ jobs:
           name: prg
           path: |
             out/*.prg
+            out/*.iq
             out/*.log
             out/shots/
 

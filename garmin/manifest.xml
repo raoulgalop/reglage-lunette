@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <iq:manifest version="3" xmlns:iq="http://www.garmin.com/xml/connectiq">
-    <iq:application id="2de0875fe6e14b31911216ae7fb1446d" type="watch-app" name="@Strings.AppName" entry="BalApp" launcherIcon="@Drawables.LauncherIcon" minApiLevel="3.2.0">
+    <iq:application id="2de0875fe6e14b31911216ae7fb1446d" type="watch-app" name="@Strings.AppName" entry="BalApp" launcherIcon="@Drawables.LauncherIcon" minApiLevel="3.2.0" version="1.0.0">
         <iq:products>
             <iq:product id="epix2"/>
             <iq:product id="epix2pro42mm"/>

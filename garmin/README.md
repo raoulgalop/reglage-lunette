@@ -53,3 +53,21 @@ GitHub Actions compile l'appli à chaque modification (`.github/workflows/garmin
 `ghcr.io/matco/connectiq-tester` qui contient le SDK Connect IQ, et range les `.prg` dans `garmin/bin/`.
 En local : SDK Connect IQ + extension Monkey C de VS Code, puis
 `monkeyc -d epix2 -f garmin/monkey.jungle -o ReglageLunette.prg -y cle_developpeur.der -l 0`.
+
+## Publier sur la boutique Connect IQ
+
+La boutique exige un paquet `.iq` signé avec une **clé de développeur permanente** (la même pour toutes les mises à jour).
+
+1. Créer la clé sur le Mac (Terminal), une seule fois, et la garder précieusement :
+   ```
+   cd ~/Documents
+   openssl genrsa -out garmin_cle.pem 4096
+   openssl pkcs8 -topk8 -inform PEM -outform DER -in garmin_cle.pem -out garmin_cle.der -nocrypt
+   base64 -i garmin_cle.der | pbcopy
+   ```
+2. Sur GitHub : dépôt → Settings → Secrets and variables → Actions → New repository secret,
+   nom `GARMIN_DEV_KEY`, valeur = coller (Cmd+V).
+3. Relancer le workflow « Appli Garmin (Connect IQ) » : il produit `garmin/bin/ReglageLunette.iq`.
+4. Sur https://apps.developer.garmin.com (compte Garmin) : Upload an App → fichier `.iq`, nom, description,
+   icône et captures (`garmin/bin/shots/`). Choisir **Beta** pour une appli visible uniquement par soi
+   (installation immédiate depuis Connect IQ sur le téléphone), ou publique (vérification Garmin de quelques jours).
