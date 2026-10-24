@@ -33,19 +33,28 @@ la montre donne les clics d'élévation et de vent.
 
 Chaque **munition** est un profil complet, modifiable sur la montre : V0, CB, modèle de traînée **G1 ou G7**,
 **distance de zéro** et **hauteur entre le centre de la lunette et le centre du canon** (au millimètre, 5 cm par défaut).
-13 profils fournis : SK Standard Plus, Rifle Match, Long Range Match, High Velocity Match ; Lapua Center-X, Midas+, X-Act ;
-Top Shot SV Target ; Geco Semi Auto ; RWS R50 ; CCI Standard Velocity ; Perso 1 et 2 (tous en G1, zéro 50 m).
+20 profils : SK Standard Plus, Rifle Match, Long Range Match, High Velocity Match ; Lapua Center-X, Midas+, X-Act ;
+Top Shot SV Target ; Geco Semi Auto ; RWS R50 ; CCI Standard Velocity ; Perso 1 à 9 (tous en G1, zéro 50 m).
 Passer un profil en G7 ne convertit pas le CB : saisir le CB G7 du fabricant.
 
 Réglages communs : unité **MRAD ou MOA** et valeur du clic (0,1 / 0,05 / 0,2 MRAD ou 1/4, 1/8, 1/2, 1 MOA),
 vent (vitesse et direction en heures), température, pression (baromètre de la montre ou manuelle),
 pas de distance de l'écran principal (1, 5, 10 ou 25 m, distances de 10 à 600 m) et table DOPE (de, à, pas).
 
+**Coriolis** (à activer) : la latitude vient du GPS de la montre (ou se saisit à la main) ; l'azimut de tir se prend à la
+boussole en visant la cible (« Viser la cible : prendre le cap ») ou se saisit en degrés. Correction horizontale
+(dérive vers la droite dans l'hémisphère nord) et verticale (effet Eötvös : plus haut en tirant vers l'est).
+Pour une .22 LR à 300 m, l'effet reste d'environ 1,5 cm (0,05 mil), soit moins d'un clic.
+
+**Réglages depuis le téléphone** : quand l'appli est installée par la boutique Connect IQ (même en Beta), tous les
+réglages et les 20 munitions (nom compris) se modifient dans l'appli Connect IQ du téléphone → Réglage Lunette → Paramètres.
+Les fichiers `resources/properties.xml` et `resources/settings/settings.xml` sont générés par `python3 tools/gen_settings.py`.
+
 ## Calcul
 
 Même modèle que Réglage Lunette : point matériel, table de traînée G1 (ou G7), air à 50 % d'humidité, zéro calculé avec les
 conditions du jour. Le vent traversier utilise la formule du retard (dérive = vent × (temps de vol − distance / V0)).
-Écart avec l'appli Android inférieur à 0,01 mrad de 100 à 300 m. Coriolis et angle de site ne sont pas pris en compte.
+Écart avec l'appli Android inférieur à 0,01 mrad de 100 à 300 m. Coriolis : z = 2Ω·sin(lat)·∫t dx (même résultat que le solveur 3D de l'appli Android). L'angle de site n'est pas pris en compte.
 
 ## Compiler
 

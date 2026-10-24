@@ -102,6 +102,7 @@ class MainView extends WatchUi.View {
 
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
         var wTxt = s["ws"] > 0 ? "Vent " + s["ws"] + " km/h à " + s["wc"] + " h" : "Sans vent";
+        if (s["corOn"]) { wTxt = wTxt + " · Coriolis"; }
         dc.drawText(cx, h * 0.88, Graphics.FONT_XTINY, wTxt, CJ);
     }
 }

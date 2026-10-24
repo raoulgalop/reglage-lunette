@@ -4,8 +4,8 @@ import Toybox.Math;
 import Toybox.System;
 import Toybox.WatchUi;
 
-const MENU_KEYS = ["prof", "v0", "bc", "g", "zero", "sight", "moa", "click", "ws", "wc", "temp", "pAuto", "press", "step", "dFrom", "dTo", "dStep"];
-const MENU_NAMES = ["Munition", "V0 munition", "CB munition", "Modèle G1 / G7", "Zéro munition", "Haut. lunette / canon", "Unité MRAD / MOA", "Valeur du clic", "Vent (vitesse)", "Vent (direction)", "Température", "Pression auto", "Pression manuelle", "Pas de distance", "Table : de", "Table : à", "Table : pas"];
+const MENU_KEYS = ["prof", "v0", "bc", "g", "zero", "sight", "moa", "click", "ws", "wc", "corOn", "azSens", "az", "gpsAuto", "lat", "temp", "pAuto", "press", "step", "dFrom", "dTo", "dStep"];
+const MENU_NAMES = ["Munition", "V0 munition", "CB munition", "Modèle G1 / G7", "Zéro munition", "Haut. lunette / canon", "Unité MRAD / MOA", "Valeur du clic", "Vent (vitesse)", "Vent (direction)", "Coriolis", "Viser la cible : prendre le cap", "Azimut de tir", "Latitude par GPS", "Latitude", "Température", "Pression auto", "Pression manuelle", "Pas de distance", "Table : de", "Table : à", "Table : pas"];
 
 function openMenu() {
     var a = app();
@@ -56,6 +56,14 @@ class MenuDelegate extends WatchUi.Menu2InputDelegate {
             WatchUi.pushView(m, new ProfDelegate(self), WatchUi.SLIDE_LEFT);
         } else if (key.equals("g")) {
             a.set("g", a.get("g") == 7 ? 1 : 7);
+            refresh();
+        } else if (key.equals("corOn") || key.equals("gpsAuto")) {
+            a.set(key, !s[key]);
+            if (key.equals("gpsAuto") && s["gpsAuto"]) { a.askGps(); }
+            refresh();
+        } else if (key.equals("azSens")) {
+            var h = a.heading();
+            if (h != null) { a.set("az", h); }
             refresh();
         } else if (key.equals("pAuto")) {
             a.set("pAuto", !s["pAuto"]);
