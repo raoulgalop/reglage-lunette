@@ -179,6 +179,118 @@ const weapon=[
 })();
 // Lunettes : focal FFP (1er plan, réticule valable à tous les grossissements) / SFP (2e plan),
 // calMag = grossissement auquel les graduations du réticule sont justes (SFP), reticle = dessin utilisé.
+// ---- Armes de poing, armes réglementaires / TAR, semi-auto et automatiques, PGM, Colt, Glock, compléments Mauser et Tikka.
+// Pas de rayure et longueurs de canon : valeurs usuelles « ≈ », à vérifier sur votre arme.
+(function(){
+  const PNG="Arme de poing",MIL="Arme réglementaire / TAR",AUTO="Semi-auto / fusil d'assaut",H=2.0; // hauteur d'organes de visée typique d'une arme de poing (cm)
+  const TW={"9x19":9.84,".45 ACP":16,".40 S&W":9.84,"10mm Auto":9.84,".357 Mag":14,".38 Spl":14,".44 Mag":20,".45 Colt":16,".380 ACP":9.84,".22 LR":16,
+    "7.62x25":9.84,"9x18 Makarov":9.45,"7.63x25 Mauser":7.87,".30 Carbine":20,".223 Rem":7,"5.56x45 NATO":7,"5.45x39":7.87,"7.62x39":9.45,"7.62x51 NATO":12,
+    ".308 Win":12,"7.62x54R":9.45,"8 mm Lebel":9.45,"7.5x54 MAS":10.63,"7.5x55 Swiss":10.63,".303 British":10,"6.5x52 Carcano":7.5,"7.7x58 Arisaka":9.84,
+    ".30-06":10,"8x57 IS":9.45,"7x57 Mauser":8.66,"6.5x55 SE":7.87,".338 Lapua Mag":10,".50 BMG":15,"6.5 Creedmoor":8,"300 AAC Blackout":8,"4.6x30":6.3};
+  const add=(type,brand,family,cals,barrel,sight,src)=>cals.forEach(c=>{const b=typeof barrel==="object"?(barrel[c]||barrel._):barrel;
+    weapon.push(Object.assign(W(type,brand,`${family} (${c})`,c,b,TW[c]||10,sight),{src:src||"≈ pas usuel du calibre, canon typique du modèle"}));});
+  // ===== Colt
+  [["1911 Government",127],["1911 Gold Cup",127],["1911 Commander",108],["1911 Defender",76],["Combat Elite",127]].forEach(([f,b])=>add(PNG,"Colt",f,[".45 ACP","9x19"],b,H));
+  add(PNG,"Colt","Delta Elite",["10mm Auto"],127,H);add(PNG,"Colt","Mustang",[".380 ACP"],70,H);
+  [["Python 4.25\"",108],["Python 6\"",152],["King Cobra",108],["King Cobra Target",152]].forEach(([f,b])=>add(PNG,"Colt",f,[".357 Mag"],b,H));
+  add(PNG,"Colt","Cobra",[".38 Spl"],51,H);add(PNG,"Colt","Night Cobra",[".38 Spl"],51,H);
+  add(PNG,"Colt","Anaconda",[".44 Mag"],{_:152},H);add(PNG,"Colt","Single Action Army",[".45 Colt",".357 Mag"],140,H);
+  add(AUTO,"Colt","M4 Carbine / LE6920",["5.56x45 NATO"],406,7.0);add(AUTO,"Colt","AR-15A4 / M16A4 (civil)",["5.56x45 NATO"],508,7.0);
+  add(AUTO,"Colt","CM901",["7.62x51 NATO"],406,7.0);
+  // ===== Glock
+  const G9=[["G17",114],["G19",102],["G19X",102],["G26",88],["G34",135],["G17L",153],["G45",102],["G47",114],["G43",86],["G43X",87],["G48",106]];
+  G9.forEach(([f,b])=>add(PNG,"Glock",f,["9x19"],b,H));
+  [["G22",114],["G23",102],["G27",88],["G35",135]].forEach(([f,b])=>add(PNG,"Glock",f,[".40 S&W"],b,H));
+  [["G20",117],["G29",96],["G40",153]].forEach(([f,b])=>add(PNG,"Glock",f,["10mm Auto"],b,H));
+  [["G21",117],["G30",96],["G41",135]].forEach(([f,b])=>add(PNG,"Glock",f,[".45 ACP"],b,H));
+  add(PNG,"Glock","G42",[".380 ACP"],83,H);
+  weapon.push(Object.assign(W(PNG,"Glock","G44 (.22 LR)",".22 LR",102,17.72,H),{src:"pas constructeur 450 mm"}));
+  // ===== autres armes de poing courantes
+  [["P226",112],["P320 Full Size",120],["P320 X-Five",127],["P365",79],["P210 Target",127]].forEach(([f,b])=>add(PNG,"Sig Sauer",f,["9x19"],b,H));
+  [["92 FS",125],["92X Performance",125],["APX",108],["M9A3",130]].forEach(([f,b])=>add(PNG,"Beretta",f,["9x19"],b,H));
+  [["75 B",114],["Shadow 2",125],["P-10 C",102],["P-09",114],["TS 2",134]].forEach(([f,b])=>add(PNG,"CZ",f,["9x19"],b,H));
+  [["PPQ",102],["PDP Full Size",114],["Q5 Match",127],["P99",102]].forEach(([f,b])=>add(PNG,"Walther",f,["9x19"],b,H));
+  add(PNG,"Smith & Wesson","M&P9 M2.0",["9x19"],108,H);add(PNG,"Smith & Wesson","686 (6\")",[".357 Mag"],152,H);add(PNG,"Smith & Wesson","629 (6\")",[".44 Mag"],152,H);
+  add(PNG,"Ruger","GP100 (6\")",[".357 Mag"],152,H);add(PNG,"Ruger","Mark IV Target",[".22 LR"],140,H);
+  [["MR73 Sport 6\"",152],["MR73 Gendarmerie 4\"",102],["MR88",102]].forEach(([f,b])=>add(PNG,"Manurhin",f,[".357 Mag"],b,H));
+  add(PNG,"Pardini","SP (.22 LR)",[".22 LR"],122,H);add(PNG,"Pardini","HP (.32 S&W WC)",[".22 LR"],122,H);
+  // ===== Heckler & Koch (gamme complète)
+  const HK="Heckler & Koch";
+  [["USP",108],["USP Compact",91],["USP Expert",132],["USP Match",153],["P2000",93],["P2000 SK",83],["P30",98],["P30L",113],["VP9",104],["VP9L",117],["VP9 Match",136],["SFP9",104],["P8 (Bundeswehr)",108],["P7M8",105],["P9S",102]].forEach(([f,b])=>add(PNG,HK,f,["9x19"],b,H));
+  [["USP",108],["USP Compact",91],["P30",98],["VP40",104]].forEach(([f,b])=>add(PNG,HK,f,[".40 S&W"],b,H));
+  [["USP .45",112],["USP Tactical",129],["HK45",114],["HK45 Compact",99],["Mark 23",149]].forEach(([f,b])=>add(PNG,HK,f,[".45 ACP"],b,H));
+  [["MP5 / SP5",225],["MP5K / SP5K",115],["MP5SD",146]].forEach(([f,b])=>add(AUTO,HK,f,["9x19"],b,6.0));
+  add(AUTO,HK,"UMP",["9x19",".45 ACP"],200,6.5);add(AUTO,HK,"MP7",["4.6x30"],180,6.0);
+  add(AUTO,HK,"G3 / HK91",["7.62x51 NATO"],450,6.0);add(AUTO,HK,"HK33 / HK93",["5.56x45 NATO"],390,6.0);
+  add(AUTO,HK,"G36 / G36K",["5.56x45 NATO"],{_:480},7.0);add(AUTO,HK,"G36C",["5.56x45 NATO"],228,7.0);add(AUTO,HK,"SL8",[".223 Rem"],510,7.0);add(AUTO,HK,"SL7",[".308 Win"],450,6.0);
+  [["HK416 A5 11\"",279],["HK416 A5 14.5\"",368],["HK416 F (FR)",368],["HK416 A5 16.5\"",419],["HK416 A5 20\"",508],["MR223 A3",419]].forEach(([f,b])=>add(AUTO,HK,f,["5.56x45 NATO"],b,7.0));
+  [["HK417 A2 16\"",406],["HK417 A2 20\"",508],["G28",420],["MR308 A3",419],["MR762 A1",419]].forEach(([f,b])=>add(AUTO,HK,f,["7.62x51 NATO"],b,7.0));
+  add(AUTO,HK,"HK437",["300 AAC Blackout"],{_:229},7.0);
+  add(PREC,HK,"PSG1",["7.62x51 NATO"],650,6.5);add(PREC,HK,"MSG90",["7.62x51 NATO"],600,6.5);
+  add(CH,HK,"SLB 2000 / 630 / 770 / 940",[".223 Rem",".308 Win",".30-06","9.3x62"],{_:510},5.0);
+  // ===== Pistolets de TSV (tir sportif de vitesse / IPSC)
+  const TSV=(brand,list,cals)=>list.forEach(([f,b])=>add(PNG,brand,f,cals||["9x19"],b,H));
+  TSV("CZ",[["Shadow 2 Orange",125],["Shadow 2 Compact",106],["Shadow 2 Optics Ready",125],["TS 2 Orange",134],["TS 2 Racing Green",134],["75 SP-01 Shadow",114],["Accu-Shadow 2",125]]);
+  TSV("CZ",[["TS 2 Orange",134]],[".40 S&W"]);
+  TSV("Tanfoglio",[["Stock II",113],["Stock III",120],["Stock Master",120],["Limited Custom",120],["Limited Master",120],["Gold Custom (Open)",120],["Defiant Stock III Pro",120]],["9x19",".40 S&W"]);
+  TSV("Staccato",[["P",112],["XC",127],["C2",99],["XL",137],["CS",89]]);
+  TSV("STI",[["DVC Limited",127],["DVC Open",127],["Trojan",127],["Edge",127]],["9x19",".40 S&W"]);
+  TSV("Sig Sauer",[["P320 X-Five Legion",127],["P226 X-Five",127],["P210 Legend Target",127],["P320 XTen Comp",127]]);
+  TSV("Walther",[["Q5 Match SF",127],["Q5 Match Steel Frame Champion",127],["PDP Match SF",127]]);
+  TSV("Springfield Armory",[["Prodigy",127],["1911 TRP",127]]);
+  TSV("Bul Armory",[["SAS II Ultralight",114],["Trophy",127],["Cherokee",114]]);
+  TSV("Sphinx",[["SDP Competition",112]]);TSV("Laugo",[["Alien",127]]);TSV("EAA",[["Witness Elite Match",115],["Witness Elite Limited",120]]);
+  TSV("Dan Wesson",[["Pointman",127],["Elite Series Havoc",127],["DWX",127]]);TSV("Beretta",[["92X Performance Optic",125],["Langdon 92 Elite LTT",120]]);
+  TSV("Shadow Systems",[["XR920 Elite",97],["DR920 Elite",114]]);TSV("Glock",[["G34 Gen5 MOS",135],["G17 Gen5 MOS",114]]);
+  // ===== Canik (gamme complète, 9x19)
+  TSV("Canik",[["TP9SA Mod.2",114],["TP9SF",114],["TP9SF Elite",106],["TP9SFx",130],["TP9 Elite Combat",120],["TP9 Elite SC",91],["TP9DA",103],["TP9 SFL",130],
+    ["METE SFT",114],["METE SFT Pro",114],["METE SFx",130],["METE SFX Pro",130],["METE SFL",130],["METE MC9",79],["METE MC9 Prime",79],["METE SF",114],
+    ["SFx Rival",127],["SFx Rival Dark Side",127],["Rival-S",127],["Rival-S Desert Ops",127],["TTI Combat",127],["MC9 Prime",79],["TP9 METE SFX Pro Dragon",130]]);
+  // ===== Pistolets réglementaires (TAR)
+  add(MIL,"MAS","Mle 1950",["9x19"],111,H);add(MIL,"MAC","Mle 1950",["9x19"],111,H);
+  add(MIL,"Mauser","P08 Luger",["9x19"],100,H);add(MIL,"Walther","P38",["9x19"],125,H);add(MIL,"Mauser","C96",["7.63x25 Mauser"],140,H);
+  add(MIL,"Tokarev","TT-33",["7.62x25"],116,H);add(MIL,"Makarov","PM",["9x18 Makarov"],93,H);
+  add(MIL,"Colt","M1911A1",[".45 ACP"],127,H);add(MIL,"FN Herstal","Browning HP 35 (GP)",["9x19"],118,H);
+  // ===== Fusils réglementaires (TAR)
+  add(MIL,"MAS","Lebel Mle 1886/93",["8 mm Lebel"],800,5.0);add(MIL,"MAS","Berthier Mle 1907/15",["8 mm Lebel"],798,5.0);add(MIL,"MAS","Berthier Mle 1916 (mousqueton)",["8 mm Lebel"],450,5.0);
+  add(MIL,"MAS","MAS 36",["7.5x54 MAS"],575,5.0);add(MIL,"MAS","MAS 49",["7.5x54 MAS"],580,6.0);add(MIL,"MAS","MAS 49/56",["7.5x54 MAS"],521,6.0);
+  add(MIL,"MAS","FR-F1",["7.5x54 MAS","7.62x51 NATO"],552,6.5);add(MIL,"GIAT","FR-F2",["7.62x51 NATO"],650,6.5);
+  add(MIL,"GIAT","FAMAS F1",["5.56x45 NATO"],488,7.0);
+  add(MIL,"Mauser","Gewehr 98",["8x57 IS"],740,5.0);add(MIL,"Mauser","Karabiner 98k",["8x57 IS"],600,5.0);add(MIL,"Mauser","Mle 1893 Espagnol",["7x57 Mauser"],740,5.0);
+  add(MIL,"Walther","Gewehr 43",["8x57 IS"],550,5.5);
+  add(MIL,"Mosin-Nagant","M91/30",["7.62x54R"],730,5.0);add(MIL,"Mosin-Nagant","M91/30 PU (tireur d'élite)",["7.62x54R"],730,5.5);add(MIL,"Mosin-Nagant","M44",["7.62x54R"],517,5.0);
+  add(MIL,"Izhmash","SVD Dragunov",["7.62x54R"],620,6.5);add(MIL,"Izhmash","Tigr",["7.62x54R"],530,6.5);add(MIL,"Izhmash","SVT-40 (Tokarev)",["7.62x54R"],625,5.5);
+  add(MIL,"Springfield","M1903",[".30-06"],610,5.0);add(MIL,"Springfield","M1903A4 (tireur d'élite)",[".30-06"],610,6.0);
+  add(MIL,"Springfield","M1 Garand",[".30-06",".308 Win"],610,5.5);add(MIL,"Winchester","M1 Carbine",[".30 Carbine"],458,4.5);
+  add(MIL,"Springfield Armory","M1A / M14",["7.62x51 NATO"],{_:559},6.0);
+  add(MIL,"Enfield","SMLE No1 Mk III",[".303 British"],640,5.0);add(MIL,"Enfield","No4 Mk I",[".303 British"],640,5.0);add(MIL,"Enfield","No4 Mk I (T)",[".303 British"],640,6.0);
+  add(MIL,"Waffenfabrik Bern","K31 (Schmidt-Rubin)",["7.5x55 Swiss"],652,5.0);add(MIL,"SIG","Stgw 57",["7.5x55 Swiss"],583,6.0);
+  add(MIL,"Carcano","M91/38",["6.5x52 Carcano"],530,5.0);add(MIL,"Arisaka","Type 99",["7.7x58 Arisaka"],657,5.0);
+  add(MIL,"Carl Gustaf","m/96 et m/38",["6.5x55 SE"],{_:740},5.0);
+  add(MIL,"Simonov","SKS",["7.62x39"],520,5.5);
+  // ===== Semi-auto / fusils d'assaut (versions civiles semi-auto en France)
+  add(AUTO,"Kalachnikov","AK-47 / AKM",["7.62x39"],415,6.0);add(AUTO,"Kalachnikov","AK-74",["5.45x39"],415,6.0);add(AUTO,"Kalachnikov","Saiga MK",["7.62x39",".223 Rem"],415,6.0);
+  add(AUTO,"CZ","Vz.58",["7.62x39"],390,6.0);add(AUTO,"CZ","BREN 2",["5.56x45 NATO","7.62x39"],{_:368},7.0);add(AUTO,"CZ","Scorpion EVO 3 S1",["9x19"],196,7.0);
+  add(AUTO,"FN Herstal","FAL",["7.62x51 NATO"],533,6.5);add(AUTO,"FN Herstal","SCAR 16S",["5.56x45 NATO"],406,7.0);add(AUTO,"FN Herstal","SCAR 17S",["7.62x51 NATO"],409,7.0);
+  add(AUTO,"SIG","SG 550 / Stgw 90",["5.56x45 NATO"],528,6.5);add(AUTO,"Sig Sauer","MCX Spear LT",["5.56x45 NATO","300 AAC Blackout"],{_:406},7.0);
+  add(AUTO,"Steyr","AUG A3",["5.56x45 NATO"],508,7.0);add(AUTO,"IWI","Tavor X95",["5.56x45 NATO"],419,7.0);add(AUTO,"Beretta","ARX100",["5.56x45 NATO"],406,7.0);
+  add(AUTO,"Ruger","Mini-14",[".223 Rem"],470,6.0);add(AUTO,"Ruger","PC Carbine",["9x19"],406,6.0);
+  add(AUTO,"Schmeisser","AR15-M4",["5.56x45 NATO"],{_:368},7.0);add(AUTO,"Daniel Defense","DDM4 V7",["5.56x45 NATO"],406,7.0);
+  // ===== PGM Précision
+  const PGM="PGM Précision";
+  add(PREC,PGM,"Ultima Ratio Intervention",[".308 Win","6.5 Creedmoor"],{_:600},6.0,"constructeur ≈");add(PREC,PGM,"Ultima Ratio Commando II",[".308 Win"],470,6.0);
+  add(PREC,PGM,"Ultima Ratio Integral (silencieux)",[".308 Win"],{_:470},6.0);add(PREC,PGM,"Ultima Ratio Sport",[".308 Win","6.5 Creedmoor"],{_:650},6.0);
+  add(PREC,PGM,"Mini-Hécate",[".308 Win"],{_:650},6.0);add(PREC,PGM,"Mini-Hécate .338",[".338 Lapua Mag"],{_:690},6.5);
+  add(PREC,PGM,"Hécate II",[".50 BMG"],700,7.5);
+  // ===== Compléments Mauser / Tikka
+  const MC=[".222 Rem",".223 Rem",".243 Win","6.5 Creedmoor","6.5x55 SE",".270 Win","7x64",".308 Win",".30-06","8x57 IS","9.3x62"];
+  ["M03 Basic","M03 Extreme","M03 Trail","M03 Professional"].forEach(f=>add(CH,"Mauser",f,MC,{_:560},5.0));
+  ["M98 Magnum","M98 Expert"].forEach(f=>add(CH,"Mauser",f,[".375 H&H",".416 Rigby",".458 Lott","9.3x62",".30-06"],{_:600},5.0));
+  ["M18 Waldjagd","M18 Feldjagd"].forEach(f=>add(CH,"Mauser",f,[".243 Win","6.5 Creedmoor",".308 Win",".30-06","7mm Rem Mag",".300 Win Mag"],{_:560},5.0));
+  add(PREC,"Mauser","M18 Precision",[".308 Win","6.5 Creedmoor"],{_:560},5.5);
+  ["T3x Ace Target","T3x Ace Game","T3x Lite Veil","T3x Tactical"].forEach(f=>add(f==="T3x Ace Target"||f==="T3x Tactical"?PREC:VER,"Tikka",f,[".223 Rem","6.5 Creedmoor",".308 Win",".30-06"],{_:610},5.0));
+  add(VER,"Tikka","T3x Lite (compléments)",["6.5 PRC","7mm PRC",".300 PRC"],{_:620},5.0);
+})();
 const S=(brand,model,unit,click,focal,reticle,mag,calMag,src)=>({brand,model,unit,click:String(click),focal,reticle,mag,calMag:calMag||"",src:src||""});
 const SRC="≈ (valeurs typiques de la gamme, à vérifier sur la notice)";
 const scope=[
@@ -564,6 +676,37 @@ const scope=[
   Object.assign(S("Bresser","TrueView 4-16x44 (Mil-Dot)","MOA",0.25,"SFP","mildot","4-16","16",SRC),{retName:"Mil-Dot",travelE:52}),
   Object.assign(S("Crimson Trace","Hardline Pro 6-24x50 (MR1-MIL)","MRAD",0.1,"FFP","mrad-hash","6-24","",SRC),{retName:"MR1-MIL",travelE:25}),
   Object.assign(S("Crimson Trace","5-Series 5-25x56 (MR2-MIL)","MRAD",0.1,"FFP","mrad-tree","5-25","",SRC),{retName:"MR2-MIL",travelE:30}),
+  Object.assign(S("Izhmash / NPZ","PSO-1 4x24","MRAD",0.1,"SFP","pso1","4","4",SRC),{retName:"PSO-1 (chevrons + télémètre)"}),
+  Object.assign(S("Izhmash / NPZ","PSO-1M2 4x24","MRAD",0.1,"SFP","pso1","4","4",SRC),{retName:"PSO-1M2"}),
+  Object.assign(S("NPZ","POSP 6x42","MRAD",0.1,"SFP","pso1","6","6",SRC),{retName:"POSP (type PSO)"}),
+  Object.assign(S("Izhmash / NPZ","PU 3.5x (Mosin)","MRAD",1,"SFP","duplex","3.5","3.5",SRC),{retName:"Poteau et lignes (PU)"}),
+  Object.assign(S("APX","L806 (FR-F1)","MRAD",1,"SFP","duplex","3.85","3.85",SRC),{retName:"Poteau + échelle de hausse (APX L806)"}),
+  Object.assign(S("APX","SOM 4x (MAS 49/56)","MRAD",1,"SFP","duplex","4","4",SRC),{retName:"Poteau + chevrons (APX SOM)"}),
+  Object.assign(S("Schmidt & Bender","PM II 3-12x50 (FR-F2)","MRAD",0.1,"SFP","mildot","3-12","12",SRC),{retName:"Mil-Dot",travelE:26}),
+  Object.assign(S("Hensoldt","ZF 4x24 (G3)","MRAD",1,"SFP","duplex","4","4",SRC),{retName:"Poteau + hausse 100-600 m"}),
+  Object.assign(S("Zeiss","ZF 4 / ZF 39 (K98k, G43)","MRAD",1,"SFP","duplex","4","4",SRC),{retName:"Poteau allemand n°1"}),
+  Object.assign(S("Unertl","M1903A4 / USMC 8x","MOA",0.25,"SFP","duplex","8","8",SRC),{retName:"Croisillon fin"}),
+  Object.assign(S("Leupold","Mark 4 M3 10x40 (M24)","MRAD",1,"SFP","mildot","10","10",SRC),{retName:"Mil-Dot"}),
+  Object.assign(S("Leupold","Mark 4 LR/T 3.5-10x40","MOA",0.25,"SFP","mildot","3.5-10","10",SRC),{retName:"Mil-Dot"}),
+  Object.assign(S("Hensoldt","ZF 6-24x56 (G28)","MRAD",0.1,"SFP","mrad-hash","6-24","24",SRC),{retName:"Mil-Dot / MRAD",travelE:29}),
+  Object.assign(S("Trijicon","ACOG TA31 4x32","MOA",0.5,"SFP","acog","4","4",SRC),{retName:"Chevron BDC 5,56"}),
+  Object.assign(S("Elcan","SpecterDR 1-4x","MOA",0.5,"SFP","acog","1-4","4",SRC),{retName:"BDC C79"}),
+  Object.assign(S("EOTech","EXPS3","MOA",0.5,"FFP","dot-ring","1","",SRC),{retName:"68 MOA ring + 1 MOA dot"}),
+  Object.assign(S("EOTech","XPS2","MOA",0.5,"FFP","dot-ring","1","",SRC),{retName:"68 MOA ring + 1 MOA dot"}),
+  Object.assign(S("Aimpoint","CompM4","MOA",0.5,"FFP","dot","1","",SRC),{retName:"Point 2 MOA"}),
+  Object.assign(S("Aimpoint","Micro T-2","MOA",0.5,"FFP","dot","1","",SRC),{retName:"Point 2 MOA"}),
+  Object.assign(S("Aimpoint","ACRO P-2","MOA",1,"FFP","dot","1","",SRC),{retName:"Point 3,5 MOA"}),
+  Object.assign(S("Holosun","HS507C X2","MOA",1,"FFP","dot-ring","1","",SRC),{retName:"Point 2 MOA + cercle 32 MOA"}),
+  Object.assign(S("Holosun","HE508T X2","MOA",1,"FFP","dot-ring","1","",SRC),{retName:"Point 2 MOA + cercle 32 MOA"}),
+  Object.assign(S("Holosun","HS510C","MOA",1,"FFP","dot-ring","1","",SRC),{retName:"Point 2 MOA + cercle 65 MOA"}),
+  Object.assign(S("Trijicon","RMR Type 2","MOA",1,"FFP","dot","1","",SRC),{retName:"Point 3,25 MOA"}),
+  Object.assign(S("Trijicon","SRO","MOA",1,"FFP","dot","1","",SRC),{retName:"Point 2,5 MOA"}),
+  Object.assign(S("Leupold","DeltaPoint Pro","MOA",1,"FFP","dot","1","",SRC),{retName:"Point 2,5 MOA"}),
+  Object.assign(S("C-More","RTS2","MOA",1,"FFP","dot","1","",SRC),{retName:"Point 6 MOA"}),
+  Object.assign(S("Vortex","Venom red dot","MOA",1,"FFP","dot","1","",SRC),{retName:"Point 3 MOA"}),
+  Object.assign(S("Sig Sauer","Romeo 1 Pro","MOA",1,"FFP","dot","1","",SRC),{retName:"Point 3/6 MOA"}),
+  Object.assign(S("Sig Sauer","Romeo 5","MOA",0.5,"FFP","dot","1","",SRC),{retName:"Point 2 MOA"}),
+  Object.assign(S("Shield","SMS 2","MOA",1,"FFP","dot","1","",SRC),{retName:"Point 4 MOA"}),
   S("Générique","Tourelles 0.1 MRAD, réticule MRAD FFP","MRAD",0.1,"FFP","mrad-hash",""),
   S("Générique","Tourelles 1/4 MOA, réticule Mil-Dot SFP","MOA",0.25,"SFP","mildot","",10),
   S("Générique","Tourelles 1/4 MOA, réticule Duplex","MOA",0.25,"SFP","duplex","")
@@ -757,10 +900,103 @@ const ammo=[
   A(CHA,"Norma","Oryx 232 gr","9.3x62",232,800,0.300,"CB ≈ (valeur typique de la balle, à vérifier)","E"),
   A(E,"Sellier & Bellot","FMJ 123 gr","7.62x39",123,721,0.295,"CB ≈ (valeur typique de la balle, à vérifier)","E"),
   A(CHA,"Winchester","Power-Point 150 gr",".350 Legend",150,709,0.193,"CB ≈ (valeur typique de la balle, à vérifier)","E"),
-  A(CHA,"Hornady","FTX 250 gr",".450 Bushmaster",250,671,0.210,"CB ≈ (valeur typique de la balle, à vérifier)","E")
+  A(CHA,"Hornady","FTX 250 gr",".450 Bushmaster",250,671,0.210,"CB ≈ (valeur typique de la balle, à vérifier)","E"),
+  A(E,"Geco","FMJ 124 gr","9x19",124,360,0.145,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Sellier & Bellot","FMJ 124 gr","9x19",124,360,0.145,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Sellier & Bellot","FMJ 115 gr","9x19",115,390,0.125,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Fiocchi","FMJ 124 gr","9x19",124,360,0.145,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Fiocchi","FMJ 147 gr","9x19",147,300,0.180,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Prvi Partizan","FMJ 124 gr","9x19",124,360,0.145,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(M,"Geco","Hexagon 124 gr","9x19",124,360,0.150,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Federal","American Eagle FMJ 115 gr","9x19",115,360,0.125,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(CHA,"Hornady","Critical Duty 135 gr","9x19",135,340,0.140,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(M,"RWS","Target Elite 124 gr","9x19",124,360,0.145,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(M,"Magtech","FMJ 147 gr","9x19",147,300,0.180,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Lapua","FMJ 123 gr","9x19",123,360,0.145,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Geco","FMJ 230 gr",".45 ACP",230,255,0.190,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Sellier & Bellot","FMJ 230 gr",".45 ACP",230,253,0.190,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Federal","American Eagle FMJ 230 gr",".45 ACP",230,253,0.190,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(M,"Fiocchi","FMJ 230 gr",".45 ACP",230,255,0.190,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Sellier & Bellot","FMJ 180 gr",".40 S&W",180,300,0.165,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Geco","FMJ 180 gr",".40 S&W",180,300,0.165,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Fiocchi","FMJ 170 gr",".40 S&W",170,320,0.155,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Sellier & Bellot","FMJ 180 gr","10mm Auto",180,370,0.170,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(CHA,"Hornady","XTP 180 gr","10mm Auto",180,375,0.164,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Sellier & Bellot","FMJ 92 gr",".380 ACP",92,290,0.075,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Fiocchi","FMJ 95 gr",".380 ACP",95,290,0.080,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Sellier & Bellot","FMJ 158 gr",".357 Mag",158,400,0.180,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Geco","FMJ 158 gr",".357 Mag",158,425,0.180,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(CHA,"Hornady","XTP 158 gr",".357 Mag",158,381,0.206,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(M,"Fiocchi","FMJ 158 gr",".357 Mag",158,400,0.180,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(M,"Sellier & Bellot","Wadcutter 148 gr",".38 Spl",148,215,0.055,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Sellier & Bellot","LRN 158 gr",".38 Spl",158,265,0.150,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(M,"Geco","Wadcutter 148 gr",".38 Spl",148,230,0.055,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Fiocchi","LRN 158 gr",".38 Spl",158,265,0.150,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Sellier & Bellot","SP 240 gr",".44 Mag",240,400,0.170,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(CHA,"Hornady","XTP 240 gr",".44 Mag",240,411,0.205,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Geco","Hexagon 200 gr",".44 Mag",200,450,0.150,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Fiocchi","LRNFP 250 gr",".45 Colt",250,260,0.150,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Sellier & Bellot","LFN 250 gr",".45 Colt",250,260,0.150,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Sellier & Bellot","FMJ 85 gr","7.62x25",85,500,0.170,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Prvi Partizan","FMJ 85 gr","7.62x25",85,500,0.170,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Fiocchi","FMJ 88 gr","7.63x25 Mauser",88,430,0.170,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Sellier & Bellot","FMJ 95 gr","9x18 Makarov",95,320,0.100,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Prvi Partizan","FMJ 94 gr","9x18 Makarov",94,315,0.100,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Heckler & Koch / RUAG","DM11 31 gr","4.6x30",31,720,0.190,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Prvi Partizan","FMJ 110 gr",".30 Carbine",110,600,0.180,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Sellier & Bellot","FMJ 110 gr",".30 Carbine",110,605,0.166,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Sellier & Bellot","SS109 62 gr","5.56x45 NATO",62,940,0.304,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Prvi Partizan","M193 55 gr","5.56x45 NATO",55,990,0.243,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Federal","XM193 55 gr","5.56x45 NATO",55,990,0.243,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Federal","XM855 62 gr","5.56x45 NATO",62,930,0.304,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(M,"Hornady","BTHP Match 75 gr","5.56x45 NATO",75,850,0.395,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(M,"Sellier & Bellot","HPBT 69 gr","5.56x45 NATO",69,870,0.301,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Sellier & Bellot","FMJ 147 gr (M80)","7.62x51 NATO",147,838,0.400,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Prvi Partizan","FMJ 145 gr","7.62x51 NATO",145,830,0.400,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(M,"Federal","M118LR 175 gr SMK","7.62x51 NATO",175,790,0.496,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(M,"Lapua","Scenar 167 gr","7.62x51 NATO",167,820,0.470,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(M,"Geco","Target 168 gr","7.62x51 NATO",168,790,0.447,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Barnaul","FMJ 60 gr","5.45x39",60,880,0.300,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Wolf","FMJ 60 gr","5.45x39",60,880,0.300,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Sellier & Bellot","FMJ 180 gr","7.62x54R",180,800,0.450,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(CHA,"Sellier & Bellot","SP 180 gr","7.62x54R",180,800,0.400,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Prvi Partizan","FMJ 182 gr","7.62x54R",182,760,0.450,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(M,"Lapua","D166 FMJ 200 gr","7.62x54R",200,700,0.500,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Wolf","FMJ 148 gr","7.62x54R",148,840,0.370,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(M,"Barnaul","7N1 Sniper 152 gr","7.62x54R",152,823,0.420,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Prvi Partizan","SP 205 gr","8 mm Lebel",205,700,0.300,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Prvi Partizan","FMJ 232 gr","8 mm Lebel",232,640,0.380,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Prvi Partizan","FMJ 139 gr","7.5x54 MAS",139,820,0.380,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Prvi Partizan","SP 139 gr","7.5x54 MAS",139,820,0.340,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(M,"RUAG","GP11 174 gr","7.5x55 Swiss",174,780,0.505,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Prvi Partizan","FMJ 174 gr","7.5x55 Swiss",174,770,0.480,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(M,"Hornady","BTHP 168 gr","7.5x55 Swiss",168,792,0.450,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Prvi Partizan","FMJ 174 gr",".303 British",174,740,0.480,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(CHA,"Sellier & Bellot","SP 180 gr",".303 British",180,750,0.400,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(M,"Hornady","BTHP 174 gr",".303 British",174,740,0.480,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Prvi Partizan","SP 139 gr","6.5x52 Carcano",139,700,0.420,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Prvi Partizan","FMJ 160 gr","6.5x52 Carcano",160,640,0.430,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Prvi Partizan","FMJ 174 gr","7.7x58 Arisaka",174,730,0.450,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Prvi Partizan","SP 139 gr","7x57 Mauser",139,830,0.390,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(CHA,"Hornady","InterLock 139 gr","7x57 Mauser",139,820,0.392,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(SUB,"Sellier & Bellot","Subsonic 200 gr","300 AAC Blackout",200,315,0.550,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(E,"Sellier & Bellot","FMJ 124 gr","300 AAC Blackout",124,660,0.290,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(CHA,"Hornady","V-Max 110 gr","300 AAC Blackout",110,722,0.290,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(M,"Hornady","A-MAX Match 750 gr",".50 BMG",750,860,1.050,"CB publié par Hornady","C"),
+  A(E,"Prvi Partizan","FMJ M33 661 gr",".50 BMG",661,880,0.670,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(M,"Hornady","ELD Match 180 gr","7mm Rem SAUM",180,850,0.796,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(M,"Hornady","ELD Match 140 gr",".260 Rem",140,838,0.646,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(M,"Berger","Hybrid 180 gr (rechargement)",".284 Shehane",180,860,0.677,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(CHA,"Hornady","DGX 300 gr",".375 H&H",300,777,0.275,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(CHA,"Hornady","DGX 400 gr",".416 Rigby",400,730,0.311,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E"),
+  A(CHA,"Hornady","DGX 500 gr",".458 Lott",500,686,0.295,"CB non vérifié sur la fiche du fabricant : valeur typique de la balle ; V0 ≈","E")
 ];
 const RN={"ED-PRS GEN II 5-25x56 SFIR FFP-Z MRAD": "Arbre de Noël MIL éclairé Discovery (FFP-Z) : centre rouge ±1 mil, horizontale ±9 mil, arbre de tenue de 2 à 10 mil", "ED-PRS GEN II 5-25x56 SFIR FFP-Z MOA": "Graduations MOA éclairé, FFP, Zero Stop (Z) ; nom non publié", "HD 5-25x50 SFIR FFP": "Réticule MIL FFP (nom non publié)", "VT-Z 4-16x44 SFP": "Mil-Dot (≈)", "Viper PST Gen II 5-25x50 EBR-7C MRAD": "EBR-7C (MRAD)", "Viper PST Gen II 5-25x50 EBR-7C MOA": "EBR-7C (MOA)", "Strike Eagle 5-25x56 EBR-7C MRAD": "EBR-7C (MRAD)", "Venom 5-25x56 EBR-7C MRAD": "EBR-7C (MRAD)", "Diamondback Tactical 6-24x50 EBR-2C MRAD": "EBR-2C (MRAD)", "Razor HD Gen III 6-36x56 EBR-7D MRAD": "EBR-7D (MRAD)", "Crossfire II 4-12x44 Dead-Hold BDC": "Dead-Hold BDC", "Ares BTR Gen2 4.5-27x50 APLR2 MRAD": "APLR2 FFP IR MIL", "Argos BTR Gen2 6-24x50 APMR MRAD": "APMR FFP IR MIL", "Talos BTR 4-14x44 MRAD": "APMR FFP MIL (≈)", "Continental 5-30x56 MRAD": "Arbre MIL FFP (≈, selon version)", "Taurus 5-30x56 MRAD": "Arbre MIL FFP (≈, selon version)", "Marksman 6-24x50 FFP": "MIL FFP (≈)", "EP5 5-25x56 VPR MRAD": "VPR MIL", "Nexus 5-20x50 APR-1D MRAD": "APR-1D MRAD", "Helix 6-24x50 APR-1C MRAD": "APR-1C MRAD", "Match Pro 6-24x50 Deploy MIL": "Deploy MIL", "Sidewinder 30 FFP 4-16x50 MRAD": "FFP MIL (≈)", "Vantage 4-12x40 Mil-Dot": "Mil-Dot", "Mark 5HD 5-25x56 PR2-MIL": "PR2-MIL", "VX-5HD 3-15x44 Duplex": "Duplex", "VX-3HD 4.5-14x40 Duplex": "Duplex", "ATACR 5-25x56 Mil-XT": "Mil-XT", "NX8 4-32x50 Mil-C": "Mil-C", "SHV 4-14x56 MOAR": "MOAR", "PM II 5-25x56 P4FL MRAD": "P4FL", "K525i 5-25x56 SKMR": "SKMR3", "LRP S5 5-25x56 ZF-MRi": "ZF-MRi", "Conquest V4 6-24x50 ZMOAi": "ZMOAi-T20", "Optika6 5-30x56 FFP MRAD": "MRAD FFP (≈)", "Toric 4.5-30x56 MRAD": "MIL FFP (≈)"};
 scope.forEach(e=>{e.retName=e.retName||RN[e.model]||"";});
+{const seen=new Set(); // doublons : on garde la première entrée
+  const u=weapon.filter(e=>{const k=e.brand+"|"+e.model;if(seen.has(k))return false;seen.add(k);return true;});weapon.length=0;weapon.push(...u);}
+{const seen=new Set(); // même nom chez une marque pour deux calibres : le calibre est ajouté au nom
+  ammo.forEach(e=>{let k=e.brand+"|"+e.model;if(seen.has(k)){e.model+=` (${e.cal})`;k=e.brand+"|"+e.model;}seen.add(k);});}
 window.CATALOG={weapon,scope,ammo};
 // anciennes clés de lunettes (avant v4.0) → nouvelles
 window.AMMO_REN={"Top Shot|Standard Velocity 40 gr": "Top Shot|SV Target 40 gr", "SK|Magazine Rifle Match 40 gr": "SK|Magazine 40 gr", "CCI|Suppressor 45 gr": "CCI|22 Suppressor 45 gr", "Federal|Gold Medal UltraMatch 40 gr": "Federal|Gold Medal Match 40 gr", "American Eagle|Suppressor 45 gr": "Federal|American Eagle Suppressor 45 gr", "Eley|Biathlon Match 40 gr": "Eley|Tenex Biathlon 40 gr"};
@@ -781,6 +1017,14 @@ window.RETICLES={
     text:"Graduations en minutes d'angle : traits tous les 1 MOA, plus longs tous les 5 MOA. 1 MOA ≈ 2,9 cm à 100 m. Pratique avec des tourelles en 1/4 MOA : 4 clics = 1 graduation."},
   "duplex":{name:"Duplex (croix fine + montants épais)",unit:"MOA",
     text:"Croix fine au centre et montants épais à l'extérieur, sans graduations. Le réticule ne sert qu'à viser au centre : toute correction doit se faire aux tourelles (en clics). L'onglet Tir vous donne le nombre de clics."},
+  "dot":{name:"Point rouge (viseur reflex)",unit:"MOA",
+    text:"Un simple point lumineux (souvent 2 MOA, soit ≈ 6 cm à 100 m) sans graduations. On vise avec le point ; les réglages se font aux molettes, souvent par clics de 1/2 ou 1 MOA. Idéal pour le tir rapide (TSV, IPSC) à courte distance : à 25 m, 1 MOA ≈ 7 mm."},
+  "dot-ring":{name:"Holographique point + cercle (EOTech, Holosun)",unit:"MOA",
+    text:"Point central de 1 à 2 MOA entouré d'un grand cercle (32 à 68 MOA selon le modèle). Le cercle sert à acquérir vite la cible ; le point sert à la précision."},
+  "acog":{name:"ACOG / BDC à chevron (type Trijicon TA31)",unit:"MOA",
+    text:"Chevron éclairé réglé au zéro (souvent 100 m), puis barres de compensation pour 400 à 800 m dont la largeur correspond à une silhouette de 48 cm à cette distance. Valable pour la munition prévue (5,56 M855) : utilisez la table de l'appli pour votre munition réelle."},
+  "pso1":{name:"PSO-1 (Dragunov) : chevrons + télémètre",unit:"MRAD",
+    text:"Chevron principal pour la hausse affichée (tambour de 1 à 10 = 100 à 1000 m), trois chevrons inférieurs pour 1100, 1200 et 1300 m. Échelle horizontale de dérive graduée en millièmes « russes » (1/6000 de tour ≈ 1,047 mrad), chiffre 10 aux extrémités. En bas à gauche, télémètre : on encadre une cible de 1,7 m entre la ligne et la courbe, la distance se lit en centaines de mètres. Dessin indicatif."},
   "bdc":{name:"BDC (compensation de chute par repères)",unit:"MOA",
     text:"Repères sous le centre prévus pour des distances données avec une munition « type ». Les distances réelles dépendent de VOTRE munition et du grossissement (SFP) : utilisez la position du point orange plutôt que les distances gravées par le fabricant."}
 };
