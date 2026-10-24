@@ -102,6 +102,7 @@ jobs:
           name: prg
           path: |
             out/*.prg
+            out/*.json
             out/*.iq
             out/*.log
             out/shots/
