@@ -130,6 +130,18 @@ tr.zero td{color:var(--ok)}
     </div>
     <div class="kv" id="sDetail"></div>
   </div>
+
+  <div class="card">
+    <h2>Cible mobile (sanglier courant, battue)</h2>
+    <div class="row">
+      <label>Vitesse de la cible (km/h)<input id="mvS" type="number" inputmode="decimal" value="0" placeholder="0 = cible fixe"></label>
+      <label>Angle de course (°)<input id="mvA" type="number" inputmode="decimal" value="90"></label>
+    </div>
+    <div class="chips" id="mvPre"><button class="btn sm" data-s="0">Fixe</button><button class="btn sm" data-s="7.2" data-d="50">Sanglier courant 50 m lent (5 s)</button><button class="btn sm" data-s="14.4" data-d="50">50 m rapide (2,5 s)</button><button class="btn sm" data-s="20">Sanglier au trot 20 km/h</button><button class="btn sm" data-s="35">Sanglier lancé 35 km/h</button></div>
+    <div class="row"><label>La cible va<div class="seg" id="mvDir"><button data-v="1" class="on">vers la droite ➡</button><button data-v="-1">⬅ vers la gauche</button></div></label></div>
+    <div id="mvOut" class="kv"></div>
+    <p class="hint">Angle 90° = la cible passe en travers, 45° = en biais, 0° = elle vient vers vous ou s'éloigne. L'avance se prend devant la cible, dans le sens où elle court, en accompagnant le mouvement (swing) sans s'arrêter au départ du coup. Le temps de réaction du tireur n'est pas compté.</p>
+  </div>
 </section>
 
 <!-- ===================== ZÉROTAGE ===================== -->
@@ -412,8 +424,8 @@ function seg(id){return $(id).querySelector(".on").dataset.v;}
 function setSeg(id,v){$(id).querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.v==v));}
 
 /* ================= état persistant ================= */
-const FIELDS=["wdSpeed","pList","pFrom","pTo","pStep","pWinds","pDir","stDist","trD","rMag","rSize","rRead","tDist","tAz","tSite","tLat","mT","mP","mH","mWs","mWd","zDist","zGrid","zV","zH","bFrom","bTo","bStep","zeroD","zeroT","zeroP"];
-const SEGS=["placeMode","corOn","zVs","zHs","trWhat"];
+const FIELDS=["wdSpeed","pList","pFrom","pTo","pStep","pWinds","pDir","stDist","trD","rMag","rSize","rRead","tDist","tAz","tSite","tLat","mT","mP","mH","mWs","mWd","zDist","zGrid","zV","zH","bFrom","bTo","bStep","zeroD","zeroT","zeroP","mvS","mvA"];
+const SEGS=["placeMode","corOn","zVs","zHs","trWhat","mvDir"];
 let S={sel:{weapon:"Bergara|B-14R HMR (.22 LR)",scope:"Discovery Optics|ED-PRS GEN II 5-25x56 SFIR FFP-Z MRAD",ammo:"SK|Standard Plus 40 gr"},
        val:{weapon:{},scope:{},ammo:{}},custom:{weapon:[],scope:[],ammo:[]},tf:{weapon:"",ammo:""},setups:[],activeSetup:"",retZoom:0,impacts:[],halfCm:10,shooter:null,target:null,meteoTime:null};
 function save(){try{const f={};FIELDS.forEach(k=>f[k]=$(k).value);SEGS.forEach(k=>f[k]=seg(k));S.fields=f;localStorage.setItem("lunette2",JSON.stringify(S));}catch(e){}}
@@ -503,7 +515,7 @@ Object.keys(KINDS).forEach(kind=>{
     if(it&&S.tf[kind]&&it.type!==S.tf[kind])S.tf[kind]="";S.sel[kind]=b.dataset.k;S.val[kind]={};if(kind==="weapon")ironAuto();fIn.value="";hits.innerHTML="";changed();};
   const tSel=c.querySelector(".cType");
   if(tSel)tSel.onchange=e=>{S.tf[kind]=e.target.value;const cur=find(kind,S.sel[kind]);
-    if(e.target.value&&cur&&cur.type!==e.target.value){const f=list(kind).find(x=>x.type===e.target.value);if(f){S.sel[kind]=key(f);S.val[kind]={};}}
+    if(e.target.value&&cur&&cur.type!==e.target.value){const f=list(kind).find(x=>x.type===e.target.value);if(f){S.sel[kind]=key(f);S.val[kind]={};if(kind==="weapon")ironAuto();}}
     changed();};
   KINDS[kind].f.forEach(f=>{const el=c.querySelector(`[data-f=${f}]`);
     el.addEventListener(el.tagName==="SELECT"?"change":"input",()=>{S.val[kind][f]=el.value;if(f==="unit")filterClicks();compute();save();});
@@ -642,7 +654,9 @@ function solve(){
   const noCor=fly(Object.assign({p,alpha,maxX:D+1},c,{cor:false}))(D);
   if(!full||!noCor){$("sE").textContent="—";$("sEd").textContent="hors portée";return;}
   const eRad=-full.y/D,wRad=-full.z/D; // + = monter / aller à droite
-  LAST={eRad,wRad,D};
+  const mvS=Math.max(0,num("mvS")),lead=mvS/3.6*full.t*Math.abs(Math.sin(num("mvA")*DEG))*seg("mvDir"),lRad=lead/D; // avance (m), + = à droite
+  LAST={eRad,wRad,D,lRad};
+  mvOut(p,D,full,lead,wRad);
   const eU=toUnit(eRad,p.unit),wU=toUnit(wRad,p.unit),eC=eU/p.click,wC=wU/p.click;
   $("sE").textContent=Math.abs(Math.round(eC));$("sW").textContent=Math.abs(Math.round(wC));
   $("sEd").textContent=clickTxt(eC,"⬆ vers le HAUT","⬇ vers le BAS");
@@ -672,6 +686,17 @@ function solve(){
     io?["Visée ouverte",hz?`hausse sur ${hz.v} ${hz.u}, le reste en tenue`:`organes fixes réglés à ${p.zero} m : on corrige en visant plus haut ou plus bas`]:
     ["1 clic à cette distance",`${fx(cmUnit(1,D,p.unit)?(p.click/cmUnit(1,D,p.unit)):0,2)} cm`]];
   $("sDetail").innerHTML=rows.map(r=>`<span>${r[0]}</span><span>${r[1]}</span>`).join("");
+}
+
+function mvOut(p,D,full,lead,wRad){
+  const el=$("mvOut");if(!(num("mvS")>0)){el.innerHTML=`<span>Avance</span><span>cible fixe : aucune</span>`;return;}
+  const io=p.iron&&p.iron.t!=="clics",L=Math.abs(lead)*100,side=lead>0?"à DROITE":"à GAUCHE",u=p.unit,a=toUnit(Math.abs(lead)/D,u);
+  const tot=(wRad+lead/D)*D*100; // avance + vent
+  const rows=[["Temps de vol",`${fx(full.t,3)} s`],
+    ["Avance à prendre",`<b>${fx(L,L<10?1:0)} cm ${side}</b>${io?"":` · ${fx(a,u==="MOA"?1:2)} ${u==="MOA"?"MOA":"mil"} au réticule`}`],
+    ["Soit environ",`${fx(L/120,1)} longueur de sanglier (≈ 1,2 m)`],
+    ["Avance + vent",`${fx(Math.abs(tot),Math.abs(tot)<10?1:0)} cm ${tot>0?"à droite":"à gauche"} du point visé${io?"":" (si la dérive n'est pas réglée aux tourelles)"}`]];
+  el.innerHTML=rows.map(r=>`<span>${r[0]}</span><span>${r[1]}</span>`).join("");
 }
 
 /* ================= carte PR, stage, truing ================= */
@@ -1042,6 +1067,13 @@ function zeroCalc(){
   $("rVa").textContent=`${av.toFixed(2)} ${p.unit} · ${cv.toFixed(1)} clics`;
   $("rHa").textContent=`${ah.toFixed(2)} ${p.unit} · ${ch.toFixed(1)} clics`;
   const cm1=d>0?p.click/cmUnit(1,d,p.unit):0;
+  if(p.iron&&p.iron.t!=="clics"){ // organes de visée sans clics : écart en cm et sens de déplacement
+    $("rV").textContent=fx(Math.abs(v),1);$("rH").textContent=fx(Math.abs(h),1);
+    $("rVd").textContent=Math.abs(v)<0.5?"OK":(v>0?"cm trop haut":"cm trop bas");$("rHd").textContent=Math.abs(h)<0.5?"OK":(h>0?"cm trop à droite":"cm trop à gauche");
+    $("rVa").textContent=Math.abs(v)<0.5?"":v>0?"guidon plus haut, ou hausse plus basse":"guidon plus bas (limer), ou hausse plus haute";
+    $("rHa").textContent=Math.abs(h)<0.5?"":h>0?"hausse vers la gauche, ou guidon vers la droite":"hausse vers la droite, ou guidon vers la gauche";
+    $("zInfo").textContent=`Visée ouverte : on déplace la hausse dans le sens où l'on veut amener les impacts, et le guidon dans le sens inverse. Déplacement à faire sur l'arme ≈ écart (cm) × distance hausse–guidon (cm) ÷ (distance de tir en cm). Sans réglage possible, visez du même écart dans le sens opposé.`+
+      (Math.abs(d-p.zero)>0.5?` Attention : vous tirez à ${d} m alors que le zéro prévu est à ${p.zero} m.`:"");return;}
   $("zInfo").textContent=`À ${d} m, 1 clic = ${cm1.toFixed(2)} cm. Tournez la tourelle dans le sens indiqué (repères U/D, L/R gravés sur la tourelle).`+
     (Math.abs(d-p.zero)>0.5?` Attention : vous tirez à ${d} m alors que le zéro prévu est à ${p.zero} m.`:"");
 }
@@ -1238,7 +1270,7 @@ const radTo=(rad,u)=>u==="MOA"?rad/DEG*60:rad*1000;
 function drawReticle(){
   const I=retInfo(),u=I.u,W=rc.width,c=W/2,k=I.k;
   // champ affiché (en unités vraies du réticule)
-  let hold=null;if(LAST)hold={x:radTo(-LAST.wRad,u),y:radTo(-LAST.eRad,u)};
+  let hold=null;if(LAST)hold={x:radTo(-(LAST.wRad+(LAST.lRad||0)),u),y:radTo(-LAST.eRad,u)};
   const base=u==="MOA"?30:10;
   let half=base;if(S.retZoom)half=S.retZoom;else if(hold)half=Math.max(base*0.5,Math.min(base*3,Math.max(Math.abs(hold.x),Math.abs(hold.y))*1.25));
   half=Math.max(half,u==="MOA"?3:1);
@@ -1369,7 +1401,7 @@ function drawReticle(){
     const sideTxt=Math.abs(hx)<(u==="MOA"?0.5:0.05)?"":` et ${fx(Math.abs(hx),u==="MOA"?1:2)} ${u==="MOA"?"MOA":"mil"} ${hx>0?"à droite":"à gauche"}`;
     $("rHold").innerHTML=`<b>Tenue pour ${fx(LAST.D,0)} m</b> (onglet Tir) : placez la cible sur le point orange, `+
       `${fx(Math.abs(hy),u==="MOA"?1:2)} ${u==="MOA"?"MOA":"mil"} ${hy<=0?"sous le":"au-dessus du"} centre${sideTxt} (graduations du réticule${I.focal==="SFP"?` à ×${I.mag}`:""}). `+
-      `Ou bien affichez les clics aux tourelles et visez au centre.`+(u!==p.unit?` <span class="warn">Attention : réticule en ${u}, tourelles en ${p.unit}.</span>`:"");
+      (LAST.lRad?`Avance pour la cible mobile comprise : elle se prend au réticule, pas aux tourelles.`:`Ou bien affichez les clics aux tourelles et visez au centre.`)+(u!==p.unit?` <span class="warn">Attention : réticule en ${u}, tourelles en ${p.unit}.</span>`:"");
   }else $("rHold").textContent="Renseignez une distance dans l'onglet Tir pour voir le point de visée.";
   // estimation de distance
   const read=num("rRead")*k,size=num("rSize");let d=0;
@@ -1382,6 +1414,7 @@ let rDistVal=0;
 $("rUse").onclick=()=>{if(rDistVal){$("tDist").value=Math.round(rDistVal);S.target=null;drawMarkers();compute();save();document.querySelector('nav button[data-t=tir]').click();}};
 $("rZoomIn").onclick=()=>{const I=retInfo();S.retZoom=Math.max(I.u==="MOA"?3:1,(S.retZoom||(I.u==="MOA"?30:10))/1.5);drawReticle();save();};
 $("rZoomOut").onclick=()=>{const I=retInfo();S.retZoom=Math.min(I.u==="MOA"?120:40,(S.retZoom||(I.u==="MOA"?30:10))*1.5);drawReticle();save();};
+document.querySelectorAll("#mvPre button").forEach(b=>b.onclick=()=>{$("mvS").value=b.dataset.s;if(b.dataset.d){$("tDist").value=b.dataset.d;S.target=null;drawMarkers();}$("mvA").value=90;compute();save();});
 $("rFit").onclick=()=>{S.retZoom=0;drawReticle();save();};
 // zoom à deux doigts sur le réticule (la page, elle, ne zoome pas)
 var retHalf=10,pinch=null;
