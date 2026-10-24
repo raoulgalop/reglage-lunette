@@ -74,7 +74,7 @@ class DopeView extends WatchUi.View {
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
         var info = (s["ws"] > 0 ? "" + s["ws"] + " km/h " + s["wc"] + " h · " : "") + s["temp"] + "°C · " + a.pUsed.format("%.0f") + " hPa";
         dc.drawText(cx, h * 0.85, Graphics.FONT_XTINY, info, CJ);
-        dc.drawText(cx, h * 0.92, Graphics.FONT_XTINY, "zéro " + s["zero"] + " m", CJ);
+        dc.drawText(cx, h * 0.92, Graphics.FONT_XTINY, "zéro " + a.get("zero") + " m · " + a.fmt("bc", a.get("bc")), CJ);
     }
 }
 

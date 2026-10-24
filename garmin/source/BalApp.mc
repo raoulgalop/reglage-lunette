@@ -4,7 +4,7 @@ import Toybox.Lang;
 import Toybox.Math;
 import Toybox.WatchUi;
 
-const TABLE_MAX = 400;  // portée maximale calculée (m)
+const TABLE_MAX = 600;  // portée maximale calculée (m)
 const TABLE_STEP = 5;   // pas de la trajectoire stockée (m)
 
 class BalApp extends Application.AppBase {
@@ -37,22 +37,23 @@ class BalApp extends Application.AppBase {
             "prof" => 0, "dist" => 100, "step" => 5,
             "ws" => 0, "wc" => 3, "temp" => 15,
             "pAuto" => true, "press" => 1013,
-            "zero" => 50, "sight" => 5.0, "moa" => false, "click" => 0.1,
+            "moa" => false, "click" => 0.1,
             "dFrom" => 100, "dTo" => 300, "dStep" => 25,
+            // munition : [nom, V0 (m/s), CB, table 1 = G1 / 7 = G7, distance de zéro (m), hauteur lunette / canon (cm)]
             "profs" => [
-                ["SK Standard Plus", 327, 0.167],
-                ["SK Rifle Match", 327, 0.167],
-                ["SK Long Range Match", 335, 0.155],
-                ["SK High Velocity Match", 385, 0.192],
-                ["Lapua Center-X", 327, 0.172],
-                ["Lapua Midas+", 327, 0.172],
-                ["Lapua X-Act", 327, 0.172],
-                ["Top Shot SV Target", 326, 0.167],
-                ["Geco Semi Auto", 350, 0.151],
-                ["RWS R50", 330, 0.136],
-                ["CCI Standard Velocity", 326, 0.120],
-                ["Perso 1", 330, 0.150],
-                ["Perso 2", 330, 0.150]
+                ["SK Standard Plus", 327, 0.167, 1, 50, 5.0],
+                ["SK Rifle Match", 327, 0.167, 1, 50, 5.0],
+                ["SK Long Range Match", 335, 0.155, 1, 50, 5.0],
+                ["SK High Velocity Match", 385, 0.192, 1, 50, 5.0],
+                ["Lapua Center-X", 327, 0.172, 1, 50, 5.0],
+                ["Lapua Midas+", 327, 0.172, 1, 50, 5.0],
+                ["Lapua X-Act", 327, 0.172, 1, 50, 5.0],
+                ["Top Shot SV Target", 326, 0.167, 1, 50, 5.0],
+                ["Geco Semi Auto", 350, 0.151, 1, 50, 5.0],
+                ["RWS R50", 330, 0.136, 1, 50, 5.0],
+                ["CCI Standard Velocity", 326, 0.120, 1, 50, 5.0],
+                ["Perso 1", 330, 0.150, 1, 50, 5.0],
+                ["Perso 2", 330, 0.150, 1, 50, 5.0]
             ]
         };
     }
@@ -67,6 +68,19 @@ class BalApp extends Application.AppBase {
             }
         }
         if (s["prof"] >= s["profs"].size()) { s["prof"] = 0; }
+        // anciennes fiches à 3 champs : ajouter table G1, zéro et hauteur
+        for (var i = 0; i < s["profs"].size(); i++) {
+            var p = s["profs"][i];
+            if (p.size() < 6) {
+                var z = 50;
+                var h = 5.0;
+                if (st instanceof Dictionary) {
+                    if (st["zero"] != null) { z = st["zero"]; }
+                    if (st["sight"] != null) { h = st["sight"]; }
+                }
+                s["profs"][i] = [p[0], p[1], p[2], 1, z, h];
+            }
+        }
     }
 
     function save() {
@@ -77,15 +91,24 @@ class BalApp extends Application.AppBase {
         return s["profs"][s["prof"]];
     }
 
+    // index des champs propres à la munition choisie
+    function pIdx(key) {
+        if (key.equals("v0")) { return 1; }
+        if (key.equals("bc")) { return 2; }
+        if (key.equals("g")) { return 3; }
+        if (key.equals("zero")) { return 4; }
+        if (key.equals("sight")) { return 5; }
+        return -1;
+    }
+
     function get(key) {
-        if (key.equals("v0")) { return prof()[1]; }
-        if (key.equals("bc")) { return prof()[2]; }
-        return s[key];
+        var i = pIdx(key);
+        return i > 0 ? prof()[i] : s[key];
     }
 
     function set(key, val) {
-        if (key.equals("v0")) { prof()[1] = val; }
-        else if (key.equals("bc")) { prof()[2] = val; }
+        var i = pIdx(key);
+        if (i > 0) { prof()[i] = val; }
         else { s[key] = val; }
         if (s["dTo"] < s["dFrom"]) { s["dTo"] = s["dFrom"]; }
         recompute();
@@ -108,8 +131,10 @@ class BalApp extends Application.AppBase {
     function recompute() {
         pUsed = pressure();
         var at = Bal.atmo(s["temp"].toFloat(), pUsed);
-        var p = [prof()[1].toFloat(), prof()[2].toFloat(), s["sight"].toFloat() / 100.0, at[0], at[1]];
-        var a = Bal.zeroAngle(p, s["zero"].toFloat());
+        var pr = prof();
+        var p = [pr[1].toFloat(), pr[2].toFloat(), pr[5].toFloat() / 100.0, at[0], at[1]];
+        Bal.useG7(pr[3] == 7);
+        var a = Bal.zeroAngle(p, pr[4].toFloat());
         tbl = Bal.fly(p, a, TABLE_MAX.toFloat(), TABLE_STEP.toFloat());
     }
 
@@ -175,7 +200,8 @@ class BalApp extends Application.AppBase {
         if (key.equals("click")) { return v.format(v < 0.1 || s["moa"] ? "%.3f" : "%.2f") + (s["moa"] ? " MOA" : " MRAD"); }
         if (key.equals("step") || key.equals("dFrom") || key.equals("dTo") || key.equals("dStep")) { return "" + v + " m"; }
         if (key.equals("v0")) { return "" + v + " m/s"; }
-        if (key.equals("bc")) { return v.format("%.3f"); }
+        if (key.equals("bc")) { return v.format("%.3f") + (prof()[3] == 7 ? " (G7)" : " (G1)"); }
+        if (key.equals("g")) { return v == 7 ? "G7" : "G1"; }
         return v.toString();
     }
 
@@ -190,12 +216,12 @@ class BalApp extends Application.AppBase {
         if (key.equals("temp")) { return ["Température", -25, 50, 1, 0]; }
         if (key.equals("press")) { return ["Pression", 700, 1100, 1, 0]; }
         if (key.equals("zero")) { return ["Distance de zéro", 10, 300, 5, 0]; }
-        if (key.equals("sight")) { return ["Hauteur lunette / canon", 1.0, 15.0, 0.1, 1]; }
+        if (key.equals("sight")) { return ["Haut. lunette / canon", 1.0, 15.0, 0.1, 1]; }
         if (key.equals("dFrom")) { return ["Table : de", 10, TABLE_MAX, 5, 0]; }
         if (key.equals("dTo")) { return ["Table : à", 10, TABLE_MAX, 5, 0]; }
         if (key.equals("dStep")) { return ["Table : pas", 5, 100, 5, 0]; }
         if (key.equals("v0")) { return ["V0 (m/s)", 150, 1200, 1, 0]; }
-        if (key.equals("bc")) { return ["CB G1", 0.05, 1.0, 0.001, 3]; }
+        if (key.equals("bc")) { return ["CB " + (prof()[3] == 7 ? "G7" : "G1"), 0.03, 1.2, 0.001, 3]; }
         return null;
     }
 }

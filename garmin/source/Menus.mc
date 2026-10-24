@@ -4,8 +4,8 @@ import Toybox.Math;
 import Toybox.System;
 import Toybox.WatchUi;
 
-const MENU_KEYS = ["prof", "sight", "ws", "wc", "temp", "pAuto", "press", "zero", "moa", "click", "step", "dFrom", "dTo", "dStep", "v0", "bc"];
-const MENU_NAMES = ["Munition", "Hauteur lunette / canon", "Vent (vitesse)", "Vent (direction)", "Température", "Pression auto", "Pression manuelle", "Distance de zéro", "Unité", "Valeur du clic", "Pas de distance", "Table : de", "Table : à", "Table : pas", "V0 de la munition", "CB G1 de la munition"];
+const MENU_KEYS = ["prof", "v0", "bc", "g", "zero", "sight", "moa", "click", "ws", "wc", "temp", "pAuto", "press", "step", "dFrom", "dTo", "dStep"];
+const MENU_NAMES = ["Munition", "V0 munition", "CB munition", "Modèle G1 / G7", "Zéro munition", "Haut. lunette / canon", "Unité MRAD / MOA", "Valeur du clic", "Vent (vitesse)", "Vent (direction)", "Température", "Pression auto", "Pression manuelle", "Pas de distance", "Table : de", "Table : à", "Table : pas"];
 
 function openMenu() {
     var a = app();
@@ -51,9 +51,12 @@ class MenuDelegate extends WatchUi.Menu2InputDelegate {
             var m = new WatchUi.Menu2({:title => "Munition"});
             for (var i = 0; i < s["profs"].size(); i++) {
                 var p = s["profs"][i];
-                m.addItem(new WatchUi.MenuItem(p[0], "" + p[1] + " m/s · CB " + p[2].format("%.3f"), i, null));
+                m.addItem(new WatchUi.MenuItem(p[0], "" + p[1] + " m/s · " + (p[3] == 7 ? "G7 " : "G1 ") + p[2].format("%.3f") + " · zéro " + p[4] + " m", i, null));
             }
             WatchUi.pushView(m, new ProfDelegate(self), WatchUi.SLIDE_LEFT);
+        } else if (key.equals("g")) {
+            a.set("g", a.get("g") == 7 ? 1 : 7);
+            refresh();
         } else if (key.equals("pAuto")) {
             a.set("pAuto", !s["pAuto"]);
             refresh();

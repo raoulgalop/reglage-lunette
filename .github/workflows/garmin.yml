@@ -50,6 +50,8 @@ jobs:
           command -v Xvfb >/dev/null && command -v xdotool >/dev/null && command -v convert >/dev/null || \
             (apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq xvfb xdotool imagemagick x11-apps >/dev/null)
           export DISPLAY=:99
+          echo "HOME=$HOME"; export HOME=/root
+          ls /root/.Garmin/ConnectIQ/Devices/epix2
           pgrep Xvfb >/dev/null || (Xvfb :99 -screen 0 1280x1024x24 & sleep 3)
           SIM=$(find /connectiq/bin -name simulator -type f | head -1)
           "$SIM" > /tmp/sim.log 2>&1 &

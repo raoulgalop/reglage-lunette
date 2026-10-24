@@ -31,13 +31,19 @@ la montre donne les clics d'élévation et de vent.
 
 ## Réglages (menu)
 
-Munition (13 profils : SK Standard Plus, Rifle Match, Long Range Match, High Velocity Match ; Lapua Center-X, Midas+, X-Act ;
-Top Shot SV Target ; Geco Semi Auto ; RWS R50 ; CCI Standard Velocity ; Perso 1 et 2, avec V0 et CB modifiables),
-hauteur lunette / canon (5 cm par défaut, réglable de 1 à 15 cm au millimètre), vent, température, pression (baromètre de la montre ou manuelle), distance de zéro (50 m par défaut), unité MRAD/MOA, valeur du clic (0,1 MRAD), pas de distance (5 m) et bornes de la table DOPE (100 à 300 m par 25 m).
+Chaque **munition** est un profil complet, modifiable sur la montre : V0, CB, modèle de traînée **G1 ou G7**,
+**distance de zéro** et **hauteur entre le centre de la lunette et le centre du canon** (au millimètre, 5 cm par défaut).
+13 profils fournis : SK Standard Plus, Rifle Match, Long Range Match, High Velocity Match ; Lapua Center-X, Midas+, X-Act ;
+Top Shot SV Target ; Geco Semi Auto ; RWS R50 ; CCI Standard Velocity ; Perso 1 et 2 (tous en G1, zéro 50 m).
+Passer un profil en G7 ne convertit pas le CB : saisir le CB G7 du fabricant.
+
+Réglages communs : unité **MRAD ou MOA** et valeur du clic (0,1 / 0,05 / 0,2 MRAD ou 1/4, 1/8, 1/2, 1 MOA),
+vent (vitesse et direction en heures), température, pression (baromètre de la montre ou manuelle),
+pas de distance de l'écran principal (1, 5, 10 ou 25 m, distances de 10 à 600 m) et table DOPE (de, à, pas).
 
 ## Calcul
 
-Même modèle que Réglage Lunette : point matériel, table de traînée G1, air à 50 % d'humidité, zéro calculé avec les
+Même modèle que Réglage Lunette : point matériel, table de traînée G1 (ou G7), air à 50 % d'humidité, zéro calculé avec les
 conditions du jour. Le vent traversier utilise la formule du retard (dérive = vent × (temps de vol − distance / V0)).
 Écart avec l'appli Android inférieur à 0,01 mrad de 100 à 300 m. Coriolis et angle de site ne sont pas pris en compte.
 
