@@ -68,6 +68,16 @@ tr.zero td{color:var(--ok)}
 </style>
 </head>
 <body>
+<div id="apkBar" style="display:none;position:relative;z-index:2000;background:#14532d;color:#fff;padding:10px 40px 10px 12px;padding-top:calc(10px + env(safe-area-inset-top));font-size:15px">
+  📱 Android : <a href="ReglageLunette.apk" download="ReglageLunette.apk" style="color:#fde68a;font-weight:700">Télécharger l'appli (APK v4.8)</a>
+  <div style="font-size:12px;opacity:.85;margin-top:3px">Ouvrez ensuite le fichier téléchargé et autorisez l'installation depuis le navigateur si Android le demande. Vos réglages du site ne sont pas repris dans l'appli.</div>
+  <button id="apkX" aria-label="Fermer" style="position:absolute;right:6px;top:calc(6px + env(safe-area-inset-top));background:none;border:0;color:#fff;font-size:20px">✕</button>
+</div>
+<script>(function(){ // proposé seulement dans un navigateur Android, pas dans l'appli elle-même
+  var hide=false;try{hide=localStorage.getItem("apkBarOff")==="4.8";}catch(e){}
+  if(/Android/i.test(navigator.userAgent)&&!window.Android&&/^https?:/.test(location.protocol)&&!hide)document.getElementById("apkBar").style.display="";
+  document.getElementById("apkX").onclick=function(){document.getElementById("apkBar").style.display="none";try{localStorage.setItem("apkBarOff","4.8");}catch(e){}};
+})();</script>
 <header>
   <h1>🎯 Réglage Lunette</h1>
   <div id="setupLine"></div>
