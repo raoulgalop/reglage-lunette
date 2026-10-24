@@ -24,6 +24,23 @@ function openMenu() {
     WatchUi.pushView(m, new MenuDelegate(m), WatchUi.SLIDE_UP);
 }
 
+// Catalogue : liste des calibres (parent = menu des réglages à rafraîchir, ou null)
+function openCatalogue(parent) {
+    System.println("catalogue : chargement");
+    var data = WatchUi.loadResource(Rez.JsonData.Ammo);
+    System.println("catalogue : " + data["a"].size() + " munitions");
+    var cals = data["c"];
+    var n = new [cals.size()];
+    for (var i = 0; i < n.size(); i++) { n[i] = 0; }
+    var am = data["a"];
+    for (var i = 0; i < am.size(); i++) { n[am[i][0]] += 1; }
+    var m = new WatchUi.Menu2({:title => "Calibre"});
+    for (var i = 0; i < cals.size(); i++) {
+        if (n[i] > 0) { m.addItem(new WatchUi.MenuItem(cals[i], "" + n[i] + " munition" + (n[i] > 1 ? "s" : ""), i, null)); }
+    }
+    WatchUi.pushView(m, new CalDelegate(parent, data), WatchUi.SLIDE_LEFT);
+}
+
 // Choix dans une liste fixe : la valeur suivante à chaque appui
 function nextIn(list, v) {
     for (var i = 0; i < list.size(); i++) {
@@ -56,19 +73,7 @@ class MenuDelegate extends WatchUi.Menu2InputDelegate {
         var s = a.s;
         var key = item.getId();
         if (key.equals("cat")) {
-            System.println("catalogue : chargement");
-            var data = WatchUi.loadResource(Rez.JsonData.Ammo);
-            System.println("catalogue : " + data["a"].size() + " munitions");
-            var cals = data["c"];
-            var n = new [cals.size()];
-            for (var i = 0; i < n.size(); i++) { n[i] = 0; }
-            var am = data["a"];
-            for (var i = 0; i < am.size(); i++) { n[am[i][0]] += 1; }
-            var m = new WatchUi.Menu2({:title => "Calibre"});
-            for (var i = 0; i < cals.size(); i++) {
-                if (n[i] > 0) { m.addItem(new WatchUi.MenuItem(cals[i], "" + n[i] + " munition" + (n[i] > 1 ? "s" : ""), i, null)); }
-            }
-            WatchUi.pushView(m, new CalDelegate(self, data), WatchUi.SLIDE_LEFT);
+            openCatalogue(self);
         } else if (key.equals("markSh") || key.equals("markTg")) {
             toast(key.equals("markSh") ? a.markShooter() : a.markTarget());
             refresh();
@@ -180,7 +185,7 @@ class AmmoDelegate extends WatchUi.Menu2InputDelegate {
         a.recompute();
         a.save();
         toast("munition " + (a.s["prof"] + 1) + " : " + r[1]);
-        parent.refresh();
+        if (parent != null) { parent.refresh(); }
         WatchUi.popView(WatchUi.SLIDE_RIGHT);
         WatchUi.popView(WatchUi.SLIDE_RIGHT);
     }
