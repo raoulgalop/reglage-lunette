@@ -5,11 +5,19 @@ import Toybox.System;
 import Toybox.WatchUi;
 
 const MENU_KEYS = ["prof", "v0", "bc", "g", "zero", "sight", "moa", "click", "ws", "wc", "corOn", "azSens", "az", "gpsAuto", "lat", "temp", "pAuto", "press", "step", "dFrom", "dTo", "dStep"];
-const MENU_NAMES = ["Munition", "V0 munition", "CB munition", "Modèle G1 / G7", "Zéro munition", "Haut. lunette / canon", "Unité MRAD / MOA", "Valeur du clic", "Vent (vitesse)", "Vent (direction)", "Coriolis", "Cap boussole → azimut", "Azimut de tir", "Latitude par GPS", "Latitude", "Température", "Pression auto", "Pression manuelle", "Pas de distance", "Table : de", "Table : à", "Table : pas"];
+const MENU_NAMES = ["Munition", "V0 munition", "CB munition", "Modèle G1 / G7", "Zéro munition", "Haut. lunette / canon", "Unité MRAD / MOA", "Valeur du clic", "Vent (vitesse)", "Vent (direction)", "Coriolis", "Cap boussole = azimut", "Azimut de tir", "Latitude par GPS", "Latitude", "Température", "Pression auto", "Pression manuelle", "Pas de distance", "Table : de", "Table : à", "Table : pas"];
+
+// Actions en tête du menu (avant les réglages de MENU_KEYS)
+const ACT_IDS = ["cat", "markSh", "markTg", "clrGps"];
+const ACT_NAMES = ["Catalogue munitions", "Je suis au poste de tir", "Je suis à la cible", "Effacer poste / cible"];
+const ACT_SUBS = ["remplit la munition choisie", "position GPS du tireur", "distance + azimut par GPS", "revenir à l'azimut saisi"];
 
 function openMenu() {
     var a = app();
     var m = new WatchUi.Menu2({:title => "Réglages"});
+    for (var i = 0; i < ACT_IDS.size(); i++) {
+        m.addItem(new WatchUi.MenuItem(ACT_NAMES[i], ACT_SUBS[i], ACT_IDS[i], null));
+    }
     for (var i = 0; i < MENU_KEYS.size(); i++) {
         m.addItem(new WatchUi.MenuItem(MENU_NAMES[i], a.label(MENU_KEYS[i]), MENU_KEYS[i], null));
     }
@@ -37,7 +45,7 @@ class MenuDelegate extends WatchUi.Menu2InputDelegate {
     function refresh() {
         var a = app();
         for (var i = 0; i < MENU_KEYS.size(); i++) {
-            var it = menu.getItem(i);
+            var it = menu.getItem(i + ACT_IDS.size());
             if (it != null) { it.setSubLabel(a.label(MENU_KEYS[i])); }
         }
         WatchUi.requestUpdate();
@@ -47,7 +55,27 @@ class MenuDelegate extends WatchUi.Menu2InputDelegate {
         var a = app();
         var s = a.s;
         var key = item.getId();
-        if (key.equals("prof")) {
+        if (key.equals("cat")) {
+            var data = WatchUi.loadResource(Rez.JsonData.Ammo);
+            var cals = data["c"];
+            var n = new [cals.size()];
+            for (var i = 0; i < n.size(); i++) { n[i] = 0; }
+            var am = data["a"];
+            for (var i = 0; i < am.size(); i++) { n[am[i][0]] += 1; }
+            var m = new WatchUi.Menu2({:title => "Calibre"});
+            for (var i = 0; i < cals.size(); i++) {
+                if (n[i] > 0) { m.addItem(new WatchUi.MenuItem(cals[i], "" + n[i] + " munition" + (n[i] > 1 ? "s" : ""), i, null)); }
+            }
+            WatchUi.pushView(m, new CalDelegate(self, data), WatchUi.SLIDE_LEFT);
+        } else if (key.equals("markSh") || key.equals("markTg")) {
+            toast(key.equals("markSh") ? a.markShooter() : a.markTarget());
+            refresh();
+            WatchUi.popView(WatchUi.SLIDE_DOWN);
+        } else if (key.equals("clrGps")) {
+            a.clearTarget();
+            toast("poste et cible effacés");
+            refresh();
+        } else if (key.equals("prof")) {
             var m = new WatchUi.Menu2({:title => "Munition"});
             for (var i = 0; i < s["profs"].size(); i++) {
                 var p = s["profs"][i];
@@ -97,6 +125,61 @@ class ProfDelegate extends WatchUi.Menu2InputDelegate {
     function onSelect(item) {
         app().set("prof", item.getId());
         parent.refresh();
+        WatchUi.popView(WatchUi.SLIDE_RIGHT);
+    }
+}
+
+// Catalogue : liste des munitions d'un calibre
+class CalDelegate extends WatchUi.Menu2InputDelegate {
+
+    var parent;
+    var data;
+
+    function initialize(p, d) {
+        Menu2InputDelegate.initialize();
+        parent = p;
+        data = d;
+    }
+
+    function onSelect(item) {
+        var c = item.getId();
+        var am = data["a"];
+        var m = new WatchUi.Menu2({:title => data["c"][c]});
+        for (var i = 0; i < am.size(); i++) {
+            var r = am[i];
+            if (r[0] == c) {
+                m.addItem(new WatchUi.MenuItem(r[1], "" + r[2] + " m/s · G1 " + r[3].format("%.3f") + (r[4] == 1 ? " (estimé)" : ""), i, null));
+            }
+        }
+        WatchUi.pushView(m, new AmmoDelegate(parent, am), WatchUi.SLIDE_LEFT);
+    }
+}
+
+// Choix d'une munition : remplace nom, V0 et CB du profil en cours (zéro et hauteur gardés)
+class AmmoDelegate extends WatchUi.Menu2InputDelegate {
+
+    var parent;
+    var am;
+
+    function initialize(p, a) {
+        Menu2InputDelegate.initialize();
+        parent = p;
+        am = a;
+    }
+
+    function onSelect(item) {
+        var a = app();
+        var r = am[item.getId()];
+        var p = a.prof();
+        p[0] = r[1];
+        p[1] = r[2].toNumber();
+        p[2] = r[3].toFloat();
+        p[3] = 1;
+        a.recompute();
+        a.save();
+        toast("munition " + (a.s["prof"] + 1) + " : " + r[1]);
+        parent.refresh();
+        WatchUi.popView(WatchUi.SLIDE_RIGHT);
         WatchUi.popView(WatchUi.SLIDE_RIGHT);
     }
 }

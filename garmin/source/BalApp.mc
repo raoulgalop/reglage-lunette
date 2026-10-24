@@ -4,6 +4,7 @@ import Toybox.Lang;
 import Toybox.Math;
 import Toybox.Position;
 import Toybox.Sensor;
+import Toybox.Weather;
 import Toybox.WatchUi;
 
 const TABLE_MAX = 600;  // portée maximale calculée (m)
@@ -12,7 +13,8 @@ const N_PROFS = 20;     // munitions (voir tools/gen_settings.py)
 const OMEGA = 7.292115e-5;  // rotation de la Terre (rad/s)
 
 // Réglages communs, lus et écrits dans Application.Properties (modifiables aussi depuis Connect IQ sur le téléphone)
-const KEYS = ["prof", "moa", "click", "dist", "step", "dFrom", "dTo", "dStep", "ws", "wc", "temp", "pAuto", "press", "corOn", "gpsAuto", "lat", "az"];
+const KEYS = ["prof", "moa", "click", "dist", "step", "dFrom", "dTo", "dStep", "ws", "wc", "temp", "pAuto", "press", "corOn", "gpsAuto", "lat", "az", "shLat", "shLon", "tgLat", "tgLon"];
+const R_EARTH = 6371000.0;
 // Champs de chaque munition : p<n><suffixe>
 const PSUF = ["n", "v", "b", "g", "z", "h"];
 
@@ -22,6 +24,7 @@ class BalApp extends Application.AppBase {
     var tbl;        // [ys, ts] tous les TABLE_STEP mètres
     var tI;         // intégrale du temps de vol sur la distance (m·s), pour Coriolis
     var gpsOk = false;   // latitude venue du GPS
+    var atm = [1.0, 340.0];  // [rapport de densité de l'air, vitesse du son] du dernier calcul
     var pUsed = 1013.0;  // pression utilisée pour le dernier calcul (hPa)
     var pAutoOk = false; // baromètre de la montre disponible
 
@@ -125,6 +128,7 @@ class BalApp extends Application.AppBase {
         Bal.useG7(pr[3] == 7);
         var a = Bal.zeroAngle(p, pr[4].toFloat());
         tbl = Bal.fly(p, a, TABLE_MAX.toFloat(), TABLE_STEP.toFloat());
+        atm = at;
         // Coriolis : dz/dt = 2Ω sin(lat) · vx · t (la traînée freine aussi la dérive), donc z = 2Ω sin(lat) · ∫ t dx
         var ts = tbl[1];
         tI = new [ts.size()];
@@ -169,6 +173,141 @@ class BalApp extends Application.AppBase {
         return d < 0 ? d + 360 : d;
     }
 
+    // ---------- poste de tir et cible ----------
+    // Position GPS actuelle [lat, lon] en degrés, ou null
+    function here() {
+        var info = Position.getInfo();
+        if (info == null || info.position == null || info.accuracy == Position.QUALITY_NOT_AVAILABLE) { return null; }
+        var d = info.position.toDegrees();
+        if (d[0].abs() < 0.0001 && d[1].abs() < 0.0001) { return null; }
+        return d;
+    }
+
+    function shooter() {
+        if (s["shLat"] != 0.0 || s["shLon"] != 0.0) { return [s["shLat"], s["shLon"]]; }
+        return here();
+    }
+
+    // Cible mémorisée, sinon projetée depuis le tireur avec l'azimut et la distance
+    function target() {
+        if (s["tgLat"] != 0.0 || s["tgLon"] != 0.0) { return [s["tgLat"], s["tgLon"]]; }
+        var sh = shooter();
+        if (sh == null) { return null; }
+        var la = Math.toRadians(sh[0]);
+        var az = Math.toRadians(s["az"].toFloat());
+        var d = s["dist"].toFloat();
+        return [sh[0] + Math.toDegrees(d * Math.cos(az) / R_EARTH), sh[1] + Math.toDegrees(d * Math.sin(az) / (R_EARTH * Math.cos(la)))];
+    }
+
+    // Distance (m) et azimut (°) de p1 vers p2
+    function distAz(p1, p2) {
+        var f1 = Math.toRadians(p1[0]);
+        var f2 = Math.toRadians(p2[0]);
+        var dl = Math.toRadians(p2[1] - p1[1]);
+        var df = f2 - f1;
+        var x = Math.sin(df / 2) * Math.sin(df / 2) + Math.cos(f1) * Math.cos(f2) * Math.sin(dl / 2) * Math.sin(dl / 2);
+        var d = 2 * R_EARTH * Math.asin(Math.sqrt(x));
+        var b = Math.toDegrees(Math.atan2(Math.sin(dl) * Math.cos(f2), Math.cos(f1) * Math.sin(f2) - Math.sin(f1) * Math.cos(f2) * Math.cos(dl)));
+        return [d, (Math.round(b).toNumber() + 360) % 360];
+    }
+
+    // « Je suis au poste de tir » / « Je suis à la cible » : renvoie un message
+    function markShooter() {
+        var p = here();
+        if (p == null) { return "pas de position GPS"; }
+        s["shLat"] = p[0].toFloat();
+        s["shLon"] = p[1].toFloat();
+        s["lat"] = s["shLat"];
+        gpsOk = true;
+        if (s["tgLat"] != 0.0 || s["tgLon"] != 0.0) { applyTarget(); }
+        save();
+        recompute();
+        return "poste de tir mémorisé";
+    }
+
+    function markTarget() {
+        var p = here();
+        if (p == null) { return "pas de position GPS"; }
+        if (s["shLat"] == 0.0 && s["shLon"] == 0.0) { return "mémorisez d'abord le poste de tir"; }
+        s["tgLat"] = p[0].toFloat();
+        s["tgLon"] = p[1].toFloat();
+        applyTarget();
+        save();
+        recompute();
+        return "cible à " + s["dist"] + " m, azimut " + s["az"] + "°";
+    }
+
+    function applyTarget() {
+        var r = distAz([s["shLat"], s["shLon"]], [s["tgLat"], s["tgLon"]]);
+        var d = Math.round(r[0]).toNumber();
+        s["dist"] = d < 10 ? 10 : (d > TABLE_MAX ? TABLE_MAX : d);
+        s["az"] = r[1];
+    }
+
+    function clearTarget() {
+        s["tgLat"] = 0.0;
+        s["tgLon"] = 0.0;
+        s["shLat"] = 0.0;
+        s["shLon"] = 0.0;
+        save();
+    }
+
+    // ---------- météo ----------
+    // Conditions Garmin (téléphone) : [température °C, vent km/h, d'où vient le vent (°), humidité %] ou null
+    function garminWeather() {
+        if (!(Toybox has :Weather)) { return null; }
+        var c = Weather.getCurrentConditions();
+        if (c == null) { return null; }
+        return [c.temperature, c.windSpeed == null ? null : c.windSpeed * 3.6, c.windBearing, c.relativeHumidity];
+    }
+
+    function applyWeather() {
+        var w = garminWeather();
+        if (w == null) { return "météo Garmin indisponible"; }
+        if (w[0] != null) { s["temp"] = Math.round(w[0]).toNumber(); }
+        if (w[1] != null) { s["ws"] = Math.round(w[1]).toNumber(); }
+        if (w[2] != null) {
+            var rel = ((w[2].toNumber() - s["az"]) % 360 + 360) % 360;
+            var c = Math.round(rel / 30.0).toNumber() % 12;
+            s["wc"] = c == 0 ? 12 : c;
+        }
+        save();
+        recompute();
+        return "météo appliquée";
+    }
+
+    // Température du capteur de la montre (faussée par le poignet), altitude (m)
+    function sensorTemp() {
+        var si = Sensor.getInfo();
+        return si != null ? si.temperature : null;
+    }
+
+    function altitude() {
+        var ai = Activity.getActivityInfo();
+        if (ai != null && ai.altitude != null) { return ai.altitude; }
+        var pi = Position.getInfo();
+        return pi != null ? pi.altitude : null;
+    }
+
+    // Dérive due au vent seul à d mètres (m, + = vers la gauche si le vent vient de droite)
+    function windDrift(d) {
+        var i = d / TABLE_STEP;
+        var ts = tbl[1];
+        if (i + 1 >= ts.size() || ts[i] == null || ts[i + 1] == null) { return null; }
+        var f = (d - i * TABLE_STEP).toFloat() / TABLE_STEP;
+        var t = ts[i] + (ts[i + 1] - ts[i]) * f;
+        return windCross() * (t - d.toFloat() / prof()[1].toFloat());
+    }
+
+    // Vent traversier (m/s, + = venant de droite) et de face (+ = de face)
+    function windCross() {
+        return s["ws"].toFloat() / 3.6 * Math.sin(s["wc"] * Math.PI / 6.0);
+    }
+
+    function windHead() {
+        return s["ws"].toFloat() / 3.6 * Math.cos(s["wc"] * Math.PI / 6.0);
+    }
+
     // Recalcule si la pression du baromètre a bougé
     function refreshPressure() {
         if (s["pAuto"] && (pressure() - pUsed).abs() >= 1.0) { recompute(); }
@@ -194,8 +333,7 @@ class BalApp extends Application.AppBase {
         var df = d.toFloat();
         var e = -y / df * 1000.0;
         // vent traversier (formule du retard : dérive = Vt × (t − d / V0)), + = vers la gauche si le vent vient de droite
-        var wc = s["ws"].toFloat() / 3.6 * Math.sin(s["wc"] * Math.PI / 6.0);
-        var w = wc * (t - df / prof()[1].toFloat()) / df * 1000.0;
+        var w = windCross() * (t - df / prof()[1].toFloat()) / df * 1000.0;
         if (s["corOn"]) {
             // dérive vers la droite dans l'hémisphère nord, et vers le haut en tirant vers l'est (Eötvös) : on corrige à l'opposé
             var lat = Math.toRadians(s["lat"].toFloat());
@@ -243,7 +381,7 @@ class BalApp extends Application.AppBase {
         if (key.equals("bc")) { return v.format("%.3f") + (prof()[3] == 7 ? " (G7)" : " (G1)"); }
         if (key.equals("g")) { return v == 7 ? "G7" : "G1"; }
         if (key.equals("corOn")) { return v ? "oui" : "non"; }
-        if (key.equals("gpsAuto")) { return v ? (gpsOk ? "oui (position reçue)" : "oui (recherche…)") : "non"; }
+        if (key.equals("gpsAuto")) { return v ? (gpsOk ? "oui (position reçue)" : "oui (recherche...)") : "non"; }
         if (key.equals("lat")) { return v.abs().format("%.2f") + (v < 0 ? "° S" : "° N") + (gpsOk ? " (GPS)" : ""); }
         if (key.equals("az")) { return "" + v + "° (" + azTxt(v) + ")"; }
         if (key.equals("azSens")) { var h = heading(); return h == null ? "boussole indisponible" : "cap actuel " + h + "°"; }

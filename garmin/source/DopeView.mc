@@ -74,6 +74,7 @@ class DopeView extends WatchUi.View {
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
         var info = (s["ws"] > 0 ? "" + s["ws"] + " km/h " + s["wc"] + " h · " : "") + s["temp"] + "°C · " + a.pUsed.format("%.0f") + " hPa";
         dc.drawText(cx, h * 0.82, Graphics.FONT_XTINY, info, CJ);
+        pageDots(dc, 5);
         dc.drawText(cx, h * 0.88, Graphics.FONT_XTINY, "zéro " + a.get("zero") + " m · " + a.fmt("bc", a.get("bc")), CJ);
     }
 }
@@ -97,7 +98,19 @@ class DopeDelegate extends WatchUi.BehaviorDelegate {
         return true;
     }
 
-    function onSelect() {
+    function onSelect() {  // écran suivant : la carte, sinon retour au principal
+        if (WatchUi has :MapView) {
+            HOST.page = 6;
+            WatchUi.switchToView(new MapPage(), new MapDelegate(), WatchUi.SLIDE_LEFT);
+        } else {
+            HOST.page = 0;
+            WatchUi.popView(WatchUi.SLIDE_LEFT);
+        }
+        return true;
+    }
+
+    function onBack() {
+        HOST.page = 4;
         WatchUi.popView(WatchUi.SLIDE_RIGHT);
         return true;
     }

@@ -32,6 +32,9 @@ GLOBAL = [
     ("gpsAuto", "boolean", True, "Latitude par le GPS", ("bool",)),
     ("lat", "float", 45.0, "Latitude (°, négative au sud)", ("num", -90, 90)),
     ("az", "number", 0, "Azimut de tir (° depuis le nord)", ("num", 0, 359)),
+    # positions mémorisées sur la montre (0 = aucune), pas affichées sur le téléphone
+    ("shLat", "float", 0.0, "", None), ("shLon", "float", 0.0, "", None),
+    ("tgLat", "float", 0.0, "", None), ("tgLon", "float", 0.0, "", None),
 ]
 FIELDS = [  # suffixe, type, titre
     ("n", "string", "nom"), ("v", "number", "V0 (m/s)"), ("b", "float", "CB"),

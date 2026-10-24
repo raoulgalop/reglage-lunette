@@ -15,19 +15,31 @@ la montre donne les clics d'élévation et de vent.
 
 ## Utilisation
 
-| Bouton | Écran principal | Table DOPE | Éditeur de valeur |
-|---|---|---|---|
-| Haut | distance + pas | remonter | + |
-| Bas | distance − pas | descendre | − |
-| Start | ouvrir la table DOPE | revenir | valider |
-| Appui long sur Haut (Menu) | réglages | réglages | — |
-| Retour | quitter | revenir | annuler |
+Le bouton **Start** fait défiler les écrans (les points en bas indiquent l'écran affiché), **Retour** revient en arrière :
 
-À l'écran tactile : toucher le haut augmente la distance, le milieu ouvre la table, le bas ouvre les réglages.
+| # | Écran | Haut / Bas |
+|---|---|---|
+| 1 | **Principal** : clics d'élévation et de vent pour la distance | distance + / − pas |
+| 2 | **Vent** : rose en heures, flèche du vent, part traversière et de face, dérive à la distance | vitesse du vent |
+| 3 | **Boussole** : cap de la montre, azimut de tir (repère orange), Coriolis | Haut : cap = azimut · Bas : Coriolis oui/non |
+| 4 | **Météo** : température, capteur, pression, altitude, altitude densité, vitesse du son, météo Garmin du téléphone | Haut : appliquer la météo Garmin (température, vent) · Bas : baromètre auto/manuel |
+| 5 | **Trajectoire** : courbe de la balle par rapport à la ligne de visée, zéro et distance choisie | distance |
+| 6 | **Table DOPE** | défiler |
+| 7 | **Carte** : carte de la montre avec le poste de tir, la cible et la ligne de tir | Haut : ici = poste de tir · Bas : ici = cible |
+
+Appui long sur Haut (Menu) : réglages, depuis n'importe quel écran.
 
 - **Élévation** : nombre de clics et sens (⬆ HAUT / ⬇ BAS) à partir du zéro, plus la valeur en mil (ou MOA).
 - **Vent** : clics vers la DROITE ou la GAUCHE pour le vent réglé, plus la valeur en mil pour tenir au réticule.
 - **Direction du vent en heures** : 3 h = le vent vient de droite, 9 h = de gauche, 12 h = de face, 6 h = de dos.
+
+**Placer la cible** : Connect IQ ne permet pas de pointer un endroit sur la carte. On mémorise le poste de tir
+(« Je suis au poste de tir »), puis soit on marche jusqu'à la cible (« Je suis à la cible » : distance et azimut
+sont calculés par GPS), soit on reste au poste et la cible est placée sur la carte d'après l'azimut et la distance réglés.
+
+**Catalogue** : menu « Catalogue munitions » → calibre → munition. Le nom, la V0 et le CB G1 remplacent ceux de la munition
+en cours (le zéro et la hauteur lunette restent). 238 munitions de carabine dans 57 calibres, reprises de l'appli Android
+(`node tools/gen_ammo.js resources/jsonData/ammo.json chemin/catalog.js`). « (estimé) » = CB estimé, pas donné par le fabricant.
 
 ## Réglages (menu)
 
@@ -42,7 +54,7 @@ vent (vitesse et direction en heures), température, pression (baromètre de la 
 pas de distance de l'écran principal (1, 5, 10 ou 25 m, distances de 10 à 600 m) et table DOPE (de, à, pas).
 
 **Coriolis** (à activer) : la latitude vient du GPS de la montre (ou se saisit à la main) ; l'azimut de tir se prend à la
-boussole en visant la cible (menu « Cap boussole → azimut », montre pointée vers la cible) ou se saisit en degrés. Correction horizontale
+boussole en visant la cible (menu « Cap boussole = azimut », montre pointée vers la cible) ou se saisit en degrés. Correction horizontale
 (dérive vers la droite dans l'hémisphère nord) et verticale (effet Eötvös : plus haut en tirant vers l'est).
 Pour une .22 LR à 300 m, l'effet reste d'environ 1,5 cm (0,05 mil), soit moins d'un clic.
 

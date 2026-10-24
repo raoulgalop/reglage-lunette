@@ -78,8 +78,13 @@ jobs:
           W=$(xdotool search --name "Simulator" | head -1); echo "fenêtre : $W"
           [ -n "$W" ] && xdotool windowactivate --sync $W || true
           xdotool key Up; sleep 1; xdotool key Up; sleep 2; shot 2-distance-plus
-          xdotool key Return; sleep 3; shot 3-table
-          xdotool key Escape; sleep 2; shot 4-retour
+          xdotool key Return; sleep 2; shot 3-vent
+          xdotool key Return; sleep 2; shot 4-boussole
+          xdotool key Return; sleep 2; shot 5-meteo
+          xdotool key Return; sleep 2; shot 6-trajectoire
+          xdotool key Return; sleep 3; shot 7-table
+          xdotool key Return; sleep 5; shot 8-carte
+          xdotool key Escape; sleep 2; shot 9-retour
           # 2e essai : version de test qui ouvre le menu au démarrage
           rm -rf /tmp/gt && cp -r garmin /tmp/gt && rm -rf /tmp/gt/bin
           sed -i 's/    function onShow() {/    function onShow() {\n        if (!TESTED) { TESTED = true; openMenu(); }/' /tmp/gt/source/MainView.mc
@@ -89,12 +94,14 @@ jobs:
           sleep 20
           k() { for x in "$@"; do xdotool key $x; sleep 1; done; }
           shot m1-menu
-          k Return; sleep 2; shot m2-munitions
-          k Down Down Return; sleep 2; shot m3-menu-apres-choix
-          k Down Return; sleep 2; k Up Up; shot m4-editeur-v0
-          k Return Down Down Down Down Down Down Down Return; sleep 2; k Up Up Up Up Up Up Up Up Up Up; shot m5-editeur-vent
-          k Return Escape; sleep 2; shot m6-principal-vent
-          k Return; sleep 2; shot m7-table-vent
+          k Return; sleep 3; shot m2-calibres
+          k Down Down Return; sleep 2; shot m3-catalogue
+          k Down Return; sleep 2; shot m4-menu-apres-catalogue
+          k Down Down Down Down Return; sleep 2; shot m5-munitions
+          k Escape Down Return; sleep 2; k Up Up; shot m6-editeur-v0
+          k Return Down Down Down Down Down Down Down Return; sleep 2; k Up Up Up Up Up Up Up Up Up Up; shot m7-editeur-vent
+          k Return Escape; sleep 2; shot m8-principal-vent
+          k Return; sleep 2; shot m9-ecran-vent
           cat out/monkeydo.log out/monkeydo-test.log /tmp/sim.log | tail -60
       - uses: actions/upload-artifact@v4
         if: always()
