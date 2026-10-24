@@ -42,7 +42,7 @@ vent (vitesse et direction en heures), température, pression (baromètre de la 
 pas de distance de l'écran principal (1, 5, 10 ou 25 m, distances de 10 à 600 m) et table DOPE (de, à, pas).
 
 **Coriolis** (à activer) : la latitude vient du GPS de la montre (ou se saisit à la main) ; l'azimut de tir se prend à la
-boussole en visant la cible (« Viser la cible : prendre le cap ») ou se saisit en degrés. Correction horizontale
+boussole en visant la cible (menu « Cap boussole → azimut », montre pointée vers la cible) ou se saisit en degrés. Correction horizontale
 (dérive vers la droite dans l'hémisphère nord) et verticale (effet Eötvös : plus haut en tirant vers l'est).
 Pour une .22 LR à 300 m, l'effet reste d'environ 1,5 cm (0,05 mil), soit moins d'un clic.
 
