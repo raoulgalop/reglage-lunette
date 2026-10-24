@@ -1,0 +1,1014 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<debugInfo>
+    <manifest filename="/__w/reglage-lunette/reglage-lunette/garmin/manifest.xml"/>
+    <pcToLineNum>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="1" lineNum="195" parent="globals" pc="268435457" symbol="app"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="1" lineNum="196" parent="globals" pc="268435467" symbol="app"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="2" lineNum="10" parent="globals" pc="268435478" symbol="openMenu"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="2" lineNum="11" parent="globals" pc="268435489" symbol="openMenu"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="2" lineNum="12" parent="globals" pc="268435497" symbol="openMenu"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="2" lineNum="13" parent="globals" pc="268435537" symbol="openMenu"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="2" lineNum="14" parent="globals" pc="268435557" symbol="openMenu"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="2" lineNum="16" parent="globals" pc="268435633" symbol="openMenu"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="3" lineNum="16" parent="globals" pc="268435671" symbol="fmtA"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="3" lineNum="17" parent="globals" pc="268435681" symbol="fmtA"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="4" lineNum="21" parent="globals/MainView" pc="268435723" symbol="&lt;init&gt;"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="5" lineNum="20" parent="globals" pc="268435735" symbol="nextIn"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="5" lineNum="21" parent="globals" pc="268435746" symbol="nextIn"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="5" lineNum="22" parent="globals" pc="268435762" symbol="nextIn"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="5" lineNum="22" parent="globals" pc="268435785" symbol="nextIn"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="5" lineNum="24" parent="globals" pc="268435812" symbol="nextIn"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="6" lineNum="141" parent="globals/NumberDelegate" pc="268435817" symbol="&lt;init&gt;"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/out/gen/006-B3943-00/source/Rez.mcgen" id="7" lineNum="7" parent="globals/Rez" pc="268435829" symbol="&lt;init&gt;"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="8" lineNum="9" parent="globals" pc="268435849" symbol="tri"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="8" lineNum="10" parent="globals" pc="268435859" symbol="tri"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="8" lineNum="10" parent="globals" pc="268435866" symbol="tri"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="8" lineNum="11" parent="globals" pc="268435947" symbol="tri"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="8" lineNum="11" parent="globals" pc="268435955" symbol="tri"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="8" lineNum="12" parent="globals" pc="268436036" symbol="tri"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="8" lineNum="12" parent="globals" pc="268436044" symbol="tri"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="8" lineNum="13" parent="globals" pc="268436125" symbol="tri"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="9" lineNum="27" parent="globals/MenuDelegate" pc="268436206" symbol="&lt;init&gt;"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="10" lineNum="81" parent="globals/DopeDelegate" pc="268436218" symbol="&lt;init&gt;"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="11" lineNum="104" parent="globals/MainDelegate" pc="268436230" symbol="&lt;init&gt;"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="12" lineNum="77" parent="globals/ProfDelegate" pc="268436242" symbol="&lt;init&gt;"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="13" lineNum="10" parent="globals/BalApp" pc="268436254" symbol="&lt;init&gt;"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="14" lineNum="94" parent="globals/NumberView" pc="268436266" symbol="&lt;init&gt;"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="15" lineNum="6" parent="globals/DopeView" pc="268436278" symbol="&lt;init&gt;"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="16" lineNum="27" parent="globals/MainView" pc="268436290" symbol="onShow"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="16" lineNum="28" parent="globals/MainView" pc="268436292" symbol="onShow"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="17" lineNum="23" parent="globals/MainView" pc="268436306" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="17" lineNum="24" parent="globals/MainView" pc="268436308" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="31" parent="globals/MainView" pc="268436321" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="32" parent="globals/MainView" pc="268436324" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="33" parent="globals/MainView" pc="268436332" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="34" parent="globals/MainView" pc="268436340" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="35" parent="globals/MainView" pc="268436349" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="36" parent="globals/MainView" pc="268436358" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="37" parent="globals/MainView" pc="268436365" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="38" parent="globals/MainView" pc="268436375" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="40" parent="globals/MainView" pc="268436388" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="41" parent="globals/MainView" pc="268436400" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="43" parent="globals/MainView" pc="268436408" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="44" parent="globals/MainView" pc="268436425" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="47" parent="globals/MainView" pc="268436457" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="48" parent="globals/MainView" pc="268436466" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="49" parent="globals/MainView" pc="268436481" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="50" parent="globals/MainView" pc="268436498" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="51" parent="globals/MainView" pc="268436524" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="52" parent="globals/MainView" pc="268436562" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="53" parent="globals/MainView" pc="268436578" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="54" parent="globals/MainView" pc="268436611" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="56" parent="globals/MainView" pc="268436645" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="57" parent="globals/MainView" pc="268436661" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="58" parent="globals/MainView" pc="268436703" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="60" parent="globals/MainView" pc="268436733" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="61" parent="globals/MainView" pc="268436746" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="62" parent="globals/MainView" pc="268436759" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="63" parent="globals/MainView" pc="268436776" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="64" parent="globals/MainView" pc="268436804" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="66" parent="globals/MainView" pc="268436832" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="67" parent="globals/MainView" pc="268436838" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="68" parent="globals/MainView" pc="268436855" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="71" parent="globals/MainView" pc="268436887" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="72" parent="globals/MainView" pc="268436894" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="73" parent="globals/MainView" pc="268436910" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="74" parent="globals/MainView" pc="268436947" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="75" parent="globals/MainView" pc="268436954" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="77" parent="globals/MainView" pc="268436986" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="78" parent="globals/MainView" pc="268437031" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="81" parent="globals/MainView" pc="268437084" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="82" parent="globals/MainView" pc="268437091" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="83" parent="globals/MainView" pc="268437128" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="84" parent="globals/MainView" pc="268437165" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="85" parent="globals/MainView" pc="268437172" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="86" parent="globals/MainView" pc="268437204" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="87" parent="globals/MainView" pc="268437211" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="88" parent="globals/MainView" pc="268437245" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="90" parent="globals/MainView" pc="268437286" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="91" parent="globals/MainView" pc="268437320" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="93" parent="globals/MainView" pc="268437358" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="94" parent="globals/MainView" pc="268437375" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="95" parent="globals/MainView" pc="268437424" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="98" parent="globals/MainView" pc="268437474" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="99" parent="globals/MainView" pc="268437491" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="18" lineNum="100" parent="globals/MainView" pc="268437549" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="19" lineNum="152" parent="globals/NumberDelegate" pc="268437575" symbol="onPreviousPage"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="19" lineNum="153" parent="globals/NumberDelegate" pc="268437577" symbol="onPreviousPage"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="19" lineNum="154" parent="globals/NumberDelegate" pc="268437593" symbol="onPreviousPage"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="20" lineNum="146" parent="globals/NumberDelegate" pc="268437595" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="20" lineNum="147" parent="globals/NumberDelegate" pc="268437597" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="20" lineNum="148" parent="globals/NumberDelegate" pc="268437609" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="20" lineNum="149" parent="globals/NumberDelegate" pc="268437618" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="21" lineNum="162" parent="globals/NumberDelegate" pc="268437628" symbol="onTap"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="21" lineNum="163" parent="globals/NumberDelegate" pc="268437631" symbol="onTap"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="21" lineNum="164" parent="globals/NumberDelegate" pc="268437643" symbol="onTap"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="21" lineNum="165" parent="globals/NumberDelegate" pc="268437660" symbol="onTap"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="21" lineNum="165" parent="globals/NumberDelegate" pc="268437674" symbol="onTap"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="21" lineNum="166" parent="globals/NumberDelegate" pc="268437693" symbol="onTap"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="21" lineNum="166" parent="globals/NumberDelegate" pc="268437707" symbol="onTap"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="21" lineNum="167" parent="globals/NumberDelegate" pc="268437726" symbol="onTap"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="21" lineNum="168" parent="globals/NumberDelegate" pc="268437733" symbol="onTap"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="22" lineNum="157" parent="globals/NumberDelegate" pc="268437735" symbol="onNextPage"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="22" lineNum="158" parent="globals/NumberDelegate" pc="268437737" symbol="onNextPage"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="22" lineNum="159" parent="globals/NumberDelegate" pc="268437753" symbol="onNextPage"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="23" lineNum="171" parent="globals/NumberDelegate" pc="268437755" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="23" lineNum="172" parent="globals/NumberDelegate" pc="268437757" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="23" lineNum="173" parent="globals/NumberDelegate" pc="268437793" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="23" lineNum="174" parent="globals/NumberDelegate" pc="268437805" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="23" lineNum="175" parent="globals/NumberDelegate" pc="268437820" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="24" lineNum="37" parent="globals/MenuDelegate" pc="268437822" symbol="refresh"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="24" lineNum="38" parent="globals/MenuDelegate" pc="268437825" symbol="refresh"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="24" lineNum="39" parent="globals/MenuDelegate" pc="268437833" symbol="refresh"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="24" lineNum="40" parent="globals/MenuDelegate" pc="268437853" symbol="refresh"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="24" lineNum="41" parent="globals/MenuDelegate" pc="268437870" symbol="refresh"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="24" lineNum="41" parent="globals/MenuDelegate" pc="268437876" symbol="refresh"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="24" lineNum="43" parent="globals/MenuDelegate" pc="268437914" symbol="refresh"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="25" lineNum="31" parent="globals/MenuDelegate" pc="268437926" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="25" lineNum="32" parent="globals/MenuDelegate" pc="268437928" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="25" lineNum="33" parent="globals/MenuDelegate" pc="268437940" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="46" parent="globals/MenuDelegate" pc="268437950" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="47" parent="globals/MenuDelegate" pc="268437953" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="48" parent="globals/MenuDelegate" pc="268437961" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="49" parent="globals/MenuDelegate" pc="268437969" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="50" parent="globals/MenuDelegate" pc="268437978" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="51" parent="globals/MenuDelegate" pc="268437995" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="52" parent="globals/MenuDelegate" pc="268438035" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="53" parent="globals/MenuDelegate" pc="268438058" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="54" parent="globals/MenuDelegate" pc="268438071" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="56" parent="globals/MenuDelegate" pc="268438156" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="57" parent="globals/MenuDelegate" pc="268438193" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="58" parent="globals/MenuDelegate" pc="268438210" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="59" parent="globals/MenuDelegate" pc="268438234" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="60" parent="globals/MenuDelegate" pc="268438242" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="61" parent="globals/MenuDelegate" pc="268438259" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="62" parent="globals/MenuDelegate" pc="268438276" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="63" parent="globals/MenuDelegate" pc="268438315" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="64" parent="globals/MenuDelegate" pc="268438323" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="65" parent="globals/MenuDelegate" pc="268438340" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="66" parent="globals/MenuDelegate" pc="268438395" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="67" parent="globals/MenuDelegate" pc="268438403" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="68" parent="globals/MenuDelegate" pc="268438420" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="69" parent="globals/MenuDelegate" pc="268438456" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="71" parent="globals/MenuDelegate" pc="268438464" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="26" lineNum="72" parent="globals/MenuDelegate" pc="268438486" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="27" lineNum="84" parent="globals/Bal" pc="268438525" symbol="zeroAngle"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="27" lineNum="85" parent="globals/Bal" pc="268438536" symbol="zeroAngle"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="27" lineNum="86" parent="globals/Bal" pc="268438539" symbol="zeroAngle"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="27" lineNum="87" parent="globals/Bal" pc="268438550" symbol="zeroAngle"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="27" lineNum="88" parent="globals/Bal" pc="268438573" symbol="zeroAngle"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="27" lineNum="88" parent="globals/Bal" pc="268438579" symbol="zeroAngle"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="27" lineNum="89" parent="globals/Bal" pc="268438582" symbol="zeroAngle"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="27" lineNum="90" parent="globals/Bal" pc="268438592" symbol="zeroAngle"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="27" lineNum="90" parent="globals/Bal" pc="268438608" symbol="zeroAngle"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="27" lineNum="92" parent="globals/Bal" pc="268438621" symbol="zeroAngle"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="28" lineNum="15" parent="globals/Bal" pc="268438624" symbol="cd"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="28" lineNum="16" parent="globals/Bal" pc="268438635" symbol="cd"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="28" lineNum="17" parent="globals/Bal" pc="268438648" symbol="cd"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="28" lineNum="17" parent="globals/Bal" pc="268438655" symbol="cd"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="28" lineNum="18" parent="globals/Bal" pc="268438663" symbol="cd"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="28" lineNum="18" parent="globals/Bal" pc="268438674" symbol="cd"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="28" lineNum="19" parent="globals/Bal" pc="268438686" symbol="cd"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="28" lineNum="20" parent="globals/Bal" pc="268438693" symbol="cd"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="28" lineNum="20" parent="globals/Bal" pc="268438701" symbol="cd"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="28" lineNum="21" parent="globals/Bal" pc="268438705" symbol="cd"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="28" lineNum="21" parent="globals/Bal" pc="268438716" symbol="cd"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="28" lineNum="22" parent="globals/Bal" pc="268438723" symbol="cd"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="28" lineNum="22" parent="globals/Bal" pc="268438751" symbol="cd"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="28" lineNum="23" parent="globals/Bal" pc="268438761" symbol="cd"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="28" lineNum="23" parent="globals/Bal" pc="268438789" symbol="cd"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="28" lineNum="24" parent="globals/Bal" pc="268438799" symbol="cd"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="28" lineNum="25" parent="globals/Bal" pc="268438808" symbol="cd"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="39" parent="globals/Bal" pc="268438877" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="40" parent="globals/Bal" pc="268438888" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="41" parent="globals/Bal" pc="268438907" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="42" parent="globals/Bal" pc="268438914" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="43" parent="globals/Bal" pc="268438921" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="44" parent="globals/Bal" pc="268438928" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="45" parent="globals/Bal" pc="268438938" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="46" parent="globals/Bal" pc="268438960" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="47" parent="globals/Bal" pc="268438965" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="48" parent="globals/Bal" pc="268438970" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="49" parent="globals/Bal" pc="268438973" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="50" parent="globals/Bal" pc="268438982" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="51" parent="globals/Bal" pc="268439003" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="52" parent="globals/Bal" pc="268439024" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="53" parent="globals/Bal" pc="268439027" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="55" parent="globals/Bal" pc="268439031" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="56" parent="globals/Bal" pc="268439037" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="57" parent="globals/Bal" pc="268439042" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="58" parent="globals/Bal" pc="268439051" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="59" parent="globals/Bal" pc="268439073" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="60" parent="globals/Bal" pc="268439098" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="61" parent="globals/Bal" pc="268439119" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="62" parent="globals/Bal" pc="268439132" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="63" parent="globals/Bal" pc="268439148" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="64" parent="globals/Bal" pc="268439173" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="65" parent="globals/Bal" pc="268439194" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="66" parent="globals/Bal" pc="268439204" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="67" parent="globals/Bal" pc="268439214" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="68" parent="globals/Bal" pc="268439227" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="69" parent="globals/Bal" pc="268439243" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="70" parent="globals/Bal" pc="268439265" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="71" parent="globals/Bal" pc="268439281" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="72" parent="globals/Bal" pc="268439297" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="73" parent="globals/Bal" pc="268439310" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="75" parent="globals/Bal" pc="268439320" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="76" parent="globals/Bal" pc="268439324" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="77" parent="globals/Bal" pc="268439328" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="78" parent="globals/Bal" pc="268439335" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="78" parent="globals/Bal" pc="268439346" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="29" lineNum="80" parent="globals/Bal" pc="268439349" symbol="fly"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="30" lineNum="29" parent="globals/Bal" pc="268439364" symbol="atmo"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="30" lineNum="30" parent="globals/Bal" pc="268439375" symbol="atmo"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="30" lineNum="31" parent="globals/Bal" pc="268439385" symbol="atmo"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="30" lineNum="32" parent="globals/Bal" pc="268439427" symbol="atmo"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Bal.mc" id="30" lineNum="33" parent="globals/Bal" pc="268439467" symbol="atmo"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="31" lineNum="90" parent="globals/DopeDelegate" pc="268439518" symbol="onPreviousPage"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="31" lineNum="91" parent="globals/DopeDelegate" pc="268439520" symbol="onPreviousPage"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="31" lineNum="92" parent="globals/DopeDelegate" pc="268439536" symbol="onPreviousPage"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="32" lineNum="105" parent="globals/DopeDelegate" pc="268439538" symbol="onMenu"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="32" lineNum="106" parent="globals/DopeDelegate" pc="268439540" symbol="onMenu"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="32" lineNum="107" parent="globals/DopeDelegate" pc="268439547" symbol="onMenu"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="33" lineNum="85" parent="globals/DopeDelegate" pc="268439549" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="33" lineNum="86" parent="globals/DopeDelegate" pc="268439551" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="33" lineNum="87" parent="globals/DopeDelegate" pc="268439563" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="34" lineNum="95" parent="globals/DopeDelegate" pc="268439573" symbol="onNextPage"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="34" lineNum="96" parent="globals/DopeDelegate" pc="268439575" symbol="onNextPage"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="34" lineNum="97" parent="globals/DopeDelegate" pc="268439591" symbol="onNextPage"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="35" lineNum="100" parent="globals/DopeDelegate" pc="268439593" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="35" lineNum="101" parent="globals/DopeDelegate" pc="268439595" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="35" lineNum="102" parent="globals/DopeDelegate" pc="268439610" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="36" lineNum="151" parent="globals/MainDelegate" pc="268439612" symbol="onBack"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="36" lineNum="152" parent="globals/MainDelegate" pc="268439614" symbol="onBack"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="36" lineNum="153" parent="globals/MainDelegate" pc="268439627" symbol="onBack"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="37" lineNum="121" parent="globals/MainDelegate" pc="268439629" symbol="onPreviousPage"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="37" lineNum="122" parent="globals/MainDelegate" pc="268439631" symbol="onPreviousPage"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="37" lineNum="123" parent="globals/MainDelegate" pc="268439642" symbol="onPreviousPage"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="38" lineNum="146" parent="globals/MainDelegate" pc="268439644" symbol="onMenu"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="38" lineNum="147" parent="globals/MainDelegate" pc="268439646" symbol="onMenu"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="38" lineNum="148" parent="globals/MainDelegate" pc="268439653" symbol="onMenu"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="39" lineNum="110" parent="globals/MainDelegate" pc="268439655" symbol="change"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="39" lineNum="111" parent="globals/MainDelegate" pc="268439658" symbol="change"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="39" lineNum="112" parent="globals/MainDelegate" pc="268439671" symbol="change"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="39" lineNum="114" parent="globals/MainDelegate" pc="268439693" symbol="change"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="39" lineNum="115" parent="globals/MainDelegate" pc="268439715" symbol="change"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="39" lineNum="115" parent="globals/MainDelegate" pc="268439723" symbol="change"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="39" lineNum="116" parent="globals/MainDelegate" pc="268439727" symbol="change"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="39" lineNum="116" parent="globals/MainDelegate" pc="268439736" symbol="change"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="39" lineNum="117" parent="globals/MainDelegate" pc="268439741" symbol="change"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="39" lineNum="118" parent="globals/MainDelegate" pc="268439751" symbol="change"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="40" lineNum="106" parent="globals/MainDelegate" pc="268439763" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="40" lineNum="107" parent="globals/MainDelegate" pc="268439765" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="41" lineNum="137" parent="globals/MainDelegate" pc="268439778" symbol="onTap"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="41" lineNum="138" parent="globals/MainDelegate" pc="268439781" symbol="onTap"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="41" lineNum="139" parent="globals/MainDelegate" pc="268439793" symbol="onTap"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="41" lineNum="140" parent="globals/MainDelegate" pc="268439810" symbol="onTap"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="41" lineNum="140" parent="globals/MainDelegate" pc="268439824" symbol="onTap"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="41" lineNum="141" parent="globals/MainDelegate" pc="268439838" symbol="onTap"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="41" lineNum="141" parent="globals/MainDelegate" pc="268439852" symbol="onTap"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="41" lineNum="142" parent="globals/MainDelegate" pc="268439862" symbol="onTap"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="41" lineNum="143" parent="globals/MainDelegate" pc="268439869" symbol="onTap"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="42" lineNum="126" parent="globals/MainDelegate" pc="268439871" symbol="onNextPage"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="42" lineNum="127" parent="globals/MainDelegate" pc="268439873" symbol="onNextPage"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="42" lineNum="128" parent="globals/MainDelegate" pc="268439884" symbol="onNextPage"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="43" lineNum="131" parent="globals/MainDelegate" pc="268439886" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="43" lineNum="132" parent="globals/MainDelegate" pc="268439889" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="43" lineNum="133" parent="globals/MainDelegate" pc="268439909" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/MainView.mc" id="43" lineNum="134" parent="globals/MainDelegate" pc="268439946" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="44" lineNum="81" parent="globals/ProfDelegate" pc="268439948" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="44" lineNum="82" parent="globals/ProfDelegate" pc="268439950" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="44" lineNum="83" parent="globals/ProfDelegate" pc="268439962" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="45" lineNum="86" parent="globals/ProfDelegate" pc="268439972" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="45" lineNum="87" parent="globals/ProfDelegate" pc="268439974" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="45" lineNum="88" parent="globals/ProfDelegate" pc="268440001" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="45" lineNum="89" parent="globals/ProfDelegate" pc="268440013" symbol="onSelect"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="46" lineNum="78" parent="globals/BalApp" pc="268440029" symbol="set"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="46" lineNum="79" parent="globals/BalApp" pc="268440031" symbol="set"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="46" lineNum="79" parent="globals/BalApp" pc="268440048" symbol="set"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="46" lineNum="80" parent="globals/BalApp" pc="268440062" symbol="set"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="46" lineNum="80" parent="globals/BalApp" pc="268440079" symbol="set"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="46" lineNum="81" parent="globals/BalApp" pc="268440093" symbol="set"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="46" lineNum="82" parent="globals/BalApp" pc="268440103" symbol="set"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="46" lineNum="82" parent="globals/BalApp" pc="268440129" symbol="set"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="46" lineNum="83" parent="globals/BalApp" pc="268440151" symbol="set"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="46" lineNum="84" parent="globals/BalApp" pc="268440158" symbol="set"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="47" lineNum="146" parent="globals/BalApp" pc="268440166" symbol="clockTxt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="47" lineNum="147" parent="globals/BalApp" pc="268440168" symbol="clockTxt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="47" lineNum="147" parent="globals/BalApp" pc="268440176" symbol="clockTxt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="47" lineNum="148" parent="globals/BalApp" pc="268440182" symbol="clockTxt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="47" lineNum="148" parent="globals/BalApp" pc="268440190" symbol="clockTxt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="47" lineNum="149" parent="globals/BalApp" pc="268440196" symbol="clockTxt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="47" lineNum="149" parent="globals/BalApp" pc="268440204" symbol="clockTxt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="47" lineNum="150" parent="globals/BalApp" pc="268440210" symbol="clockTxt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="47" lineNum="150" parent="globals/BalApp" pc="268440218" symbol="clockTxt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="47" lineNum="151" parent="globals/BalApp" pc="268440224" symbol="clockTxt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="48" lineNum="30" parent="globals/BalApp" pc="268440267" symbol="getInitialView"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="48" lineNum="31" parent="globals/BalApp" pc="268440269" symbol="getInitialView"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="49" lineNum="64" parent="globals/BalApp" pc="268440316" symbol="save"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="49" lineNum="65" parent="globals/BalApp" pc="268440318" symbol="save"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="50" lineNum="88" parent="globals/BalApp" pc="268440342" symbol="pressure"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="50" lineNum="89" parent="globals/BalApp" pc="268440345" symbol="pressure"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="50" lineNum="90" parent="globals/BalApp" pc="268440353" symbol="pressure"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="50" lineNum="91" parent="globals/BalApp" pc="268440367" symbol="pressure"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="50" lineNum="92" parent="globals/BalApp" pc="268440379" symbol="pressure"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="50" lineNum="93" parent="globals/BalApp" pc="268440411" symbol="pressure"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="50" lineNum="94" parent="globals/BalApp" pc="268440419" symbol="pressure"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="50" lineNum="97" parent="globals/BalApp" pc="268440433" symbol="pressure"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="51" lineNum="174" parent="globals/BalApp" pc="268440451" symbol="label"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="51" lineNum="175" parent="globals/BalApp" pc="268440453" symbol="label"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="154" parent="globals/BalApp" pc="268440474" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="155" parent="globals/BalApp" pc="268440476" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="155" parent="globals/BalApp" pc="268440493" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="156" parent="globals/BalApp" pc="268440502" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="156" parent="globals/BalApp" pc="268440519" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="157" parent="globals/BalApp" pc="268440534" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="157" parent="globals/BalApp" pc="268440551" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="158" parent="globals/BalApp" pc="268440562" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="158" parent="globals/BalApp" pc="268440579" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="159" parent="globals/BalApp" pc="268440594" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="160" parent="globals/BalApp" pc="268440611" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="160" parent="globals/BalApp" pc="268440617" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="161" parent="globals/BalApp" pc="268440623" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="163" parent="globals/BalApp" pc="268440670" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="163" parent="globals/BalApp" pc="268440687" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="164" parent="globals/BalApp" pc="268440702" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="164" parent="globals/BalApp" pc="268440719" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="165" parent="globals/BalApp" pc="268440734" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="165" parent="globals/BalApp" pc="268440751" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="166" parent="globals/BalApp" pc="268440772" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="166" parent="globals/BalApp" pc="268440789" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="167" parent="globals/BalApp" pc="268440808" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="167" parent="globals/BalApp" pc="268440825" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="168" parent="globals/BalApp" pc="268440901" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="168" parent="globals/BalApp" pc="268440969" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="169" parent="globals/BalApp" pc="268440984" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="169" parent="globals/BalApp" pc="268441001" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="170" parent="globals/BalApp" pc="268441016" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="170" parent="globals/BalApp" pc="268441033" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="52" lineNum="171" parent="globals/BalApp" pc="268441048" symbol="fmt"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="53" lineNum="68" parent="globals/BalApp" pc="268441056" symbol="prof"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="53" lineNum="69" parent="globals/BalApp" pc="268441058" symbol="prof"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="179" parent="globals/BalApp" pc="268441082" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="180" parent="globals/BalApp" pc="268441084" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="180" parent="globals/BalApp" pc="268441101" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="181" parent="globals/BalApp" pc="268441107" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="181" parent="globals/BalApp" pc="268441124" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="182" parent="globals/BalApp" pc="268441130" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="182" parent="globals/BalApp" pc="268441147" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="183" parent="globals/BalApp" pc="268441153" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="183" parent="globals/BalApp" pc="268441170" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="184" parent="globals/BalApp" pc="268441176" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="184" parent="globals/BalApp" pc="268441193" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="185" parent="globals/BalApp" pc="268441199" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="185" parent="globals/BalApp" pc="268441216" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="186" parent="globals/BalApp" pc="268441222" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="186" parent="globals/BalApp" pc="268441239" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="187" parent="globals/BalApp" pc="268441245" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="187" parent="globals/BalApp" pc="268441262" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="188" parent="globals/BalApp" pc="268441268" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="188" parent="globals/BalApp" pc="268441285" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="189" parent="globals/BalApp" pc="268441291" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="189" parent="globals/BalApp" pc="268441308" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="190" parent="globals/BalApp" pc="268441314" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="190" parent="globals/BalApp" pc="268441331" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="54" lineNum="191" parent="globals/BalApp" pc="268441337" symbol="spec"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="115" parent="globals/BalApp" pc="268441339" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="116" parent="globals/BalApp" pc="268441342" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="117" parent="globals/BalApp" pc="268441351" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="118" parent="globals/BalApp" pc="268441361" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="119" parent="globals/BalApp" pc="268441368" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="120" parent="globals/BalApp" pc="268441387" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="120" parent="globals/BalApp" pc="268441416" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="121" parent="globals/BalApp" pc="268441418" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="122" parent="globals/BalApp" pc="268441425" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="123" parent="globals/BalApp" pc="268441432" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="124" parent="globals/BalApp" pc="268441439" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="124" parent="globals/BalApp" pc="268441467" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="125" parent="globals/BalApp" pc="268441469" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="126" parent="globals/BalApp" pc="268441488" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="128" parent="globals/BalApp" pc="268441507" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="129" parent="globals/BalApp" pc="268441516" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="131" parent="globals/BalApp" pc="268441531" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="132" parent="globals/BalApp" pc="268441592" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="133" parent="globals/BalApp" pc="268441627" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="134" parent="globals/BalApp" pc="268441641" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="135" parent="globals/BalApp" pc="268441651" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="137" parent="globals/BalApp" pc="268441661" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="55" lineNum="138" parent="globals/BalApp" pc="268441680" symbol="sol"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="56" lineNum="142" parent="globals/BalApp" pc="268441752" symbol="unit"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="56" lineNum="143" parent="globals/BalApp" pc="268441754" symbol="unit"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="57" lineNum="21" parent="globals/BalApp" pc="268441782" symbol="onStart"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="57" lineNum="22" parent="globals/BalApp" pc="268441784" symbol="onStart"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="57" lineNum="23" parent="globals/BalApp" pc="268441791" symbol="onStart"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="58" lineNum="100" parent="globals/BalApp" pc="268441799" symbol="recompute"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="58" lineNum="101" parent="globals/BalApp" pc="268441802" symbol="recompute"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="58" lineNum="102" parent="globals/BalApp" pc="268441815" symbol="recompute"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="58" lineNum="103" parent="globals/BalApp" pc="268441851" symbol="recompute"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="58" lineNum="104" parent="globals/BalApp" pc="268441934" symbol="recompute"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="58" lineNum="105" parent="globals/BalApp" pc="268441967" symbol="recompute"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="59" lineNum="35" parent="globals/BalApp" pc="268442008" symbol="defaults"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="59" lineNum="36" parent="globals/BalApp" pc="268442010" symbol="defaults"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="60" lineNum="52" parent="globals/BalApp" pc="268442068" symbol="load"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="60" lineNum="53" parent="globals/BalApp" pc="268442071" symbol="load"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="60" lineNum="54" parent="globals/BalApp" pc="268442084" symbol="load"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="60" lineNum="55" parent="globals/BalApp" pc="268442103" symbol="load"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="60" lineNum="56" parent="globals/BalApp" pc="268442118" symbol="load"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="60" lineNum="57" parent="globals/BalApp" pc="268442131" symbol="load"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="60" lineNum="58" parent="globals/BalApp" pc="268442147" symbol="load"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="60" lineNum="58" parent="globals/BalApp" pc="268442177" symbol="load"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="60" lineNum="61" parent="globals/BalApp" pc="268442206" symbol="load"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="60" lineNum="61" parent="globals/BalApp" pc="268442238" symbol="load"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="61" lineNum="109" parent="globals/BalApp" pc="268442251" symbol="refreshPressure"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="61" lineNum="110" parent="globals/BalApp" pc="268442253" symbol="refreshPressure"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="61" lineNum="110" parent="globals/BalApp" pc="268442294" symbol="refreshPressure"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="62" lineNum="72" parent="globals/BalApp" pc="268442302" symbol="get"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="62" lineNum="73" parent="globals/BalApp" pc="268442304" symbol="get"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="62" lineNum="73" parent="globals/BalApp" pc="268442321" symbol="get"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="62" lineNum="74" parent="globals/BalApp" pc="268442331" symbol="get"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="62" lineNum="74" parent="globals/BalApp" pc="268442348" symbol="get"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="62" lineNum="75" parent="globals/BalApp" pc="268442358" symbol="get"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="63" lineNum="17" parent="globals/BalApp" pc="268442367" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="63" lineNum="18" parent="globals/BalApp" pc="268442369" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="64" lineNum="26" parent="globals/BalApp" pc="268442382" symbol="onStop"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/BalApp.mc" id="64" lineNum="27" parent="globals/BalApp" pc="268442384" symbol="onStop"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="65" lineNum="107" parent="globals/NumberView" pc="268442392" symbol="change"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="65" lineNum="108" parent="globals/NumberView" pc="268442395" symbol="change"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="65" lineNum="109" parent="globals/NumberView" pc="268442419" symbol="change"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="65" lineNum="109" parent="globals/NumberView" pc="268442436" symbol="change"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="65" lineNum="110" parent="globals/NumberView" pc="268442457" symbol="change"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="65" lineNum="110" parent="globals/NumberView" pc="268442474" symbol="change"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="65" lineNum="112" parent="globals/NumberView" pc="268442495" symbol="change"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="65" lineNum="113" parent="globals/NumberView" pc="268442519" symbol="change"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="65" lineNum="114" parent="globals/NumberView" pc="268442549" symbol="change"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="66" lineNum="100" parent="globals/NumberView" pc="268442561" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="66" lineNum="101" parent="globals/NumberView" pc="268442563" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="66" lineNum="102" parent="globals/NumberView" pc="268442575" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="66" lineNum="103" parent="globals/NumberView" pc="268442584" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="66" lineNum="104" parent="globals/NumberView" pc="268442607" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="67" lineNum="117" parent="globals/NumberView" pc="268442637" symbol="value"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="67" lineNum="118" parent="globals/NumberView" pc="268442639" symbol="value"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="67" lineNum="118" parent="globals/NumberView" pc="268442652" symbol="value"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="67" lineNum="119" parent="globals/NumberView" pc="268442676" symbol="value"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="68" lineNum="122" parent="globals/NumberView" pc="268442688" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="68" lineNum="123" parent="globals/NumberView" pc="268442691" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="68" lineNum="124" parent="globals/NumberView" pc="268442700" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="68" lineNum="125" parent="globals/NumberView" pc="268442709" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="68" lineNum="126" parent="globals/NumberView" pc="268442716" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="68" lineNum="127" parent="globals/NumberView" pc="268442728" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="68" lineNum="128" parent="globals/NumberView" pc="268442736" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="68" lineNum="129" parent="globals/NumberView" pc="268442753" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="68" lineNum="130" parent="globals/NumberView" pc="268442784" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="68" lineNum="131" parent="globals/NumberView" pc="268442800" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="68" lineNum="132" parent="globals/NumberView" pc="268442824" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="68" lineNum="133" parent="globals/NumberView" pc="268442849" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="68" lineNum="134" parent="globals/NumberView" pc="268442866" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="68" lineNum="135" parent="globals/NumberView" pc="268442923" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="68" lineNum="136" parent="globals/NumberView" pc="268442940" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/Menus.mc" id="68" lineNum="137" parent="globals/NumberView" pc="268442988" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="69" lineNum="22" parent="globals/DopeView" pc="268443017" symbol="scroll"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="69" lineNum="23" parent="globals/DopeView" pc="268443020" symbol="scroll"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="69" lineNum="24" parent="globals/DopeView" pc="268443035" symbol="scroll"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="69" lineNum="25" parent="globals/DopeView" pc="268443049" symbol="scroll"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="69" lineNum="25" parent="globals/DopeView" pc="268443063" symbol="scroll"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="69" lineNum="26" parent="globals/DopeView" pc="268443075" symbol="scroll"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="69" lineNum="26" parent="globals/DopeView" pc="268443085" symbol="scroll"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="69" lineNum="27" parent="globals/DopeView" pc="268443093" symbol="scroll"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="70" lineNum="10" parent="globals/DopeView" pc="268443105" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="70" lineNum="11" parent="globals/DopeView" pc="268443107" symbol="initialize"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="30" parent="globals/DopeView" pc="268443120" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="31" parent="globals/DopeView" pc="268443123" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="32" parent="globals/DopeView" pc="268443131" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="33" parent="globals/DopeView" pc="268443139" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="34" parent="globals/DopeView" pc="268443148" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="35" parent="globals/DopeView" pc="268443157" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="36" parent="globals/DopeView" pc="268443164" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="37" parent="globals/DopeView" pc="268443172" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="38" parent="globals/DopeView" pc="268443176" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="39" parent="globals/DopeView" pc="268443195" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="41" parent="globals/DopeView" pc="268443245" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="42" parent="globals/DopeView" pc="268443257" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="43" parent="globals/DopeView" pc="268443265" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="44" parent="globals/DopeView" pc="268443282" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="45" parent="globals/DopeView" pc="268443314" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="46" parent="globals/DopeView" pc="268443344" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="47" parent="globals/DopeView" pc="268443375" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="48" parent="globals/DopeView" pc="268443408" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="49" parent="globals/DopeView" pc="268443439" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="50" parent="globals/DopeView" pc="268443455" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="52" parent="globals/DopeView" pc="268443497" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="53" parent="globals/DopeView" pc="268443516" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="54" parent="globals/DopeView" pc="268443523" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="55" parent="globals/DopeView" pc="268443553" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="56" parent="globals/DopeView" pc="268443560" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="57" parent="globals/DopeView" pc="268443573" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="58" parent="globals/DopeView" pc="268443612" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="59" parent="globals/DopeView" pc="268443639" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="60" parent="globals/DopeView" pc="268443645" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="62" parent="globals/DopeView" pc="268443674" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="63" parent="globals/DopeView" pc="268443690" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="64" parent="globals/DopeView" pc="268443722" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="65" parent="globals/DopeView" pc="268443739" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="66" parent="globals/DopeView" pc="268443777" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="67" parent="globals/DopeView" pc="268443794" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="68" parent="globals/DopeView" pc="268443801" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="70" parent="globals/DopeView" pc="268443865" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="71" parent="globals/DopeView" pc="268443872" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="74" parent="globals/DopeView" pc="268443882" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="75" parent="globals/DopeView" pc="268443899" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="76" parent="globals/DopeView" pc="268443998" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="71" lineNum="77" parent="globals/DopeView" pc="268444023" symbol="onUpdate"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="72" lineNum="14" parent="globals/DopeView" pc="268444067" symbol="dists"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="72" lineNum="15" parent="globals/DopeView" pc="268444070" symbol="dists"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="72" lineNum="16" parent="globals/DopeView" pc="268444083" symbol="dists"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="72" lineNum="17" parent="globals/DopeView" pc="268444087" symbol="dists"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="72" lineNum="18" parent="globals/DopeView" pc="268444116" symbol="dists"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="72" lineNum="18" parent="globals/DopeView" pc="268444156" symbol="dists"/>
+        <entry filename="/__w/reglage-lunette/reglage-lunette/garmin/source/DopeView.mc" id="72" lineNum="19" parent="globals/DopeView" pc="268444178" symbol="dists"/>
+    </pcToLineNum>
+    <symbolTable>
+        <entry id="8388639" module="true" symbol="Graphics"/>
+        <entry id="7" object="true" symbol="BalApp"/>
+        <entry field="true" id="25" symbol="menu"/>
+        <entry id="21" method="true" symbol="openMenu"/>
+        <entry field="true" id="49" symbol="val"/>
+        <entry id="8388632" method="true" symbol="&lt;init&gt;"/>
+        <entry id="14" object="true" symbol="MenuDelegate"/>
+        <entry id="20" method="true" symbol="nextIn"/>
+        <entry id="12" object="true" symbol="MainDelegate"/>
+        <entry id="6" module="true" symbol="Bal"/>
+        <entry id="51" method="true" symbol="scroll"/>
+        <entry field="true" id="8388611" module="true" symbol="Toybox"/>
+        <entry id="18" method="true" symbol="app"/>
+        <entry id="46" method="true" symbol="spec"/>
+        <entry id="22" method="true" symbol="tri"/>
+        <entry field="true" id="54" symbol="AppName"/>
+        <entry field="true" id="52" symbol="top"/>
+        <entry id="5" module="true" symbol="globals/Rez/Strings"/>
+        <entry id="8389080" method="true" symbol="onMenu"/>
+        <entry id="35" method="true" symbol="clockTxt"/>
+        <entry id="8388631" module="true" symbol="Activity"/>
+        <entry field="true" id="8388947" method="true" symbol="value"/>
+        <entry id="8388648" module="true" symbol="WatchUi"/>
+        <entry id="8389081" method="true" symbol="onBack"/>
+        <entry id="42" method="true" symbol="refreshPressure"/>
+        <entry field="true" id="8388964" method="true" symbol="pressure"/>
+        <entry field="true" id="8389138" method="true" symbol="label"/>
+        <entry id="3" module="true" symbol="globals/Rez"/>
+        <entry id="13" object="true" symbol="MainView"/>
+        <entry field="true" id="47" symbol="tbl"/>
+        <entry id="41" method="true" symbol="recompute"/>
+        <entry id="8388789" method="true" symbol="get"/>
+        <entry id="34" method="true" symbol="change"/>
+        <entry id="8389124" method="true" symbol="onUpdate"/>
+        <entry id="37" method="true" symbol="load"/>
+        <entry id="9" object="true" symbol="DopeView"/>
+        <entry field="true" id="48" symbol="sp"/>
+        <entry id="8388771" module="true" object="true" symbol="Drawables"/>
+        <entry id="8" object="true" symbol="DopeDelegate"/>
+        <entry id="8389079" method="true" symbol="onPreviousPage"/>
+        <entry id="15" object="true" symbol="NumberDelegate"/>
+        <entry id="45" method="true" symbol="sol"/>
+        <entry id="40" method="true" symbol="prof"/>
+        <entry id="36" method="true" symbol="fmt"/>
+        <entry id="8389098" method="true" symbol="onTap"/>
+        <entry id="31" method="true" symbol="fly"/>
+        <entry id="44" method="true" symbol="set"/>
+        <entry id="30" method="true" symbol="cd"/>
+        <entry id="50" method="true" symbol="dists"/>
+        <entry id="8389644" method="true" symbol="defaults"/>
+        <entry field="true" id="39" symbol="pUsed"/>
+        <entry id="8388882" method="true" symbol="save"/>
+        <entry id="4" module="true" symbol="globals/Rez/Drawables"/>
+        <entry id="33" method="true" symbol="zeroAngle"/>
+        <entry id="17" object="true" symbol="ProfDelegate"/>
+        <entry id="8388644" module="true" symbol="System"/>
+        <entry field="true" id="38" symbol="pAutoOk"/>
+        <entry id="8389619" method="true" symbol="onSelect"/>
+        <entry id="8388769" module="true" object="true" symbol="Rez"/>
+        <entry field="true" id="32" symbol="hint"/>
+        <entry id="8388640" module="true" symbol="Lang"/>
+        <entry id="19" method="true" symbol="fmtA"/>
+        <entry field="true" id="53" symbol="LauncherIcon"/>
+        <entry id="8388610" symbol="statics"/>
+        <entry id="8389123" method="true" symbol="onShow"/>
+        <entry field="true" id="8390522" symbol="key"/>
+        <entry id="8389350" module="true" symbol="globals"/>
+        <entry id="8388770" module="true" object="true" symbol="Strings"/>
+        <entry id="11" symbol="MENU_NAMES"/>
+        <entry id="8388702" method="true" symbol="initialize"/>
+        <entry field="true" id="23" symbol="parent"/>
+        <entry id="8389279" method="true" symbol="onStart"/>
+        <entry id="26" method="true" symbol="refresh"/>
+        <entry id="8388641" module="true" symbol="Math"/>
+        <entry id="8389280" method="true" symbol="getInitialView"/>
+        <entry id="16" object="true" symbol="NumberView"/>
+        <entry id="8389281" method="true" symbol="onStop"/>
+        <entry field="true" id="8392017" method="true" symbol="unit"/>
+        <entry id="2" module="true" symbol="globals/Bal"/>
+        <entry id="29" method="true" symbol="atmo"/>
+        <entry id="8389078" method="true" symbol="onNextPage"/>
+        <entry id="10" symbol="MENU_KEYS"/>
+        <entry id="8388635" module="true" symbol="Application"/>
+        <entry field="true" id="8389642" symbol="title"/>
+        <entry field="true" id="24" symbol="v"/>
+        <entry field="true" id="43" symbol="s"/>
+        <entry id="28" symbol="M"/>
+        <entry id="27" symbol="C"/>
+    </symbolTable>
+    <localVars>
+        <entry endPc="268435669" name="a" stackId="1" startPc="268435489"/>
+        <entry endPc="268435669" name="m" stackId="2" startPc="268435489"/>
+        <entry endPc="268435632" name="i" stackId="3" startPc="268435557"/>
+        <entry arg="true" endPc="268435722" name="v" stackId="1" startPc="268435671"/>
+        <entry arg="true" endPc="268435816" name="list" stackId="1" startPc="268435735"/>
+        <entry arg="true" endPc="268435816" name="v" stackId="2" startPc="268435735"/>
+        <entry endPc="268435811" name="i" stackId="3" startPc="268435762"/>
+        <entry arg="true" endPc="268436205" name="dc" stackId="1" startPc="268435849"/>
+        <entry arg="true" endPc="268436205" name="x" stackId="2" startPc="268435849"/>
+        <entry arg="true" endPc="268436205" name="y" stackId="3" startPc="268435849"/>
+        <entry arg="true" endPc="268436205" name="r" stackId="4" startPc="268435849"/>
+        <entry arg="true" endPc="268436205" name="dir" stackId="5" startPc="268435849"/>
+        <entry arg="true" endPc="268437574" name="dc" stackId="1" startPc="268436321"/>
+        <entry endPc="268437573" name="a" stackId="2" startPc="268436324"/>
+        <entry endPc="268437573" name="s" stackId="3" startPc="268436324"/>
+        <entry endPc="268437573" name="w" stackId="4" startPc="268436324"/>
+        <entry endPc="268437573" name="h" stackId="5" startPc="268436324"/>
+        <entry endPc="268437573" name="cx" stackId="6" startPc="268436324"/>
+        <entry endPc="268437573" name="d" stackId="7" startPc="268436324"/>
+        <entry endPc="268437573" name="r" stackId="8" startPc="268436324"/>
+        <entry endPc="268437573" name="dTxt" stackId="9" startPc="268436324"/>
+        <entry endPc="268437573" name="fw" stackId="10" startPc="268436324"/>
+        <entry endPc="268437573" name="lx" stackId="11" startPc="268436324"/>
+        <entry endPc="268437573" name="rx" stackId="12" startPc="268436324"/>
+        <entry endPc="268437473" name="ec" stackId="13" startPc="268436887"/>
+        <entry endPc="268437473" name="wcl" stackId="14" startPc="268436887"/>
+        <entry endPc="268437573" name="wTxt" stackId="15" startPc="268436324"/>
+        <entry arg="true" endPc="268437627" name="view" stackId="1" startPc="268437595"/>
+        <entry arg="true" endPc="268437627" name="p" stackId="2" startPc="268437595"/>
+        <entry arg="true" endPc="268437734" name="evt" stackId="1" startPc="268437628"/>
+        <entry endPc="268437924" name="a" stackId="1" startPc="268437825"/>
+        <entry endPc="268437913" name="i" stackId="2" startPc="268437853"/>
+        <entry endPc="268437903" name="it" stackId="3" startPc="268437853"/>
+        <entry arg="true" endPc="268437949" name="m" stackId="1" startPc="268437926"/>
+        <entry arg="true" endPc="268438524" name="item" stackId="1" startPc="268437950"/>
+        <entry endPc="268438523" name="a" stackId="2" startPc="268437953"/>
+        <entry endPc="268438523" name="s" stackId="3" startPc="268437953"/>
+        <entry endPc="268438523" name="key" stackId="4" startPc="268437953"/>
+        <entry endPc="268438191" name="m" stackId="5" startPc="268437995"/>
+        <entry endPc="268438155" name="i" stackId="6" startPc="268438058"/>
+        <entry endPc="268438145" name="p" stackId="7" startPc="268438058"/>
+        <entry endPc="268438523" name="v" stackId="8" startPc="268438464"/>
+        <entry arg="true" endPc="268438623" name="p" stackId="1" startPc="268438525"/>
+        <entry arg="true" endPc="268438623" name="z" stackId="2" startPc="268438525"/>
+        <entry endPc="268438620" name="i" stackId="4" startPc="268438550"/>
+        <entry endPc="268438610" name="y" stackId="5" startPc="268438550"/>
+        <entry arg="true" endPc="268438876" name="m" stackId="1" startPc="268438624"/>
+        <entry arg="true" endPc="268439363" name="p" stackId="1" startPc="268438877"/>
+        <entry arg="true" endPc="268439363" name="alpha" stackId="2" startPc="268438877"/>
+        <entry arg="true" endPc="268439363" name="maxX" stackId="3" startPc="268438877"/>
+        <entry arg="true" endPc="268439363" name="step" stackId="4" startPc="268438877"/>
+        <entry arg="true" endPc="268439517" name="t" stackId="1" startPc="268439364"/>
+        <entry arg="true" endPc="268439517" name="p" stackId="2" startPc="268439364"/>
+        <entry arg="true" endPc="268439572" name="view" stackId="1" startPc="268439549"/>
+        <entry arg="true" endPc="268439762" name="dir" stackId="1" startPc="268439655"/>
+        <entry endPc="268439761" name="s" stackId="2" startPc="268439658"/>
+        <entry endPc="268439761" name="d" stackId="3" startPc="268439658"/>
+        <entry arg="true" endPc="268439870" name="evt" stackId="1" startPc="268439778"/>
+        <entry arg="true" endPc="268439971" name="p" stackId="1" startPc="268439948"/>
+        <entry arg="true" endPc="268440028" name="item" stackId="1" startPc="268439972"/>
+        <entry arg="true" endPc="268440165" name="key" stackId="1" startPc="268440029"/>
+        <entry arg="true" endPc="268440165" name="val" stackId="2" startPc="268440029"/>
+        <entry arg="true" endPc="268440266" name="h" stackId="1" startPc="268440166"/>
+        <entry arg="true" endPc="268440473" name="key" stackId="1" startPc="268440451"/>
+        <entry arg="true" endPc="268441055" name="key" stackId="1" startPc="268440474"/>
+        <entry arg="true" endPc="268441055" name="v" stackId="2" startPc="268440474"/>
+        <entry arg="true" endPc="268441338" name="key" stackId="1" startPc="268441082"/>
+        <entry arg="true" endPc="268441751" name="d" stackId="1" startPc="268441339"/>
+        <entry arg="true" endPc="268441798" name="state" stackId="1" startPc="268441782"/>
+        <entry endPc="268442006" name="at" stackId="1" startPc="268441802"/>
+        <entry endPc="268442006" name="p" stackId="2" startPc="268441802"/>
+        <entry endPc="268442006" name="a" stackId="3" startPc="268441802"/>
+        <entry endPc="268442249" name="st" stackId="1" startPc="268442071"/>
+        <entry arg="true" endPc="268442366" name="key" stackId="1" startPc="268442302"/>
+        <entry arg="true" endPc="268442391" name="state" stackId="1" startPc="268442382"/>
+        <entry arg="true" endPc="268442560" name="dir" stackId="1" startPc="268442392"/>
+        <entry endPc="268442559" name="q" stackId="2" startPc="268442395"/>
+        <entry arg="true" endPc="268442636" name="k" stackId="1" startPc="268442561"/>
+        <entry arg="true" endPc="268443016" name="dc" stackId="1" startPc="268442688"/>
+        <entry endPc="268443015" name="w" stackId="2" startPc="268442691"/>
+        <entry endPc="268443015" name="h" stackId="3" startPc="268442691"/>
+        <entry endPc="268443015" name="cx" stackId="4" startPc="268442691"/>
+        <entry arg="true" endPc="268443104" name="dir" stackId="1" startPc="268443017"/>
+        <entry endPc="268443103" name="n" stackId="2" startPc="268443020"/>
+        <entry arg="true" endPc="268444066" name="dc" stackId="1" startPc="268443120"/>
+        <entry endPc="268444065" name="a" stackId="2" startPc="268443123"/>
+        <entry endPc="268444065" name="s" stackId="3" startPc="268443123"/>
+        <entry endPc="268444065" name="w" stackId="4" startPc="268443123"/>
+        <entry endPc="268444065" name="h" stackId="5" startPc="268443123"/>
+        <entry endPc="268444065" name="cx" stackId="6" startPc="268443123"/>
+        <entry endPc="268444065" name="l" stackId="7" startPc="268443123"/>
+        <entry endPc="268444065" name="font" stackId="8" startPc="268443123"/>
+        <entry endPc="268444065" name="rh" stackId="9" startPc="268443123"/>
+        <entry endPc="268444065" name="cols" stackId="10" startPc="268443123"/>
+        <entry endPc="268444065" name="y" stackId="11" startPc="268443123"/>
+        <entry endPc="268444065" name="i" stackId="12" startPc="268443123"/>
+        <entry endPc="268443878" name="d" stackId="13" startPc="268443553"/>
+        <entry endPc="268443878" name="r" stackId="14" startPc="268443553"/>
+        <entry endPc="268443864" name="wc" stackId="15" startPc="268443674"/>
+        <entry endPc="268444065" name="info" stackId="16" startPc="268443123"/>
+        <entry endPc="268444177" name="d" stackId="4" startPc="268444156"/>
+    </localVars>
+    <deviceInfo deviceVersion="361e256b74f66f7ba19da23c7ec7c7f06ab33c5c" partNumber="006-B3943-00"/>
+    <annotations>
+        <annotationEntry annotation="initialized" class="Drawables" module="globals/Rez" symbol="LauncherIcon"/>
+        <annotationEntry annotation="initialized" class="Strings" module="globals/Rez" symbol="AppName"/>
+    </annotations>
+    <dataEntryOffsetMappings>
+        <dataEntry label="globals" offset="58" parentId="" symbolId="globals" type="module"/>
+        <dataEntry label="globals/MainView" offset="836" parentId="globals" symbolId="MainView" type="class"/>
+        <dataEntry label="globals/NumberDelegate" offset="898" parentId="globals" symbolId="NumberDelegate" type="class"/>
+        <dataEntry label="globals/Rez" offset="996" parentId="globals" symbolId="Rez" type="module"/>
+        <dataEntry label="globals/MenuDelegate" offset="1040" parentId="globals" symbolId="MenuDelegate" type="class"/>
+        <dataEntry label="globals/Bal" offset="1111" parentId="globals" symbolId="Bal" type="module"/>
+        <dataEntry label="globals/DopeDelegate" offset="1200" parentId="globals" symbolId="DopeDelegate" type="class"/>
+        <dataEntry label="globals/MainDelegate" offset="1289" parentId="globals" symbolId="MainDelegate" type="class"/>
+        <dataEntry label="globals/ProfDelegate" offset="1396" parentId="globals" symbolId="ProfDelegate" type="class"/>
+        <dataEntry label="globals/BalApp" offset="1458" parentId="globals" symbolId="BalApp" type="class"/>
+        <dataEntry label="globals/NumberView" offset="1700" parentId="globals" symbolId="NumberView" type="class"/>
+        <dataEntry label="globals/DopeView" offset="1798" parentId="globals" symbolId="DopeView" type="class"/>
+        <dataEntry label="globals/Rez/Drawables" offset="1878" parentId="Rez" symbolId="Drawables" type="module"/>
+        <dataEntry label="globals/Rez/Strings" offset="1913" parentId="Rez" symbolId="Strings" type="module"/>
+    </dataEntryOffsetMappings>
+    <functions>
+        <functionEntry accessMode="public" endPc="268435477" name="app" startPc="268435457">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268435670" name="openMenu" startPc="268435478">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268435722" name="fmtA" startPc="268435671">
+            <param id="v"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268435734" name="&lt;init&gt;" parent="MainView" startPc="268435723">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268435816" name="nextIn" startPc="268435735">
+            <param id="list"/>
+            <param id="v"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268435828" name="&lt;init&gt;" parent="NumberDelegate" startPc="268435817">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268435848" name="&lt;init&gt;" parent="Rez" startPc="268435829">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268436205" name="tri" startPc="268435849">
+            <param id="dc"/>
+            <param id="x"/>
+            <param id="y"/>
+            <param id="r"/>
+            <param id="dir"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268436217" name="&lt;init&gt;" parent="MenuDelegate" startPc="268436206">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" name="&lt;init&gt;" parent="Bal">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268436229" name="&lt;init&gt;" parent="DopeDelegate" startPc="268436218">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268436241" name="&lt;init&gt;" parent="MainDelegate" startPc="268436230">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268436253" name="&lt;init&gt;" parent="ProfDelegate" startPc="268436242">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268436265" name="&lt;init&gt;" parent="BalApp" startPc="268436254">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268436277" name="&lt;init&gt;" parent="NumberView" startPc="268436266">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268436289" name="&lt;init&gt;" parent="DopeView" startPc="268436278">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268436305" name="onShow" parent="MainView" startPc="268436290">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268436320" name="initialize" parent="MainView" startPc="268436306">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268437574" name="onUpdate" parent="MainView" startPc="268436321">
+            <param id="dc"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268437594" name="onPreviousPage" parent="NumberDelegate" startPc="268437575">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268437627" name="initialize" parent="NumberDelegate" startPc="268437595">
+            <param id="view"/>
+            <param id="p"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268437734" name="onTap" parent="NumberDelegate" startPc="268437628">
+            <param id="evt"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268437754" name="onNextPage" parent="NumberDelegate" startPc="268437735">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268437821" name="onSelect" parent="NumberDelegate" startPc="268437755">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" name="&lt;init&gt;" parent="Drawables">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" name="&lt;init&gt;" parent="Strings">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268437925" name="refresh" parent="MenuDelegate" startPc="268437822">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268437949" name="initialize" parent="MenuDelegate" startPc="268437926">
+            <param id="m"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268438524" name="onSelect" parent="MenuDelegate" startPc="268437950">
+            <param id="item"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268438623" name="zeroAngle" parent="Bal" startPc="268438525">
+            <param id="p"/>
+            <param id="z"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268438876" name="cd" parent="Bal" startPc="268438624">
+            <param id="m"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268439363" name="fly" parent="Bal" startPc="268438877">
+            <param id="p"/>
+            <param id="alpha"/>
+            <param id="maxX"/>
+            <param id="step"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268439517" name="atmo" parent="Bal" startPc="268439364">
+            <param id="t"/>
+            <param id="p"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268439537" name="onPreviousPage" parent="DopeDelegate" startPc="268439518">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268439548" name="onMenu" parent="DopeDelegate" startPc="268439538">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268439572" name="initialize" parent="DopeDelegate" startPc="268439549">
+            <param id="view"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268439592" name="onNextPage" parent="DopeDelegate" startPc="268439573">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268439611" name="onSelect" parent="DopeDelegate" startPc="268439593">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268439628" name="onBack" parent="MainDelegate" startPc="268439612">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268439643" name="onPreviousPage" parent="MainDelegate" startPc="268439629">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268439654" name="onMenu" parent="MainDelegate" startPc="268439644">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268439762" name="change" parent="MainDelegate" startPc="268439655">
+            <param id="dir"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268439777" name="initialize" parent="MainDelegate" startPc="268439763">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268439870" name="onTap" parent="MainDelegate" startPc="268439778">
+            <param id="evt"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268439885" name="onNextPage" parent="MainDelegate" startPc="268439871">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268439947" name="onSelect" parent="MainDelegate" startPc="268439886">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268439971" name="initialize" parent="ProfDelegate" startPc="268439948">
+            <param id="p"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268440028" name="onSelect" parent="ProfDelegate" startPc="268439972">
+            <param id="item"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268440165" name="set" parent="BalApp" startPc="268440029">
+            <param id="key"/>
+            <param id="val"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268440266" name="clockTxt" parent="BalApp" startPc="268440166">
+            <param id="h"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268440315" name="getInitialView" parent="BalApp" startPc="268440267">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268440341" name="save" parent="BalApp" startPc="268440316">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268440450" name="pressure" parent="BalApp" startPc="268440342">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268440473" name="label" parent="BalApp" startPc="268440451">
+            <param id="key"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268441055" name="fmt" parent="BalApp" startPc="268440474">
+            <param id="key"/>
+            <param id="v"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268441081" name="prof" parent="BalApp" startPc="268441056">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268441338" name="spec" parent="BalApp" startPc="268441082">
+            <param id="key"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268441751" name="sol" parent="BalApp" startPc="268441339">
+            <param id="d"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268441781" name="unit" parent="BalApp" startPc="268441752">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268441798" name="onStart" parent="BalApp" startPc="268441782">
+            <param id="state"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268442007" name="recompute" parent="BalApp" startPc="268441799">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268442067" name="defaults" parent="BalApp" startPc="268442008">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268442250" name="load" parent="BalApp" startPc="268442068">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268442301" name="refreshPressure" parent="BalApp" startPc="268442251">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268442366" name="get" parent="BalApp" startPc="268442302">
+            <param id="key"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268442381" name="initialize" parent="BalApp" startPc="268442367">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268442391" name="onStop" parent="BalApp" startPc="268442382">
+            <param id="state"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268442560" name="change" parent="NumberView" startPc="268442392">
+            <param id="dir"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268442636" name="initialize" parent="NumberView" startPc="268442561">
+            <param id="k"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268442687" name="value" parent="NumberView" startPc="268442637">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268443016" name="onUpdate" parent="NumberView" startPc="268442688">
+            <param id="dc"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268443104" name="scroll" parent="DopeView" startPc="268443017">
+            <param id="dir"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268443119" name="initialize" parent="DopeView" startPc="268443105">
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268444066" name="onUpdate" parent="DopeView" startPc="268443120">
+            <param id="dc"/>
+            <documentation/>
+        </functionEntry>
+        <functionEntry accessMode="public" endPc="268444180" name="dists" parent="DopeView" startPc="268444067">
+            <documentation/>
+        </functionEntry>
+    </functions>
+</debugInfo>
