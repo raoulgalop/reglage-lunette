@@ -1,0 +1,8 @@
+
+Error: Unhandled Exception
+Exception: UnexpectedTypeException: Screen visible area top left is not set
+Stack: 
+  - API code 0x300007f8 
+  - 0x10001d5c 
+  - API code 0x30004315 
+Encountered an app crash.
