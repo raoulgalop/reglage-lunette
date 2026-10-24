@@ -67,7 +67,7 @@ jobs:
           xdotool key Up; sleep 1; xdotool key Up; sleep 2; shot 2-distance-plus
           xdotool key Return; sleep 3; shot 3-table
           xdotool key Escape; sleep 2; shot 4-retour
-          xdotool keydown Up; sleep 2; xdotool keyup Up; sleep 3; shot 5-menu
+          xdotool mousemove 325 665 click 1; sleep 3; shot 5-menu
           xdotool key Return; sleep 3; shot 6-munitions
           cat out/monkeydo.log /tmp/sim.log | tail -40
       - uses: actions/upload-artifact@v4

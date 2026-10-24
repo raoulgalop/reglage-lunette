@@ -13,6 +13,16 @@ function tri(dc, x, y, r, dir) {
     else { dc.fillPolygon([[x + r, y], [x - r, y - r], [x - r, y + r]]); }
 }
 
+// Texte centré en x précédé d'une flèche (dir comme tri)
+function arrowTxt(dc, x, y, txt, dir) {
+    var f = Graphics.FONT_SMALL;
+    var r = 8;
+    var tw = dc.getTextWidthInPixels(txt, f);
+    var x0 = x - (tw + 2 * r + 6) / 2;
+    tri(dc, x0 + r, y, r, dir);
+    dc.drawText(x0 + 2 * r + 6, y, f, txt, Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER);
+}
+
 function fmtA(v) {
     return v.abs().format(v.abs() < 10 ? "%.2f" : "%.1f");
 }
@@ -74,8 +84,7 @@ class MainView extends WatchUi.View {
             if (ec == 0) {
                 dc.drawText(lx, h * 0.69, Graphics.FONT_SMALL, "OK", CJ);
             } else {
-                tri(dc, lx - w * 0.08, h * 0.69, 9, ec > 0 ? 0 : 1);
-                dc.drawText(lx + w * 0.03, h * 0.69, Graphics.FONT_SMALL, ec > 0 ? "HAUT" : "BAS", CJ);
+                arrowTxt(dc, lx, h * 0.69, ec > 0 ? "HAUT" : "BAS", ec > 0 ? 0 : 1);
             }
             // vent
             var wcl = r[3];
@@ -83,12 +92,8 @@ class MainView extends WatchUi.View {
             dc.drawText(rx, h * 0.56, Graphics.FONT_NUMBER_HOT, wcl.abs().toString(), CJ);
             if (wcl == 0) {
                 dc.drawText(rx, h * 0.69, Graphics.FONT_SMALL, "OK", CJ);
-            } else if (wcl > 0) {
-                tri(dc, rx + w * 0.11, h * 0.69, 9, 3);
-                dc.drawText(rx - w * 0.02, h * 0.69, Graphics.FONT_SMALL, "DROITE", CJ);
             } else {
-                tri(dc, rx - w * 0.12, h * 0.69, 9, 2);
-                dc.drawText(rx + w * 0.02, h * 0.69, Graphics.FONT_SMALL, "GAUCHE", CJ);
+                arrowTxt(dc, rx, h * 0.69, wcl > 0 ? "DROITE" : "GAUCHE", wcl > 0 ? 3 : 2);
             }
             dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
             dc.drawText(lx, h * 0.78, Graphics.FONT_XTINY, fmtA(r[0]) + " " + a.unit(), CJ);
