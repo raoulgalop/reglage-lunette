@@ -7,7 +7,7 @@ import Toybox.Sensor;
 import Toybox.Weather;
 import Toybox.WatchUi;
 
-const TABLE_MAX = 600;  // portée maximale calculée (m)
+const TABLE_MAX = 2000;  // portée maximale calculée (m)
 const TABLE_STEP = 5;   // pas de la trajectoire stockée (m)
 const N_PROFS = 20;     // munitions (voir tools/gen_settings.py)
 const OMEGA = 7.292115e-5;  // rotation de la Terre (rad/s)
@@ -22,6 +22,8 @@ class BalApp extends Application.AppBase {
 
     var s;          // réglages (copie des Properties)
     var tbl;        // [ys, ts] tous les TABLE_STEP mètres
+    var rng = 0;    // portée calculée (m) : seulement ce qui est affiché, pour ménager le processeur
+    var need = 0;   // distance demandée au-delà de la portée calculée
     var tI;         // intégrale du temps de vol sur la distance (m·s), pour Coriolis
     var gpsOk = false;   // latitude venue du GPS
     var atm = [1.0, 340.0];  // [rapport de densité de l'air, vitesse du son] du dernier calcul
@@ -127,7 +129,12 @@ class BalApp extends Application.AppBase {
         var p = [pr[1].toFloat(), pr[2].toFloat(), pr[5].toFloat() / 100.0, at[0], at[1]];
         Bal.useG7(pr[3] == 7);
         var a = Bal.zeroAngle(p, pr[4].toFloat());
-        tbl = Bal.fly(p, a, TABLE_MAX.toFloat(), TABLE_STEP.toFloat());
+        var r = s["dist"] > s["dTo"] ? s["dist"] : s["dTo"];
+        if (need > r) { r = need; }
+        r = (r / 250 + 1) * 250;  // marge pour les écrans et les changements de distance
+        rng = r > TABLE_MAX ? TABLE_MAX : r;
+        need = 0;
+        tbl = Bal.fly(p, a, rng.toFloat(), TABLE_STEP.toFloat());
         atm = at;
         // Coriolis : dz/dt = 2Ω sin(lat) · vx · t (la traînée freine aussi la dérive), donc z = 2Ω sin(lat) · ∫ t dx
         var ts = tbl[1];
@@ -316,6 +323,10 @@ class BalApp extends Application.AppBase {
     // Solution à d mètres : [élévation, vent (unité de la lunette ; + = haut / droite),
     // clics élévation, clics vent, temps de vol] ou null hors portée
     function sol(d) {
+        if (d > rng && rng < TABLE_MAX) {
+            need = d;
+            recompute();
+        }
         var ys = tbl[0];
         var ts = tbl[1];
         var i = d / TABLE_STEP;
@@ -406,9 +417,9 @@ class BalApp extends Application.AppBase {
         if (key.equals("press")) { return ["Pression", 700, 1100, 1, 0]; }
         if (key.equals("zero")) { return ["Distance de zéro", 10, 300, 5, 0]; }
         if (key.equals("sight")) { return ["Haut. lunette / canon", 1.0, 15.0, 0.1, 1]; }
-        if (key.equals("dFrom")) { return ["Table : de", 10, TABLE_MAX, 5, 0]; }
-        if (key.equals("dTo")) { return ["Table : à", 10, TABLE_MAX, 5, 0]; }
-        if (key.equals("dStep")) { return ["Table : pas", 5, 100, 5, 0]; }
+        if (key.equals("dFrom")) { return ["Table : de", 10, TABLE_MAX, 25, 0]; }
+        if (key.equals("dTo")) { return ["Table : à", 10, TABLE_MAX, 25, 0]; }
+        if (key.equals("dStep")) { return ["Table : pas", 5, 250, 5, 0]; }
         if (key.equals("v0")) { return ["V0 (m/s)", 150, 1200, 1, 0]; }
         if (key.equals("lat")) { return ["Latitude (°)", -90.0, 90.0, 0.1, 1]; }
         if (key.equals("az")) { return ["Azimut de tir (°)", 0, 355, 5, 0]; }

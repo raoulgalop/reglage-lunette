@@ -33,6 +33,7 @@ function dial(dc, cx, cy, r, rot) {
 
 function cm(m) {
     var v = (m * 100).abs();
+    if (v >= 1000) { return (v / 100).format("%.1f") + " m"; }
     return v.format(v < 10 ? "%.1f" : "%.0f") + " cm";
 }
 
@@ -181,7 +182,7 @@ function drawTraj(dc, a) {
     dc.setColor(Graphics.COLOR_DK_GRAY, Graphics.COLOR_TRANSPARENT);
     var ylos = y0 + ymax * py;
     dc.drawLine(x0, ylos, x1, ylos);
-    var stepX = dmax > 300 ? 100 : 50;
+    var stepX = dmax > 1200 ? 500 : (dmax > 600 ? 200 : (dmax > 300 ? 100 : 50));
     for (var x = stepX; x <= dmax; x += stepX) {
         dc.drawLine(x0 + x * px, y0, x0 + x * px, y1);
         dc.drawText(x0 + x * px, y1 + 12, Graphics.FONT_XTINY, x.toString(), CJ);

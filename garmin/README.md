@@ -51,7 +51,7 @@ Passer un profil en G7 ne convertit pas le CB : saisir le CB G7 du fabricant.
 
 Réglages communs : unité **MRAD ou MOA** et valeur du clic (0,1 / 0,05 / 0,2 MRAD ou 1/4, 1/8, 1/2, 1 MOA),
 vent (vitesse et direction en heures), température, pression (baromètre de la montre ou manuelle),
-pas de distance de l'écran principal (1, 5, 10 ou 25 m, distances de 10 à 600 m) et table DOPE (de, à, pas).
+pas de distance de l'écran principal (1, 5, 10, 25, 50 ou 100 m, distances de 10 à 2000 m) et table DOPE (de, à, pas).
 
 **Coriolis** (à activer) : la latitude vient du GPS de la montre (ou se saisit à la main) ; l'azimut de tir se prend à la
 boussole en visant la cible (menu « Cap boussole = azimut », montre pointée vers la cible) ou se saisit en degrés. Correction horizontale

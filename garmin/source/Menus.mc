@@ -111,7 +111,7 @@ class MenuDelegate extends WatchUi.Menu2InputDelegate {
             a.set("click", nextIn(s["moa"] ? [0.25, 0.125, 0.5, 1.0] : [0.1, 0.05, 0.2], s["click"]));
             refresh();
         } else if (key.equals("step")) {
-            a.set("step", nextIn([5, 10, 25, 1], s["step"]));
+            a.set("step", nextIn([5, 10, 25, 50, 100, 1], s["step"]));
             refresh();
         } else {
             var v = new NumberView(key);

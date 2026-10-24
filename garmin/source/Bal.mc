@@ -51,7 +51,9 @@ module Bal {
         var k0 = 2.08551e-4 * 3.28084 / p[1] * p[3];
         var snd = p[4];
         var g = 9.80665;
-        var dt = 0.01;  // pas plus fin inutile (écart < 0,01 mil à 300 m) et trop lent pour la montre
+        // pas de 0,01 s la première seconde, puis 0,025 s : précision suffisante et calcul assez court
+        // pour le chien de garde de la montre, même à 2000 m
+        var dt = 0.01;
         var h = dt / 2.0;
         var n = (maxX / step + 0.001).toNumber() + 1;
         var ys = new [n];
@@ -66,7 +68,11 @@ module Bal {
         ys[0] = y;
         ts[0] = 0.0;
         hint = 1;
-        while (nx < n && t < 5.0) {
+        while (nx < n && t < 12.0) {
+            if (t > 1.0 && dt < 0.02) {
+                dt = 0.025;
+                h = dt / 2.0;
+            }
             v = Math.sqrt(vx * vx + vy * vy);
             k = k0 * cd(v / snd) * v;
             mx = vx - k * vx * h;
