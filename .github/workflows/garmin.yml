@@ -101,7 +101,8 @@ jobs:
           k Return; sleep 6; shot t5-carte
           xdotool mousemove 430 420 click 1; sleep 4; shot t6-carte-toucher
           xdotool mousemove 330 600 mousedown 1 sleep 2 mouseup 1; sleep 4; shot t7-carte-appui-long
-          strings /connectiq/bin/api.mir 2>/dev/null | grep -i "onhold\|onswipe\|maptap\|getMapVisible" | sort -u | head -20 || true
+          find /connectiq -iname "*mapview*" -o -iname "*inputdelegate*" | head -20 || true
+          grep -rhoi "onHold[^<]\{0,80\}" /connectiq/doc 2>/dev/null | sort -u | head -5 || true
           wait $TPID || true
           cat out/monkeydo.log out/monkeydo-test.log /tmp/sim.log | tail -60
       - uses: actions/upload-artifact@v4

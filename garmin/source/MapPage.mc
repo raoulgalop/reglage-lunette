@@ -156,8 +156,9 @@ class MapDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function place(evt, shooter) {
-        if (MAP == null) { return false; }
         var c = evt.getCoordinates();
+        System.println("carte : " + (shooter ? "appui long " : "toucher ") + c[0] + "," + c[1]);
+        if (MAP == null) { return false; }
         var h = System.getDeviceSettings().screenHeight;
         if (c[1] < h * 0.18 || c[1] > h * 0.80) { return false; }
         var p = MAP.toLatLon(c[0], c[1]);
@@ -186,6 +187,7 @@ class MapDelegate extends WatchUi.BehaviorDelegate {
     }
 
     function onSelect() {  // retour à l'écran principal
+        System.println("carte : select");
         HOST.page = 0;
         WatchUi.popView(WatchUi.SLIDE_LEFT);
         return true;
