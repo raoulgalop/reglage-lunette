@@ -86,10 +86,15 @@ class MapPage extends WatchUi.MapView {
         if (dx.abs() * 0.7 * sh2 / sw > ry) { ry = dx.abs() * 0.7 * sh2 / sw; }
         if (ry < 150.0) { ry = 150.0; }
         ry *= zoom;
-        var rx = ry * sw / sh2;
-        mpp = 2.0 * ry / sh2;
-        var hLa = ry / 111320.0;
-        var hLo = rx / (111320.0 * cl);
+        // la carte n'affiche que des niveaux de zoom entiers (tuiles de 256 px) : on prend le niveau qui contient la zone
+        // et on cadre exactement dessus, pour que l'échelle soit connue
+        var k = 156543.03 * cl;
+        var z = Math.floor(Math.ln(k * sh2 / (2.0 * ry)) / Math.ln(2.0)).toNumber();
+        if (z < 1) { z = 1; }
+        if (z > 19) { z = 19; }
+        mpp = k / Math.pow(2.0, z);
+        var hLa = mpp * sh2 / 2.0 * 0.97 / 111320.0;
+        var hLo = mpp * sw / 2.0 * 0.97 / (111320.0 * cl);
         setMapVisibleArea(loc([ctr[0] + hLa, ctr[1] - hLo]), loc([ctr[0] - hLa, ctr[1] + hLo]));
     }
 
