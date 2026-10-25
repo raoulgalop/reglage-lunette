@@ -69,14 +69,14 @@ tr.zero td{color:var(--ok)}
 </head>
 <body>
 <div id="apkBar" style="display:none;position:relative;z-index:2000;background:#14532d;color:#fff;padding:10px 40px 10px 12px;padding-top:calc(10px + env(safe-area-inset-top));font-size:15px">
-  📱 Android : <a href="ReglageLunette.apk" download="ReglageLunette.apk" style="color:#fde68a;font-weight:700">Télécharger l'appli (APK v4.11)</a>
+  📱 Android : <a href="ReglageLunette.apk" download="ReglageLunette.apk" style="color:#fde68a;font-weight:700">Télécharger l'appli (APK v4.12)</a>
   <div style="font-size:12px;opacity:.85;margin-top:3px">Ouvrez ensuite le fichier téléchargé et autorisez l'installation depuis le navigateur si Android le demande. Vos réglages du site ne sont pas repris dans l'appli.</div>
   <button id="apkX" aria-label="Fermer" style="position:absolute;right:6px;top:calc(6px + env(safe-area-inset-top));background:none;border:0;color:#fff;font-size:20px">✕</button>
 </div>
 <script>(function(){ // proposé seulement dans un navigateur Android, pas dans l'appli elle-même
-  var hide=false;try{hide=localStorage.getItem("apkBarOff")==="4.11";}catch(e){}
+  var hide=false;try{hide=localStorage.getItem("apkBarOff")==="4.12";}catch(e){}
   if(/Android/i.test(navigator.userAgent)&&!window.Android&&/^https?:/.test(location.protocol)&&!hide)document.getElementById("apkBar").style.display="";
-  document.getElementById("apkX").onclick=function(){document.getElementById("apkBar").style.display="none";try{localStorage.setItem("apkBarOff","4.11");}catch(e){}};
+  document.getElementById("apkX").onclick=function(){document.getElementById("apkBar").style.display="none";try{localStorage.setItem("apkBarOff","4.12");}catch(e){}};
 })();</script>
 <header>
   <h1>🎯 Réglage Lunette</h1>
@@ -102,6 +102,8 @@ tr.zero td{color:var(--ok)}
       <label style="flex:0 0 auto">&nbsp;<br><button class="btn acc" id="gpsBtn">📍 GPS</button></label>
     </div>
     <p class="hint" id="gpsInfo">Recherche de la position GPS…</p>
+    <div class="chips"><button class="btn sm" id="tileDl">⬇ Garder cette zone pour le hors ligne</button><button class="btn sm" id="tileClr">🗑 Vider le cache carte</button></div>
+    <p class="hint" id="tileInfo">Les morceaux de carte déjà vus sont gardés en mémoire et s'affichent sans réseau. Les calculs, eux, marchent toujours sans réseau (la météo et le relief se saisissent alors à la main).</p>
   </div>
 
   <div class="card">
@@ -940,9 +942,7 @@ function jSetLoc(lat,lon,src){jLoc={lat,lon};$("jLocInfo").textContent=`Lieu : $
 function jInitMap(){
   if(jMap)return;if(!window.L){$("jMap").innerHTML='<p class="hint" style="padding:12px">Carte indisponible.</p>';return;}
   const c0=jLoc||S.shooter;jMap=L.map("jMap").setView(c0?[c0.lat,c0.lon]:[46.6,2.4],c0?15:5);
-  const sat=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"Esri"});
-  const osm=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"});
-  sat.addTo(jMap);L.control.layers({"Satellite":sat,"Plan":osm},null,{position:"topright"}).addTo(jMap);
+  baseLayers(jMap);
   jMap.on("click",e=>jSetLoc(e.latlng.lat,e.latlng.lng,"placé sur la carte"));
   if(jLoc)jSetLoc(jLoc.lat,jLoc.lon,"placé");renderLog();
 }
@@ -1147,12 +1147,58 @@ document.querySelectorAll(".zc").forEach(b=>b.onclick=()=>{$("zeroD").value=b.te
 
 /* ================= carte, GPS, météo ================= */
 let map=null,mShooter=null,mTarget=null,line=null,gpsFix=null,gpsFirst=true;
+/* ================= carte hors ligne : tuiles gardées dans IndexedDB ================= */
+function fetchT(url,ms){const ac=window.AbortController?new AbortController():null,t=ac&&setTimeout(()=>ac.abort(),ms||8000); // délai max : pas d'attente sans fin sans réseau
+  return fetch(url,ac?{signal:ac.signal}:{}).finally(()=>t&&clearTimeout(t));}
+const TileDB={p:null,n:0,
+  open(){return this.p||(this.p=new Promise(res=>{try{const r=indexedDB.open("lunette-tuiles",1);
+    r.onupgradeneeded=()=>{const st=r.result.createObjectStore("t");st.createIndex("d","d");};r.onsuccess=()=>res(r.result);r.onerror=()=>res(null);}catch(e){res(null);}}));},
+  async req(mode,fn){const db=await this.open();if(!db)return null;return new Promise(res=>{try{const q=fn(db.transaction("t",mode).objectStore("t"));q.onsuccess=()=>res(q.result);q.onerror=()=>res(null);}catch(e){res(null);}});},
+  get(k){return this.req("readonly",st=>st.get(k));},
+  async put(k,v){await this.req("readwrite",st=>st.put(v,k));if(++this.n%200===0)this.prune();},
+  count(){return this.req("readonly",st=>st.count());},
+  clear(){return this.req("readwrite",st=>st.clear());},
+  async prune(){const n=await this.count();if(!(n>8000))return;const db=await this.open();let del=n-6000; // ≈ 200 Mo au plus : les plus anciennes partent
+    const st=db.transaction("t","readwrite").objectStore("t");st.index("d").openCursor().onsuccess=e=>{const c=e.target.result;if(c&&del-->0){c.delete();c.continue();}};}
+};
+async function tileSrc(url,netOnly){
+  if(!netOnly){const hit=await TileDB.get(url);if(hit&&hit.b)return {src:URL.createObjectURL(new Blob([hit.b],{type:hit.t})),cached:true};}
+  const r=await fetchT(url,10000);if(!r.ok)throw new Error("HTTP "+r.status);
+  const b=await r.arrayBuffer(),t=r.headers.get("content-type")||"image/jpeg";await TileDB.put(url,{b,t,d:Date.now()});
+  return {src:URL.createObjectURL(new Blob([b],{type:t}))};
+}
+const CachedLayer=window.L?L.TileLayer.extend({createTile(coords,done){
+  const img=document.createElement("img");img.alt="";img.setAttribute("role","presentation");
+  tileSrc(this.getTileUrl(coords)).then(o=>{img.onload=()=>{URL.revokeObjectURL(o.src);done(null,img);};img.onerror=()=>done(new Error("tuile"),img);img.src=o.src;})
+    .catch(e=>done(e,img));
+  return img;}}):null;
+function baseLayers(m){
+  const sat=new CachedLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"Esri"});
+  const osm=new CachedLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"});
+  sat.addTo(m);L.control.layers({"Satellite":sat,"Plan":osm},null,{position:"topright"}).addTo(m);
+  m._base=sat;m.on("baselayerchange",e=>m._base=e.layer);
+}
+let tileJob=null;
+$("tileDl").onclick=async()=>{
+  if(!map)return;const info=$("tileInfo");if(tileJob){tileJob.stop=true;return;}
+  const lay=map._base,z0=map.getZoom(),b=map.getBounds(),list=[];
+  for(let z=Math.max(z0,10);z<=Math.min(z0+2,18);z++){const p1=map.project(b.getNorthWest(),z).divideBy(256).floor(),p2=map.project(b.getSouthEast(),z).divideBy(256).floor();
+    for(let x=p1.x;x<=p2.x;x++)for(let y=p1.y;y<=p2.y;y++)list.push(lay.getTileUrl({x,y,z}));}
+  if(z0<10){info.textContent="Zoomez d'abord sur votre stand (au moins jusqu'à voir les bâtiments), puis relancez.";return;}
+  if(list.length>1200){info.textContent=`Zone trop grande (${list.length} morceaux) : zoomez davantage sur le stand puis relancez.`;return;}
+  tileJob={stop:false};const job=tileJob,btn=$("tileDl");btn.textContent="⏹ Arrêter";let ok=0,ko=0,i=0;
+  const worker=async()=>{while(i<list.length&&!job.stop){const u=list[i++];try{if(!(await TileDB.get(u)))await tileSrc(u,true);ok++;}catch(e){ko++;}
+    info.textContent=`Téléchargement de la zone : ${ok+ko}/${list.length}${ko?` (${ko} échecs)`:""}…`;}};
+  await Promise.all([1,2,3,4].map(worker));
+  tileJob=null;btn.textContent="⬇ Garder cette zone pour le hors ligne";
+  info.textContent=ko&&!ok?"Pas de réseau : la zone n'a pas pu être téléchargée.":`Zone gardée pour le hors ligne : ${ok} morceaux (zoom ${Math.max(z0,10)} à ${Math.min(z0+2,18)}, couche affichée).`+(ko?` ${ko} échecs.`:"")+` Total en mémoire : ${await TileDB.count()||0}.`;
+};
+$("tileClr").onclick=async()=>{await TileDB.clear();$("tileInfo").textContent="Cache de la carte vidé.";};
+
 function initMap(){
   if(!window.L){$("map").innerHTML='<p class="hint" style="padding:12px">Carte indisponible.</p>';return;}
   map=L.map("map",{zoomControl:true,attributionControl:true}).setView(S.shooter?[S.shooter.lat,S.shooter.lon]:[46.6,2.4],S.shooter?16:5);
-  const sat=L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxZoom:19,attribution:"Esri"});
-  const osm=L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png",{maxZoom:19,attribution:"© OpenStreetMap"});
-  sat.addTo(map);L.control.layers({"Satellite":sat,"Plan":osm},null,{position:"topright"}).addTo(map);
+  baseLayers(map);
   map.on("click",e=>{
     const pt={lat:e.latlng.lat,lon:e.latlng.lng,alt:null};
     if(seg("placeMode")==="shooter"){S.shooter=pt;S.shooterManual=true;setSeg("placeMode","target");}else S.target=pt;
@@ -1188,7 +1234,7 @@ async function updateGeo(fetchElev){
   if(fetchElev){
     const seq=++elevSeq;
     try{
-      const r=await fetch(`https://api.open-meteo.com/v1/elevation?latitude=${S.shooter.lat},${S.target.lat}&longitude=${S.shooter.lon},${S.target.lon}`);
+      const r=await fetchT(`https://api.open-meteo.com/v1/elevation?latitude=${S.shooter.lat},${S.target.lat}&longitude=${S.shooter.lon},${S.target.lon}`);
       const j=await r.json();if(seq!==elevSeq||!j.elevation)return;
       S.shooter.alt=j.elevation[0];S.target.alt=j.elevation[1];apply();
     }catch(e){$("geoInfo").textContent+=" — relief non disponible sans réseau.";}
@@ -1220,7 +1266,7 @@ async function meteo(){
   if(meteoBusy)return;meteoBusy=true;S.meteoTime=Date.now();
   $("meteoInfo").textContent="Récupération de la météo…";
   try{
-    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${pos.lat}&longitude=${pos.lon}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m,wind_direction_10m,wind_gusts_10m&wind_speed_unit=kmh`);
+    const r=await fetchT(`https://api.open-meteo.com/v1/forecast?latitude=${pos.lat}&longitude=${pos.lon}&current=temperature_2m,relative_humidity_2m,surface_pressure,wind_speed_10m,wind_direction_10m,wind_gusts_10m&wind_speed_unit=kmh`);
     const j=await r.json(),c=j.current;
     $("mT").value=c.temperature_2m.toFixed(1);$("mP").value=c.surface_pressure.toFixed(0);$("mH").value=Math.round(c.relative_humidity_2m);
     $("mWs").value=Math.round(c.wind_speed_10m);$("mWd").value=Math.round(c.wind_direction_10m);
