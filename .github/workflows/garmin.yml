@@ -101,8 +101,9 @@ jobs:
           k Return; sleep 6; shot t5-carte
           xdotool mousemove 430 420 click 1; sleep 4; shot t6-carte-toucher
           xdotool mousemove 330 600 mousedown 1 sleep 2 mouseup 1; sleep 4; shot t7-carte-appui-long
-          find /connectiq -iname "*mapview*" -o -iname "*inputdelegate*" | head -20 || true
-          grep -rhoi "onHold[^<]\{0,80\}" /connectiq/doc 2>/dev/null | sort -u | head -5 || true
+          xdotool mousemove 330 400 mousedown 1 mousemove 330 450 mousemove 330 520 mousemove 330 600 mouseup 1; sleep 3; shot t8-carte-glisser
+          F=$(grep -rl "class MapView" /connectiq/doc 2>/dev/null | head -1); echo "doc : $F"
+          [ -n "$F" ] && sed -e 's/<[^>]*>/ /g' "$F" | tr -s ' \n' | grep -i -B2 -A3 "tap\|touch\|input\|select\|browse\|preview\|visible" | head -120 || true
           wait $TPID || true
           cat out/monkeydo.log out/monkeydo-test.log /tmp/sim.log | tail -60
       - uses: actions/upload-artifact@v4

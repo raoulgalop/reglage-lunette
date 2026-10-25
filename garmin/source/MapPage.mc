@@ -169,8 +169,14 @@ class MapDelegate extends WatchUi.BehaviorDelegate {
     }
 
     // glisser vers le haut : voir plus loin ; vers le bas : zoomer
+    function onDrag(evt) {
+        System.println("carte : drag " + evt.getType() + " " + evt.getCoordinates());
+        return false;
+    }
+
     function onSwipe(evt) {
         var d = evt.getDirection();
+        System.println("carte : swipe " + d);
         if (MAP == null) { return false; }
         if (d == WatchUi.SWIPE_UP) { MAP.zoom *= 2.0; }
         else if (d == WatchUi.SWIPE_DOWN) { MAP.zoom /= 2.0; }
