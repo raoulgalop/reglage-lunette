@@ -69,14 +69,14 @@ tr.zero td{color:var(--ok)}
 </head>
 <body>
 <div id="apkBar" style="display:none;position:relative;z-index:2000;background:#14532d;color:#fff;padding:10px 40px 10px 12px;padding-top:calc(10px + env(safe-area-inset-top));font-size:15px">
-  📱 Android : <a href="ReglageLunette.apk" download="ReglageLunette.apk" style="color:#fde68a;font-weight:700">Télécharger l'appli (APK v4.10)</a>
+  📱 Android : <a href="ReglageLunette.apk" download="ReglageLunette.apk" style="color:#fde68a;font-weight:700">Télécharger l'appli (APK v4.11)</a>
   <div style="font-size:12px;opacity:.85;margin-top:3px">Ouvrez ensuite le fichier téléchargé et autorisez l'installation depuis le navigateur si Android le demande. Vos réglages du site ne sont pas repris dans l'appli.</div>
   <button id="apkX" aria-label="Fermer" style="position:absolute;right:6px;top:calc(6px + env(safe-area-inset-top));background:none;border:0;color:#fff;font-size:20px">✕</button>
 </div>
 <script>(function(){ // proposé seulement dans un navigateur Android, pas dans l'appli elle-même
-  var hide=false;try{hide=localStorage.getItem("apkBarOff")==="4.10";}catch(e){}
+  var hide=false;try{hide=localStorage.getItem("apkBarOff")==="4.11";}catch(e){}
   if(/Android/i.test(navigator.userAgent)&&!window.Android&&/^https?:/.test(location.protocol)&&!hide)document.getElementById("apkBar").style.display="";
-  document.getElementById("apkX").onclick=function(){document.getElementById("apkBar").style.display="none";try{localStorage.setItem("apkBarOff","4.10");}catch(e){}};
+  document.getElementById("apkX").onclick=function(){document.getElementById("apkBar").style.display="none";try{localStorage.setItem("apkBarOff","4.11");}catch(e){}};
 })();</script>
 <header>
   <h1>🎯 Réglage Lunette</h1>
@@ -1322,12 +1322,21 @@ function retInfo(){
 }
 const radTo=(rad,u)=>u==="MOA"?rad/DEG*60:rad*1000;
 function drawReticle(){
+  try{drawReticle0();}catch(err){console.log(err);
+    try{rctx.restore();}catch(e){}
+    if(!S.retSafe){S.retSafe=1;S.retZoom=0;try{drawReticle0();S.retSafe=0;return;}catch(e){}} // 2e essai sans zoom ni photo
+    S.retSafe=0;const W=rc.width;rctx.setTransform(1,0,0,1,0,0);rctx.clearRect(0,0,W,W);rctx.fillStyle="#e9edf0";rctx.beginPath();rctx.arc(W/2,W/2,W/2,0,7);rctx.fill();
+    rctx.strokeStyle="#111";rctx.lineWidth=3;rctx.beginPath();rctx.moveTo(0,W/2);rctx.lineTo(W,W/2);rctx.moveTo(W/2,0);rctx.lineTo(W/2,W);rctx.stroke();
+    $("rHold").innerHTML=`<b class="warn">Erreur d'affichage du réticule : ${esc(err&&err.message||err)}</b> (faites une capture et envoyez-la). Essayez « Ajuster » ou le bouton Photo / dessin.`;}
+}
+function drawReticle0(){
   const I=retInfo(),u=I.u,W=rc.width,c=W/2,k=I.k;
   // champ affiché (en unités vraies du réticule)
   let hold=null;if(LAST)hold={x:radTo(-(LAST.wRad+(LAST.lRad||0)),u),y:radTo(-LAST.eRad,u)};
+  if(hold&&!(isFinite(hold.x)&&isFinite(hold.y)))hold=null;if(!isFinite(S.retZoom))S.retZoom=0;
   const base=u==="MOA"?30:10;
   let half=base;if(S.retZoom)half=S.retZoom;else if(hold)half=Math.max(base*0.5,Math.min(base*3,Math.max(Math.abs(hold.x),Math.abs(hold.y))*1.25));
-  half=Math.max(half,u==="MOA"?3:1);
+  half=Math.max(half,u==="MOA"?3:1);if(!isFinite(half))half=base;
   retHalf=half;
   const px=c/half,X=v=>c+v*px,Y=v=>c-v*px;
   rctx.clearRect(0,0,W,W);rctx.save();rctx.beginPath();rctx.arc(c,c,c,0,7);rctx.clip();
@@ -1343,8 +1352,10 @@ function drawReticle(){
     rctx.fillStyle="#e9edf0";rctx.fillRect(0,0,W,W);under();
     const sc=k*px/ph.ppu;rctx.globalCompositeOperation="multiply";
     { // seule la partie visible de l'image est dessinée : une image agrandie des dizaines de fois n'est pas affichée par certains téléphones
-      const sx=Math.max(0,ph.cx-c/sc),sy=Math.max(0,ph.cy-c/sc),ex=Math.min(ph.el.width,ph.cx+c/sc),ey=Math.min(ph.el.height,ph.cy+c/sc);
-      if(ex>sx&&ey>sy)rctx.drawImage(ph.el,sx,sy,ex-sx,ey-sy,c+(sx-ph.cx)*sc,c+(sy-ph.cy)*sc,(ex-sx)*sc,(ey-sy)*sc);}
+      const sx=Math.max(0,ph.cx-c/sc),sy=Math.max(0,ph.cy-c/sc),ex=Math.min(ph.el.naturalWidth||ph.el.width,ph.cx+c/sc),ey=Math.min(ph.el.naturalHeight||ph.el.height,ph.cy+c/sc);
+      const iw=ph.el.naturalWidth||ph.el.width,ih=ph.el.naturalHeight||ph.el.height;
+      if(iw*sc<=6000&&ih*sc<=6000)rctx.drawImage(ph.el,c-ph.cx*sc,c-ph.cy*sc,iw*sc,ih*sc);
+      else if(ex>sx&&ey>sy)rctx.drawImage(ph.el,sx,sy,ex-sx,ey-sy,c+(sx-ph.cx)*sc,c+(sy-ph.cy)*sc,(ex-sx)*sc,(ey-sy)*sc);}
     rctx.globalCompositeOperation="source-over";
   }else{
   rctx.strokeStyle="#111";rctx.fillStyle="#111";rctx.lineCap="butt";
