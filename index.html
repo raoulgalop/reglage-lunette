@@ -69,14 +69,14 @@ tr.zero td{color:var(--ok)}
 </head>
 <body>
 <div id="apkBar" style="display:none;position:relative;z-index:2000;background:#14532d;color:#fff;padding:10px 40px 10px 12px;padding-top:calc(10px + env(safe-area-inset-top));font-size:15px">
-  📱 Android : <a href="ReglageLunette.apk" download="ReglageLunette.apk" style="color:#fde68a;font-weight:700">Télécharger l'appli (APK v4.9)</a>
+  📱 Android : <a href="ReglageLunette.apk" download="ReglageLunette.apk" style="color:#fde68a;font-weight:700">Télécharger l'appli (APK v4.10)</a>
   <div style="font-size:12px;opacity:.85;margin-top:3px">Ouvrez ensuite le fichier téléchargé et autorisez l'installation depuis le navigateur si Android le demande. Vos réglages du site ne sont pas repris dans l'appli.</div>
   <button id="apkX" aria-label="Fermer" style="position:absolute;right:6px;top:calc(6px + env(safe-area-inset-top));background:none;border:0;color:#fff;font-size:20px">✕</button>
 </div>
 <script>(function(){ // proposé seulement dans un navigateur Android, pas dans l'appli elle-même
-  var hide=false;try{hide=localStorage.getItem("apkBarOff")==="4.9";}catch(e){}
+  var hide=false;try{hide=localStorage.getItem("apkBarOff")==="4.10";}catch(e){}
   if(/Android/i.test(navigator.userAgent)&&!window.Android&&/^https?:/.test(location.protocol)&&!hide)document.getElementById("apkBar").style.display="";
-  document.getElementById("apkX").onclick=function(){document.getElementById("apkBar").style.display="none";try{localStorage.setItem("apkBarOff","4.9");}catch(e){}};
+  document.getElementById("apkX").onclick=function(){document.getElementById("apkBar").style.display="none";try{localStorage.setItem("apkBarOff","4.10");}catch(e){}};
 })();</script>
 <header>
   <h1>🎯 Réglage Lunette</h1>
@@ -436,7 +436,7 @@ function seg(id){return $(id).querySelector(".on").dataset.v;}
 function setSeg(id,v){$(id).querySelectorAll("button").forEach(b=>b.classList.toggle("on",b.dataset.v==v));}
 
 /* ================= état persistant ================= */
-const FIELDS=["wdSpeed","pList","pFrom","pTo","pStep","pWinds","pDir","stDist","trD","rMag","rSize","rRead","tDist","tAz","tSite","tLat","mT","mP","mH","mWs","mWd","zDist","zGrid","zV","zH","bFrom","bTo","bStep","zeroD","zeroT","zeroP","mvS","mvA"];
+const FIELDS=["wdSpeed","pList","pFrom","pTo","pStep","pWinds","pDir","stDist","trD","rMag","rSize","rRead","tDist","tAz","tSite","tLat","mT","mP","mH","mWs","mWd","zDist","zGrid","zV","zH","bFrom","bTo","bStep","zeroD","zeroT","zeroP","mvA"];
 const SEGS=["placeMode","corOn","zVs","zHs","trWhat","mvDir"];
 let S={sel:{weapon:"Bergara|B-14R HMR (.22 LR)",scope:"Discovery Optics|ED-PRS GEN II 5-25x56 SFIR FFP-Z MRAD",ammo:"SK|Standard Plus 40 gr"},
        val:{weapon:{},scope:{},ammo:{}},custom:{weapon:[],scope:[],ammo:[]},tf:{weapon:"",ammo:""},setups:[],activeSetup:"",retZoom:0,impacts:[],halfCm:10,shooter:null,target:null,meteoTime:null};
@@ -715,6 +715,7 @@ function solve(){
   const ws=num("mWs"),rel=((num("mWd")-num("tAz"))%360+360)%360,hour=Math.round(rel/30)%12||12;
   const E=p.gr?0.5*p.gr*6.479891e-5*full.v*full.v:0;
   const rows=[
+    ...(lead?[["⚠ Cible mobile",`<span class="warn">avance ${fx(Math.abs(lead)*100,0)} cm ${lead>0?"à droite":"à gauche"}, à prendre en plus (non comptée dans la dérive ci-dessus)</span>`]]:[]),
     ["Chute / visée",`${fx(full.y*100,1)} cm`],
     ["Vent",ws?`${fx(ws,0)} km/h de ${hour} h → ${fx(Math.abs(windCm),1)} cm ${windCm>0?"à droite":"à gauche"}`:"aucun"],
     ["Coriolis horizontal",c.cor?`${fx(Math.abs(corH),1)} cm ${corH>0?"à droite":"à gauche"}`:"désactivé"],
@@ -1456,11 +1457,11 @@ function drawReticle(){
     ?"<b>Premier plan focal (FFP)</b> : le réticule grossit avec l'image, les graduations sont justes à tous les grossissements."
     :`<b>Second plan focal (SFP)</b> : le réticule garde la même taille à l'écran, les graduations ne sont justes qu'au grossissement de calibration${I.cal?` (×${I.cal})`:" (voir la notice, souvent le grossissement maximal)"}. À ×${I.mag}, une graduation vaut ${fx(I.k,2)} fois sa valeur nominale.`;
   if(hold&&I.type==="iron"){const D=LAST.D,cy=-uRad(hold.y,u)*D*100,cx=-uRad(hold.x,u)*D*100,io=P().iron,hz=io&&io.t==="hausse"?hausseFor(io,D):null;
-    $("rHold").innerHTML=`<b>Visée pour ${fx(D,0)} m</b> (onglet Tir) : ${hz?`hausse sur ${hz.v} ${hz.u}, puis `:""}${Math.abs(cy)<0.5&&sideTxt(cx)?"viser "+sideTxt(cx):holdTxt(cy)+(sideTxt(cx)?" et "+sideTxt(cx):"")}. Sur le schéma, la cible est sous le repère orange et le haut du guidon (au centre) montre où viser.`;
+    $("rHold").innerHTML=(LAST.lRad?`<b class="warn">⚠ Cible mobile active (${fx(num("mvS"),0)} km/h) : avance comprise.</b> `:"")+`<b>Visée pour ${fx(D,0)} m</b> (onglet Tir) : ${hz?`hausse sur ${hz.v} ${hz.u}, puis `:""}${Math.abs(cy)<0.5&&sideTxt(cx)?"viser "+sideTxt(cx):holdTxt(cy)+(sideTxt(cx)?" et "+sideTxt(cx):"")}. Sur le schéma, la cible est sous le repère orange et le haut du guidon (au centre) montre où viser.`;
   }else if(hold){
     const p=P(),hx=hold.x/k,hy=hold.y/k; // lecture sur les graduations
     const sideTxt=Math.abs(hx)<(u==="MOA"?0.5:0.05)?"":` et ${fx(Math.abs(hx),u==="MOA"?1:2)} ${u==="MOA"?"MOA":"mil"} ${hx>0?"à droite":"à gauche"}`;
-    $("rHold").innerHTML=`<b>Tenue pour ${fx(LAST.D,0)} m</b> (onglet Tir) : placez la cible sur le point orange, `+
+    $("rHold").innerHTML=(LAST.lRad?`<b class="warn">⚠ Cible mobile active (${fx(num("mvS"),0)} km/h, onglet Tir) : le point orange est décalé de l'avance. Mettez la vitesse à 0 pour une cible fixe.</b><br>`:"")+`<b>Tenue pour ${fx(LAST.D,0)} m</b> (onglet Tir) : placez la cible sur le point orange, `+
       `${fx(Math.abs(hy),u==="MOA"?1:2)} ${u==="MOA"?"MOA":"mil"} ${hy<=0?"sous le":"au-dessus du"} centre${sideTxt} (graduations du réticule${I.focal==="SFP"?` à ×${I.mag}`:""}). `+
       (LAST.lRad?`Avance pour la cible mobile comprise : elle se prend au réticule, pas aux tourelles.`:`Ou bien affichez les clics aux tourelles et visez au centre.`)+(u!==p.unit?` <span class="warn">Attention : réticule en ${u}, tourelles en ${p.unit}.</span>`:"");
   }else $("rHold").textContent="Renseignez une distance dans l'onglet Tir pour voir le point de visée.";
