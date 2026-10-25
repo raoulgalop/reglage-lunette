@@ -68,6 +68,26 @@ tr.zero td{color:var(--ok)}
 </style>
 </head>
 <body>
+<div id="lock" style="display:none;position:fixed;inset:0;z-index:5000;background:#111418;color:#e9ecf0;align-items:center;justify-content:center;flex-direction:column;gap:12px;padding:24px;text-align:center">
+  <div style="font-size:22px;font-weight:700">🎯 Réglage Lunette</div>
+  <div>Code d'accès</div>
+  <input id="lockIn" type="password" inputmode="numeric" autocomplete="off" maxlength="12" style="font-size:24px;text-align:center;width:160px;padding:8px;border-radius:8px;border:1px solid #2c333d;background:#1c2128;color:#e9ecf0">
+  <button id="lockGo" style="font-size:17px;padding:8px 22px;border-radius:8px;border:0;background:#f59e0b;color:#111">Entrer</button>
+  <div id="lockMsg" style="color:#f87171;min-height:1.2em"></div>
+</div>
+<script>(function(){ // code demandé une fois par appareil sur le site (pas dans l'appli Android installée)
+  var H="f2f3574253c6a15e5de17c5bbf900e486b74629095ba69cbea6fad4d6a3470f5",K="lunetteAcces",ok=false;
+  if(window.Android||!/^https?:/.test(location.protocol))return;
+  try{ok=localStorage.getItem(K)===H;}catch(e){}
+  if(ok)return;
+  var L=document.getElementById("lock"),I=document.getElementById("lockIn");L.style.display="flex";setTimeout(function(){I.focus();},100);
+  function hex(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return("0"+x.toString(16)).slice(-2);}).join("");}
+  function go(){if(!(window.crypto&&crypto.subtle)){document.getElementById("lockMsg").textContent="Navigateur trop ancien.";return;}
+    crypto.subtle.digest("SHA-256",new TextEncoder().encode("lunette:"+I.value.trim())).then(function(b){
+      if(hex(b)===H){try{localStorage.setItem(K,H);}catch(e){}L.style.display="none";}
+      else{document.getElementById("lockMsg").textContent="Code incorrect.";I.value="";I.focus();}});}
+  document.getElementById("lockGo").onclick=go;I.onkeydown=function(e){if(e.key==="Enter")go();};
+})();</script>
 <div id="apkBar" style="display:none;position:relative;z-index:2000;background:#14532d;color:#fff;padding:10px 40px 10px 12px;padding-top:calc(10px + env(safe-area-inset-top));font-size:15px">
   📱 Android : <a href="ReglageLunette.apk" download="ReglageLunette.apk" style="color:#fde68a;font-weight:700">Télécharger l'appli (APK v4.12)</a>
   <div style="font-size:12px;opacity:.85;margin-top:3px">Ouvrez ensuite le fichier téléchargé et autorisez l'installation depuis le navigateur si Android le demande. Vos réglages du site ne sont pas repris dans l'appli.</div>
