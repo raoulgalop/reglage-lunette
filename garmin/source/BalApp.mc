@@ -43,6 +43,11 @@ class BalApp extends Application.AppBase {
     // Réglages modifiés depuis l'appli Connect IQ du téléphone
     function onSettingsChanged() {
         load();
+        // poste de tir / cible saisis sur le téléphone
+        if (s["shLat"] != 0.0 || s["shLon"] != 0.0) {
+            s["lat"] = s["shLat"];
+            if (s["tgLat"] != 0.0 || s["tgLon"] != 0.0) { applyTarget(); }
+        }
         recompute();
         WatchUi.requestUpdate();
     }
@@ -225,6 +230,10 @@ class BalApp extends Application.AppBase {
     function markShooter() {
         var p = here();
         if (p == null) { return "pas de position GPS"; }
+        return markShooterAt(p);
+    }
+
+    function markShooterAt(p) {
         s["shLat"] = p[0].toFloat();
         s["shLon"] = p[1].toFloat();
         s["lat"] = s["shLat"];
@@ -239,6 +248,17 @@ class BalApp extends Application.AppBase {
         var p = here();
         if (p == null) { return "pas de position GPS"; }
         if (s["shLat"] == 0.0 && s["shLon"] == 0.0) { return "mémorisez d'abord le poste de tir"; }
+        return markTargetAt(p);
+    }
+
+    // cible posée sur la carte : le poste de tir est la position mémorisée, sinon la position GPS actuelle
+    function markTargetAt(p) {
+        if (s["shLat"] == 0.0 && s["shLon"] == 0.0) {
+            var h = here();
+            if (h == null) { return "placez d'abord le poste de tir"; }
+            s["shLat"] = h[0].toFloat();
+            s["shLon"] = h[1].toFloat();
+        }
         s["tgLat"] = p[0].toFloat();
         s["tgLon"] = p[1].toFloat();
         applyTarget();

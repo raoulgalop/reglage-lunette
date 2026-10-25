@@ -34,9 +34,11 @@ GLOBAL = [
     ("az", "number", 0, "Azimut de tir (° depuis le nord)", ("num", 0, 359)),
     ("hAll", "boolean", False, "Même hauteur lunette / canon pour toutes les munitions", ("bool",)),
     ("hCom", "float", 5.0, "Hauteur lunette / canon commune (cm)", ("num", 1, 15)),
-    # positions mémorisées sur la montre (0 = aucune), pas affichées sur le téléphone
-    ("shLat", "float", 0.0, "", None), ("shLon", "float", 0.0, "", None),
-    ("tgLat", "float", 0.0, "", None), ("tgLon", "float", 0.0, "", None),
+    # positions du poste de tir et de la cible (0 = aucune), aussi posées sur la carte de la montre
+    ("shLat", "float", 0.0, "Poste de tir : latitude (°, ex. 45.12345 ; 0 = GPS)", ("num", -90, 90)),
+    ("shLon", "float", 0.0, "Poste de tir : longitude (°, négative à l'ouest)", ("num", -180, 180)),
+    ("tgLat", "float", 0.0, "Cible : latitude (° ; 0 = azimut et distance saisis)", ("num", -90, 90)),
+    ("tgLon", "float", 0.0, "Cible : longitude (°)", ("num", -180, 180)),
 ]
 FIELDS = [  # suffixe, type, titre
     ("n", "string", "nom"), ("v", "number", "V0 (m/s)"), ("b", "float", "CB"),

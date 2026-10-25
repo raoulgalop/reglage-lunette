@@ -87,7 +87,7 @@ jobs:
           xdotool key Escape; sleep 2; shot 9-retour
           # 2e essai : version de test qui ouvre le menu au démarrage
           rm -rf /tmp/gt && cp -r garmin /tmp/gt && rm -rf /tmp/gt/bin
-          sed -i 's/    function onShow() {/    function onShow() {\n        if (!TESTED) { TESTED = true; var a = app(); var p = a.prof(); p[0] = "Test .50 BMG"; p[1] = 882; p[2] = 1.05; p[3] = 1; p[4] = 100; a.s["dTo"] = 2000; a.s["dStep"] = 250; a.s["dist"] = 2000; a.recompute(); }/' /tmp/gt/source/MainView.mc
+          sed -i 's/    function onShow() {/    function onShow() {\n        if (!TESTED) { TESTED = true; var a = app(); var p = a.prof(); p[0] = "Test .50 BMG"; p[1] = 882; p[2] = 1.05; p[3] = 1; p[4] = 100; a.s["dTo"] = 2000; a.s["dStep"] = 250; a.s["dist"] = 2000; a.s["shLat"] = 45.02; a.s["shLon"] = 0.03; a.recompute(); }/' /tmp/gt/source/MainView.mc
           echo 'var TESTED = false;' >> /tmp/gt/source/MainView.mc
           /connectiq/bin/monkeyc -d epix2 -f /tmp/gt/monkey.jungle -o /tmp/test.prg -y /tmp/k.der -l 0 -w
           timeout 120 "$MD" /tmp/test.prg epix2 > out/monkeydo-test.log 2>&1 &
@@ -98,6 +98,10 @@ jobs:
           k Down; sleep 2; shot t2-bmg-1995
           k Return Return Return Return; sleep 2; shot t3-trajectoire-2000
           k Return; sleep 3; shot t4-table-2000
+          k Return; sleep 6; shot t5-carte
+          xdotool mousemove 430 420 click 1; sleep 4; shot t6-carte-toucher
+          xdotool mousemove 330 600 mousedown 1 sleep 2 mouseup 1; sleep 4; shot t7-carte-appui-long
+          strings /connectiq/bin/api.mir 2>/dev/null | grep -i "onhold\|onswipe\|maptap\|getMapVisible" | sort -u | head -20 || true
           wait $TPID || true
           cat out/monkeydo.log out/monkeydo-test.log /tmp/sim.log | tail -60
       - uses: actions/upload-artifact@v4
