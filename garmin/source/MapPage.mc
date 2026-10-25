@@ -18,6 +18,7 @@ class MapPage extends WatchUi.MapView {
     var ctr = null;
     var mpp = 1.0;
     var zoom = 1.0;
+    var placeShooter = false;  // l'appui long pose le poste de tir (sinon la cible)
 
     function initialize() {
         MapView.initialize();
@@ -120,8 +121,10 @@ class MapPage extends WatchUi.MapView {
             dc.drawText(w / 2, h * 0.12, Graphics.FONT_XTINY, "" + s["dist"] + " m · " + s["az"] + "° " + a.azTxt(s["az"]) + (saved ? " (GPS)" : ""), CJ);
         }
         dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
-        dc.drawText(w / 2, h * 0.85, Graphics.FONT_XTINY, "toucher = cible", CJ);
-        dc.drawText(w / 2, h * 0.91, Graphics.FONT_XTINY, "appui long = tireur", CJ);
+        dc.setColor(placeShooter ? Graphics.COLOR_RED : Graphics.COLOR_ORANGE, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(w / 2, h * 0.85, Graphics.FONT_XTINY, "appui long : " + (placeShooter ? "TIREUR" : "CIBLE"), CJ);
+        dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
+        dc.drawText(w / 2, h * 0.91, Graphics.FONT_XTINY, "toucher : changer", CJ);
         drawToast(dc);
     }
 }
@@ -132,57 +135,35 @@ class MapDelegate extends WatchUi.BehaviorDelegate {
         BehaviorDelegate.initialize();
     }
 
+    // HAUT / BAS : zoom (les positions GPS se marquent aussi depuis le menu)
     function onPreviousPage() {
-        var msg = app().markShooter();
-        toast(msg);
-        refreshMap();
-        return true;
+        return zoomBy(0.5);
     }
 
     function onNextPage() {
-        var msg = app().markTarget();
-        toast(msg);
+        return zoomBy(2.0);
+    }
+
+    function zoomBy(f) {
+        if (MAP == null) { return false; }
+        MAP.zoom *= f;
+        if (MAP.zoom > 16.0) { MAP.zoom = 16.0; }
+        if (MAP.zoom < 0.25) { MAP.zoom = 0.25; }
         refreshMap();
         return true;
     }
 
-    // toucher la carte : la cible ; appui long : le poste de tir
-    function onTap(evt) {
-        return place(evt, false);
-    }
-
+    // appui long sur la carte : pose la cible (ou le poste de tir)
     function onHold(evt) {
-        return place(evt, true);
-    }
-
-    function place(evt, shooter) {
         var c = evt.getCoordinates();
-        System.println("carte : " + (shooter ? "appui long " : "toucher ") + c[0] + "," + c[1]);
         if (MAP == null) { return false; }
         var h = System.getDeviceSettings().screenHeight;
         if (c[1] < h * 0.18 || c[1] > h * 0.80) { return false; }
         var p = MAP.toLatLon(c[0], c[1]);
         if (p == null) { toast("carte pas encore prête"); return true; }
-        toast(shooter ? app().markShooterAt(p) : app().markTargetAt(p));
-        refreshMap();
-        return true;
-    }
-
-    // glisser vers le haut : voir plus loin ; vers le bas : zoomer
-    function onDrag(evt) {
-        System.println("carte : drag " + evt.getType() + " " + evt.getCoordinates());
-        return false;
-    }
-
-    function onSwipe(evt) {
-        var d = evt.getDirection();
-        System.println("carte : swipe " + d);
-        if (MAP == null) { return false; }
-        if (d == WatchUi.SWIPE_UP) { MAP.zoom *= 2.0; }
-        else if (d == WatchUi.SWIPE_DOWN) { MAP.zoom /= 2.0; }
-        else { return false; }
-        if (MAP.zoom > 16.0) { MAP.zoom = 16.0; }
-        if (MAP.zoom < 0.25) { MAP.zoom = 0.25; }
+        var msg = MAP.placeShooter ? app().markShooterAt(p) : app().markTargetAt(p);
+        System.println("carte : " + msg);
+        toast(msg);
         refreshMap();
         return true;
     }
@@ -192,10 +173,11 @@ class MapDelegate extends WatchUi.BehaviorDelegate {
         WatchUi.requestUpdate();
     }
 
-    function onSelect() {  // retour à l'écran principal
-        System.println("carte : select");
-        HOST.page = 0;
-        WatchUi.popView(WatchUi.SLIDE_LEFT);
+    // toucher l'écran ou Start : choisir ce que pose l'appui long (cible / poste de tir)
+    function onSelect() {
+        if (MAP == null) { return false; }
+        MAP.placeShooter = !MAP.placeShooter;
+        WatchUi.requestUpdate();
         return true;
     }
 

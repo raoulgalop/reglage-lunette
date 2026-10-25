@@ -33,10 +33,10 @@ Appui long sur Haut (Menu) : réglages, depuis n'importe quel écran.
 - **Vent** : clics vers la DROITE ou la GAUCHE pour le vent réglé, plus la valeur en mil pour tenir au réticule.
 - **Direction du vent en heures** : 3 h = le vent vient de droite, 9 h = de gauche, 12 h = de face, 6 h = de dos.
 
-**Placer la cible** : sur l'écran carte, **toucher** la carte pose la cible, un **appui long** pose le poste de tir.
-Glisser vers le haut élargit la carte (voir plus loin), vers le bas zoome. La distance et l'azimut sont recalculés aussitôt.
-Les boutons marquent la position GPS actuelle : HAUT = poste de tir, BAS = cible (ou menus « Je suis au poste de tir » /
-« Je suis à la cible »). Depuis le téléphone (Connect IQ → Réglage Lunette → Paramètres), on peut aussi saisir la latitude
+**Placer la cible** : sur l'écran carte, un **appui long** sur la carte pose la cible à cet endroit (ou le poste de tir).
+Toucher l'écran (ou Start) choisit ce que pose l'appui long : CIBLE ou TIREUR. HAUT / BAS zooment.
+La distance et l'azimut sont recalculés aussitôt. Les menus « Je suis au poste de tir » / « Je suis à la cible » marquent
+la position GPS actuelle. Depuis le téléphone (Connect IQ → Réglage Lunette → Paramètres), on peut aussi saisir la latitude
 et la longitude du poste de tir et de la cible (copiées depuis une carte, par exemple Google Maps). 0 = non utilisé.
 
 **Catalogue** : menu « Catalogue munitions » → calibre → munition. Le nom, la V0 et le CB G1 remplacent ceux de la munition

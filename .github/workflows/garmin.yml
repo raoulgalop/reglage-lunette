@@ -87,7 +87,6 @@ jobs:
           xdotool key Escape; sleep 2; shot 9-retour
           # 2e essai : version de test qui ouvre le menu au démarrage
           rm -rf /tmp/gt && cp -r garmin /tmp/gt && rm -rf /tmp/gt/bin
-          sed -i 's/WatchUi.popView(WatchUi.SLIDE_LEFT);/System.println("pop");/' /tmp/gt/source/MapPage.mc
           sed -i 's/    function onShow() {/    function onShow() {\n        if (!TESTED) { TESTED = true; var a = app(); var p = a.prof(); p[0] = "Test .50 BMG"; p[1] = 882; p[2] = 1.05; p[3] = 1; p[4] = 100; a.s["dTo"] = 2000; a.s["dStep"] = 250; a.s["dist"] = 2000; a.s["shLat"] = 45.02; a.s["shLon"] = 0.03; a.recompute(); }/' /tmp/gt/source/MainView.mc
           echo 'var TESTED = false;' >> /tmp/gt/source/MainView.mc
           /connectiq/bin/monkeyc -d epix2 -f /tmp/gt/monkey.jungle -o /tmp/test.prg -y /tmp/k.der -l 0 -w
@@ -100,14 +99,11 @@ jobs:
           k Return Return Return Return; sleep 2; shot t3-trajectoire-2000
           k Return; sleep 3; shot t4-table-2000
           k Return; sleep 6; shot t5-carte
-          xdotool mousemove 430 420 click 1; sleep 4; shot t6-carte-toucher
-          xdotool mousemove 330 600 mousedown 1 sleep 2 mouseup 1; sleep 4; shot t7-carte-appui-long
-          xdotool mousemove 330 400 mousedown 1 mousemove 330 450 mousemove 330 520 mousemove 330 600 mouseup 1; sleep 3; shot t8-carte-glisser
+          xdotool mousemove 250 380 mousedown 1 sleep 2 mouseup 1; sleep 1; shot t6-cible-posee
+          xdotool mousemove 330 500 click 1; sleep 2; shot t7-mode-tireur
+          xdotool mousemove 400 560 mousedown 1 sleep 2 mouseup 1; sleep 1; shot t8-tireur-pose
+          k Down; sleep 3; shot t9-zoom-arriere
           set +e +o pipefail
-          ls /connectiq /connectiq/doc 2>&1 | head -30
-          grep -o 'MapView[A-Za-z_.]*' /root/.Garmin/ConnectIQ/Devices/epix2/epix2.api.debug.xml | sort -u | head -60
-          F=$(grep -rl "MapView" /connectiq/doc 2>/dev/null | grep -i mapview | head -1); echo "doc : $F"
-          [ -n "$F" ] && sed -e 's/<[^>]*>/ /g' "$F" | tr -s ' \n' | grep -i -B1 -A2 "tap\|touch\|input\|browse\|preview\|pointer\|center" | head -150
           wait $TPID || true
           cat out/monkeydo.log out/monkeydo-test.log /tmp/sim.log | tail -60
       - uses: actions/upload-artifact@v4
