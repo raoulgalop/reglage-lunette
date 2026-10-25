@@ -16,6 +16,8 @@
     <property id="gpsAuto" type="boolean">true</property>
     <property id="lat" type="float">45.0</property>
     <property id="az" type="number">0</property>
+    <property id="hAll" type="boolean">false</property>
+    <property id="hCom" type="float">5.0</property>
     <property id="shLat" type="float">0.0</property>
     <property id="shLon" type="float">0.0</property>
     <property id="tgLat" type="float">0.0</property>

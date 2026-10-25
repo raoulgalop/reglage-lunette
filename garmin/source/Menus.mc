@@ -4,8 +4,8 @@ import Toybox.Math;
 import Toybox.System;
 import Toybox.WatchUi;
 
-const MENU_KEYS = ["prof", "v0", "bc", "g", "zero", "sight", "moa", "click", "ws", "wc", "corOn", "azSens", "az", "gpsAuto", "lat", "temp", "pAuto", "press", "step", "dFrom", "dTo", "dStep"];
-const MENU_NAMES = ["Munition", "V0 munition", "CB munition", "Modèle G1 / G7", "Zéro munition", "Haut. lunette / canon", "Unité MRAD / MOA", "Valeur du clic", "Vent (vitesse)", "Vent (direction)", "Coriolis", "Cap boussole = azimut", "Azimut de tir", "Latitude par GPS", "Latitude", "Température", "Pression auto", "Pression manuelle", "Pas de distance", "Table : de", "Table : à", "Table : pas"];
+const MENU_KEYS = ["prof", "v0", "bc", "g", "zero", "sight", "hAll", "moa", "click", "ws", "wc", "corOn", "azSens", "az", "gpsAuto", "lat", "temp", "pAuto", "press", "step", "dFrom", "dTo", "dStep"];
+const MENU_NAMES = ["Munition", "V0 munition", "CB munition", "Modèle G1 / G7", "Zéro munition", "Haut. lunette / canon", "Même hauteur partout", "Unité MRAD / MOA", "Valeur du clic", "Vent (vitesse)", "Vent (direction)", "Coriolis", "Cap boussole = azimut", "Azimut de tir", "Latitude par GPS", "Latitude", "Température", "Pression auto", "Pression manuelle", "Pas de distance", "Table : de", "Table : à", "Table : pas"];
 
 // Actions en tête du menu (avant les réglages de MENU_KEYS)
 const ACT_IDS = ["cat", "markSh", "markTg", "clrGps"];
@@ -92,7 +92,7 @@ class MenuDelegate extends WatchUi.Menu2InputDelegate {
         } else if (key.equals("g")) {
             a.set("g", a.get("g") == 7 ? 1 : 7);
             refresh();
-        } else if (key.equals("corOn") || key.equals("gpsAuto")) {
+        } else if (key.equals("corOn") || key.equals("gpsAuto") || key.equals("hAll")) {
             a.set(key, !s[key]);
             if (key.equals("gpsAuto") && s["gpsAuto"]) { a.askGps(); }
             refresh();

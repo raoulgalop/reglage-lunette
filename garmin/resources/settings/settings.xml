@@ -16,124 +16,126 @@
     <setting propertyKey="@Properties.gpsAuto" title="@Strings.S21"><settingConfig type="boolean"/></setting>
     <setting propertyKey="@Properties.lat" title="@Strings.S22"><settingConfig type="numeric" min="-90" max="90"/></setting>
     <setting propertyKey="@Properties.az" title="@Strings.S23"><settingConfig type="numeric" min="0" max="359"/></setting>
-    <setting propertyKey="@Properties.p1n" title="@Strings.S24"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
-    <setting propertyKey="@Properties.p1v" title="@Strings.S25"><settingConfig type="numeric" min="150" max="1200"/></setting>
-    <setting propertyKey="@Properties.p1b" title="@Strings.S26"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
-    <setting propertyKey="@Properties.p1g" title="@Strings.S27"><settingConfig type="list"><listEntry value="1">@Strings.S28</listEntry><listEntry value="7">@Strings.S29</listEntry></settingConfig></setting>
-    <setting propertyKey="@Properties.p1z" title="@Strings.S30"><settingConfig type="numeric" min="10" max="300"/></setting>
-    <setting propertyKey="@Properties.p1h" title="@Strings.S31"><settingConfig type="numeric" min="1" max="15"/></setting>
-    <setting propertyKey="@Properties.p2n" title="@Strings.S32"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
-    <setting propertyKey="@Properties.p2v" title="@Strings.S33"><settingConfig type="numeric" min="150" max="1200"/></setting>
-    <setting propertyKey="@Properties.p2b" title="@Strings.S34"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
-    <setting propertyKey="@Properties.p2g" title="@Strings.S35"><settingConfig type="list"><listEntry value="1">@Strings.S36</listEntry><listEntry value="7">@Strings.S37</listEntry></settingConfig></setting>
-    <setting propertyKey="@Properties.p2z" title="@Strings.S38"><settingConfig type="numeric" min="10" max="300"/></setting>
-    <setting propertyKey="@Properties.p2h" title="@Strings.S39"><settingConfig type="numeric" min="1" max="15"/></setting>
-    <setting propertyKey="@Properties.p3n" title="@Strings.S40"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
-    <setting propertyKey="@Properties.p3v" title="@Strings.S41"><settingConfig type="numeric" min="150" max="1200"/></setting>
-    <setting propertyKey="@Properties.p3b" title="@Strings.S42"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
-    <setting propertyKey="@Properties.p3g" title="@Strings.S43"><settingConfig type="list"><listEntry value="1">@Strings.S44</listEntry><listEntry value="7">@Strings.S45</listEntry></settingConfig></setting>
-    <setting propertyKey="@Properties.p3z" title="@Strings.S46"><settingConfig type="numeric" min="10" max="300"/></setting>
-    <setting propertyKey="@Properties.p3h" title="@Strings.S47"><settingConfig type="numeric" min="1" max="15"/></setting>
-    <setting propertyKey="@Properties.p4n" title="@Strings.S48"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
-    <setting propertyKey="@Properties.p4v" title="@Strings.S49"><settingConfig type="numeric" min="150" max="1200"/></setting>
-    <setting propertyKey="@Properties.p4b" title="@Strings.S50"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
-    <setting propertyKey="@Properties.p4g" title="@Strings.S51"><settingConfig type="list"><listEntry value="1">@Strings.S52</listEntry><listEntry value="7">@Strings.S53</listEntry></settingConfig></setting>
-    <setting propertyKey="@Properties.p4z" title="@Strings.S54"><settingConfig type="numeric" min="10" max="300"/></setting>
-    <setting propertyKey="@Properties.p4h" title="@Strings.S55"><settingConfig type="numeric" min="1" max="15"/></setting>
-    <setting propertyKey="@Properties.p5n" title="@Strings.S56"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
-    <setting propertyKey="@Properties.p5v" title="@Strings.S57"><settingConfig type="numeric" min="150" max="1200"/></setting>
-    <setting propertyKey="@Properties.p5b" title="@Strings.S58"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
-    <setting propertyKey="@Properties.p5g" title="@Strings.S59"><settingConfig type="list"><listEntry value="1">@Strings.S60</listEntry><listEntry value="7">@Strings.S61</listEntry></settingConfig></setting>
-    <setting propertyKey="@Properties.p5z" title="@Strings.S62"><settingConfig type="numeric" min="10" max="300"/></setting>
-    <setting propertyKey="@Properties.p5h" title="@Strings.S63"><settingConfig type="numeric" min="1" max="15"/></setting>
-    <setting propertyKey="@Properties.p6n" title="@Strings.S64"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
-    <setting propertyKey="@Properties.p6v" title="@Strings.S65"><settingConfig type="numeric" min="150" max="1200"/></setting>
-    <setting propertyKey="@Properties.p6b" title="@Strings.S66"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
-    <setting propertyKey="@Properties.p6g" title="@Strings.S67"><settingConfig type="list"><listEntry value="1">@Strings.S68</listEntry><listEntry value="7">@Strings.S69</listEntry></settingConfig></setting>
-    <setting propertyKey="@Properties.p6z" title="@Strings.S70"><settingConfig type="numeric" min="10" max="300"/></setting>
-    <setting propertyKey="@Properties.p6h" title="@Strings.S71"><settingConfig type="numeric" min="1" max="15"/></setting>
-    <setting propertyKey="@Properties.p7n" title="@Strings.S72"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
-    <setting propertyKey="@Properties.p7v" title="@Strings.S73"><settingConfig type="numeric" min="150" max="1200"/></setting>
-    <setting propertyKey="@Properties.p7b" title="@Strings.S74"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
-    <setting propertyKey="@Properties.p7g" title="@Strings.S75"><settingConfig type="list"><listEntry value="1">@Strings.S76</listEntry><listEntry value="7">@Strings.S77</listEntry></settingConfig></setting>
-    <setting propertyKey="@Properties.p7z" title="@Strings.S78"><settingConfig type="numeric" min="10" max="300"/></setting>
-    <setting propertyKey="@Properties.p7h" title="@Strings.S79"><settingConfig type="numeric" min="1" max="15"/></setting>
-    <setting propertyKey="@Properties.p8n" title="@Strings.S80"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
-    <setting propertyKey="@Properties.p8v" title="@Strings.S81"><settingConfig type="numeric" min="150" max="1200"/></setting>
-    <setting propertyKey="@Properties.p8b" title="@Strings.S82"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
-    <setting propertyKey="@Properties.p8g" title="@Strings.S83"><settingConfig type="list"><listEntry value="1">@Strings.S84</listEntry><listEntry value="7">@Strings.S85</listEntry></settingConfig></setting>
-    <setting propertyKey="@Properties.p8z" title="@Strings.S86"><settingConfig type="numeric" min="10" max="300"/></setting>
-    <setting propertyKey="@Properties.p8h" title="@Strings.S87"><settingConfig type="numeric" min="1" max="15"/></setting>
-    <setting propertyKey="@Properties.p9n" title="@Strings.S88"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
-    <setting propertyKey="@Properties.p9v" title="@Strings.S89"><settingConfig type="numeric" min="150" max="1200"/></setting>
-    <setting propertyKey="@Properties.p9b" title="@Strings.S90"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
-    <setting propertyKey="@Properties.p9g" title="@Strings.S91"><settingConfig type="list"><listEntry value="1">@Strings.S92</listEntry><listEntry value="7">@Strings.S93</listEntry></settingConfig></setting>
-    <setting propertyKey="@Properties.p9z" title="@Strings.S94"><settingConfig type="numeric" min="10" max="300"/></setting>
-    <setting propertyKey="@Properties.p9h" title="@Strings.S95"><settingConfig type="numeric" min="1" max="15"/></setting>
-    <setting propertyKey="@Properties.p10n" title="@Strings.S96"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
-    <setting propertyKey="@Properties.p10v" title="@Strings.S97"><settingConfig type="numeric" min="150" max="1200"/></setting>
-    <setting propertyKey="@Properties.p10b" title="@Strings.S98"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
-    <setting propertyKey="@Properties.p10g" title="@Strings.S99"><settingConfig type="list"><listEntry value="1">@Strings.S100</listEntry><listEntry value="7">@Strings.S101</listEntry></settingConfig></setting>
-    <setting propertyKey="@Properties.p10z" title="@Strings.S102"><settingConfig type="numeric" min="10" max="300"/></setting>
-    <setting propertyKey="@Properties.p10h" title="@Strings.S103"><settingConfig type="numeric" min="1" max="15"/></setting>
-    <setting propertyKey="@Properties.p11n" title="@Strings.S104"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
-    <setting propertyKey="@Properties.p11v" title="@Strings.S105"><settingConfig type="numeric" min="150" max="1200"/></setting>
-    <setting propertyKey="@Properties.p11b" title="@Strings.S106"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
-    <setting propertyKey="@Properties.p11g" title="@Strings.S107"><settingConfig type="list"><listEntry value="1">@Strings.S108</listEntry><listEntry value="7">@Strings.S109</listEntry></settingConfig></setting>
-    <setting propertyKey="@Properties.p11z" title="@Strings.S110"><settingConfig type="numeric" min="10" max="300"/></setting>
-    <setting propertyKey="@Properties.p11h" title="@Strings.S111"><settingConfig type="numeric" min="1" max="15"/></setting>
-    <setting propertyKey="@Properties.p12n" title="@Strings.S112"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
-    <setting propertyKey="@Properties.p12v" title="@Strings.S113"><settingConfig type="numeric" min="150" max="1200"/></setting>
-    <setting propertyKey="@Properties.p12b" title="@Strings.S114"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
-    <setting propertyKey="@Properties.p12g" title="@Strings.S115"><settingConfig type="list"><listEntry value="1">@Strings.S116</listEntry><listEntry value="7">@Strings.S117</listEntry></settingConfig></setting>
-    <setting propertyKey="@Properties.p12z" title="@Strings.S118"><settingConfig type="numeric" min="10" max="300"/></setting>
-    <setting propertyKey="@Properties.p12h" title="@Strings.S119"><settingConfig type="numeric" min="1" max="15"/></setting>
-    <setting propertyKey="@Properties.p13n" title="@Strings.S120"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
-    <setting propertyKey="@Properties.p13v" title="@Strings.S121"><settingConfig type="numeric" min="150" max="1200"/></setting>
-    <setting propertyKey="@Properties.p13b" title="@Strings.S122"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
-    <setting propertyKey="@Properties.p13g" title="@Strings.S123"><settingConfig type="list"><listEntry value="1">@Strings.S124</listEntry><listEntry value="7">@Strings.S125</listEntry></settingConfig></setting>
-    <setting propertyKey="@Properties.p13z" title="@Strings.S126"><settingConfig type="numeric" min="10" max="300"/></setting>
-    <setting propertyKey="@Properties.p13h" title="@Strings.S127"><settingConfig type="numeric" min="1" max="15"/></setting>
-    <setting propertyKey="@Properties.p14n" title="@Strings.S128"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
-    <setting propertyKey="@Properties.p14v" title="@Strings.S129"><settingConfig type="numeric" min="150" max="1200"/></setting>
-    <setting propertyKey="@Properties.p14b" title="@Strings.S130"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
-    <setting propertyKey="@Properties.p14g" title="@Strings.S131"><settingConfig type="list"><listEntry value="1">@Strings.S132</listEntry><listEntry value="7">@Strings.S133</listEntry></settingConfig></setting>
-    <setting propertyKey="@Properties.p14z" title="@Strings.S134"><settingConfig type="numeric" min="10" max="300"/></setting>
-    <setting propertyKey="@Properties.p14h" title="@Strings.S135"><settingConfig type="numeric" min="1" max="15"/></setting>
-    <setting propertyKey="@Properties.p15n" title="@Strings.S136"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
-    <setting propertyKey="@Properties.p15v" title="@Strings.S137"><settingConfig type="numeric" min="150" max="1200"/></setting>
-    <setting propertyKey="@Properties.p15b" title="@Strings.S138"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
-    <setting propertyKey="@Properties.p15g" title="@Strings.S139"><settingConfig type="list"><listEntry value="1">@Strings.S140</listEntry><listEntry value="7">@Strings.S141</listEntry></settingConfig></setting>
-    <setting propertyKey="@Properties.p15z" title="@Strings.S142"><settingConfig type="numeric" min="10" max="300"/></setting>
-    <setting propertyKey="@Properties.p15h" title="@Strings.S143"><settingConfig type="numeric" min="1" max="15"/></setting>
-    <setting propertyKey="@Properties.p16n" title="@Strings.S144"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
-    <setting propertyKey="@Properties.p16v" title="@Strings.S145"><settingConfig type="numeric" min="150" max="1200"/></setting>
-    <setting propertyKey="@Properties.p16b" title="@Strings.S146"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
-    <setting propertyKey="@Properties.p16g" title="@Strings.S147"><settingConfig type="list"><listEntry value="1">@Strings.S148</listEntry><listEntry value="7">@Strings.S149</listEntry></settingConfig></setting>
-    <setting propertyKey="@Properties.p16z" title="@Strings.S150"><settingConfig type="numeric" min="10" max="300"/></setting>
-    <setting propertyKey="@Properties.p16h" title="@Strings.S151"><settingConfig type="numeric" min="1" max="15"/></setting>
-    <setting propertyKey="@Properties.p17n" title="@Strings.S152"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
-    <setting propertyKey="@Properties.p17v" title="@Strings.S153"><settingConfig type="numeric" min="150" max="1200"/></setting>
-    <setting propertyKey="@Properties.p17b" title="@Strings.S154"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
-    <setting propertyKey="@Properties.p17g" title="@Strings.S155"><settingConfig type="list"><listEntry value="1">@Strings.S156</listEntry><listEntry value="7">@Strings.S157</listEntry></settingConfig></setting>
-    <setting propertyKey="@Properties.p17z" title="@Strings.S158"><settingConfig type="numeric" min="10" max="300"/></setting>
-    <setting propertyKey="@Properties.p17h" title="@Strings.S159"><settingConfig type="numeric" min="1" max="15"/></setting>
-    <setting propertyKey="@Properties.p18n" title="@Strings.S160"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
-    <setting propertyKey="@Properties.p18v" title="@Strings.S161"><settingConfig type="numeric" min="150" max="1200"/></setting>
-    <setting propertyKey="@Properties.p18b" title="@Strings.S162"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
-    <setting propertyKey="@Properties.p18g" title="@Strings.S163"><settingConfig type="list"><listEntry value="1">@Strings.S164</listEntry><listEntry value="7">@Strings.S165</listEntry></settingConfig></setting>
-    <setting propertyKey="@Properties.p18z" title="@Strings.S166"><settingConfig type="numeric" min="10" max="300"/></setting>
-    <setting propertyKey="@Properties.p18h" title="@Strings.S167"><settingConfig type="numeric" min="1" max="15"/></setting>
-    <setting propertyKey="@Properties.p19n" title="@Strings.S168"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
-    <setting propertyKey="@Properties.p19v" title="@Strings.S169"><settingConfig type="numeric" min="150" max="1200"/></setting>
-    <setting propertyKey="@Properties.p19b" title="@Strings.S170"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
-    <setting propertyKey="@Properties.p19g" title="@Strings.S171"><settingConfig type="list"><listEntry value="1">@Strings.S172</listEntry><listEntry value="7">@Strings.S173</listEntry></settingConfig></setting>
-    <setting propertyKey="@Properties.p19z" title="@Strings.S174"><settingConfig type="numeric" min="10" max="300"/></setting>
-    <setting propertyKey="@Properties.p19h" title="@Strings.S175"><settingConfig type="numeric" min="1" max="15"/></setting>
-    <setting propertyKey="@Properties.p20n" title="@Strings.S176"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
-    <setting propertyKey="@Properties.p20v" title="@Strings.S177"><settingConfig type="numeric" min="150" max="1200"/></setting>
-    <setting propertyKey="@Properties.p20b" title="@Strings.S178"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
-    <setting propertyKey="@Properties.p20g" title="@Strings.S179"><settingConfig type="list"><listEntry value="1">@Strings.S180</listEntry><listEntry value="7">@Strings.S181</listEntry></settingConfig></setting>
-    <setting propertyKey="@Properties.p20z" title="@Strings.S182"><settingConfig type="numeric" min="10" max="300"/></setting>
-    <setting propertyKey="@Properties.p20h" title="@Strings.S183"><settingConfig type="numeric" min="1" max="15"/></setting>
+    <setting propertyKey="@Properties.hAll" title="@Strings.S24"><settingConfig type="boolean"/></setting>
+    <setting propertyKey="@Properties.hCom" title="@Strings.S25"><settingConfig type="numeric" min="1" max="15"/></setting>
+    <setting propertyKey="@Properties.p1n" title="@Strings.S26"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
+    <setting propertyKey="@Properties.p1v" title="@Strings.S27"><settingConfig type="numeric" min="150" max="1200"/></setting>
+    <setting propertyKey="@Properties.p1b" title="@Strings.S28"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
+    <setting propertyKey="@Properties.p1g" title="@Strings.S29"><settingConfig type="list"><listEntry value="1">@Strings.S30</listEntry><listEntry value="7">@Strings.S31</listEntry></settingConfig></setting>
+    <setting propertyKey="@Properties.p1z" title="@Strings.S32"><settingConfig type="numeric" min="10" max="300"/></setting>
+    <setting propertyKey="@Properties.p1h" title="@Strings.S33"><settingConfig type="numeric" min="1" max="15"/></setting>
+    <setting propertyKey="@Properties.p2n" title="@Strings.S34"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
+    <setting propertyKey="@Properties.p2v" title="@Strings.S35"><settingConfig type="numeric" min="150" max="1200"/></setting>
+    <setting propertyKey="@Properties.p2b" title="@Strings.S36"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
+    <setting propertyKey="@Properties.p2g" title="@Strings.S37"><settingConfig type="list"><listEntry value="1">@Strings.S38</listEntry><listEntry value="7">@Strings.S39</listEntry></settingConfig></setting>
+    <setting propertyKey="@Properties.p2z" title="@Strings.S40"><settingConfig type="numeric" min="10" max="300"/></setting>
+    <setting propertyKey="@Properties.p2h" title="@Strings.S41"><settingConfig type="numeric" min="1" max="15"/></setting>
+    <setting propertyKey="@Properties.p3n" title="@Strings.S42"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
+    <setting propertyKey="@Properties.p3v" title="@Strings.S43"><settingConfig type="numeric" min="150" max="1200"/></setting>
+    <setting propertyKey="@Properties.p3b" title="@Strings.S44"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
+    <setting propertyKey="@Properties.p3g" title="@Strings.S45"><settingConfig type="list"><listEntry value="1">@Strings.S46</listEntry><listEntry value="7">@Strings.S47</listEntry></settingConfig></setting>
+    <setting propertyKey="@Properties.p3z" title="@Strings.S48"><settingConfig type="numeric" min="10" max="300"/></setting>
+    <setting propertyKey="@Properties.p3h" title="@Strings.S49"><settingConfig type="numeric" min="1" max="15"/></setting>
+    <setting propertyKey="@Properties.p4n" title="@Strings.S50"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
+    <setting propertyKey="@Properties.p4v" title="@Strings.S51"><settingConfig type="numeric" min="150" max="1200"/></setting>
+    <setting propertyKey="@Properties.p4b" title="@Strings.S52"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
+    <setting propertyKey="@Properties.p4g" title="@Strings.S53"><settingConfig type="list"><listEntry value="1">@Strings.S54</listEntry><listEntry value="7">@Strings.S55</listEntry></settingConfig></setting>
+    <setting propertyKey="@Properties.p4z" title="@Strings.S56"><settingConfig type="numeric" min="10" max="300"/></setting>
+    <setting propertyKey="@Properties.p4h" title="@Strings.S57"><settingConfig type="numeric" min="1" max="15"/></setting>
+    <setting propertyKey="@Properties.p5n" title="@Strings.S58"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
+    <setting propertyKey="@Properties.p5v" title="@Strings.S59"><settingConfig type="numeric" min="150" max="1200"/></setting>
+    <setting propertyKey="@Properties.p5b" title="@Strings.S60"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
+    <setting propertyKey="@Properties.p5g" title="@Strings.S61"><settingConfig type="list"><listEntry value="1">@Strings.S62</listEntry><listEntry value="7">@Strings.S63</listEntry></settingConfig></setting>
+    <setting propertyKey="@Properties.p5z" title="@Strings.S64"><settingConfig type="numeric" min="10" max="300"/></setting>
+    <setting propertyKey="@Properties.p5h" title="@Strings.S65"><settingConfig type="numeric" min="1" max="15"/></setting>
+    <setting propertyKey="@Properties.p6n" title="@Strings.S66"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
+    <setting propertyKey="@Properties.p6v" title="@Strings.S67"><settingConfig type="numeric" min="150" max="1200"/></setting>
+    <setting propertyKey="@Properties.p6b" title="@Strings.S68"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
+    <setting propertyKey="@Properties.p6g" title="@Strings.S69"><settingConfig type="list"><listEntry value="1">@Strings.S70</listEntry><listEntry value="7">@Strings.S71</listEntry></settingConfig></setting>
+    <setting propertyKey="@Properties.p6z" title="@Strings.S72"><settingConfig type="numeric" min="10" max="300"/></setting>
+    <setting propertyKey="@Properties.p6h" title="@Strings.S73"><settingConfig type="numeric" min="1" max="15"/></setting>
+    <setting propertyKey="@Properties.p7n" title="@Strings.S74"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
+    <setting propertyKey="@Properties.p7v" title="@Strings.S75"><settingConfig type="numeric" min="150" max="1200"/></setting>
+    <setting propertyKey="@Properties.p7b" title="@Strings.S76"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
+    <setting propertyKey="@Properties.p7g" title="@Strings.S77"><settingConfig type="list"><listEntry value="1">@Strings.S78</listEntry><listEntry value="7">@Strings.S79</listEntry></settingConfig></setting>
+    <setting propertyKey="@Properties.p7z" title="@Strings.S80"><settingConfig type="numeric" min="10" max="300"/></setting>
+    <setting propertyKey="@Properties.p7h" title="@Strings.S81"><settingConfig type="numeric" min="1" max="15"/></setting>
+    <setting propertyKey="@Properties.p8n" title="@Strings.S82"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
+    <setting propertyKey="@Properties.p8v" title="@Strings.S83"><settingConfig type="numeric" min="150" max="1200"/></setting>
+    <setting propertyKey="@Properties.p8b" title="@Strings.S84"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
+    <setting propertyKey="@Properties.p8g" title="@Strings.S85"><settingConfig type="list"><listEntry value="1">@Strings.S86</listEntry><listEntry value="7">@Strings.S87</listEntry></settingConfig></setting>
+    <setting propertyKey="@Properties.p8z" title="@Strings.S88"><settingConfig type="numeric" min="10" max="300"/></setting>
+    <setting propertyKey="@Properties.p8h" title="@Strings.S89"><settingConfig type="numeric" min="1" max="15"/></setting>
+    <setting propertyKey="@Properties.p9n" title="@Strings.S90"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
+    <setting propertyKey="@Properties.p9v" title="@Strings.S91"><settingConfig type="numeric" min="150" max="1200"/></setting>
+    <setting propertyKey="@Properties.p9b" title="@Strings.S92"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
+    <setting propertyKey="@Properties.p9g" title="@Strings.S93"><settingConfig type="list"><listEntry value="1">@Strings.S94</listEntry><listEntry value="7">@Strings.S95</listEntry></settingConfig></setting>
+    <setting propertyKey="@Properties.p9z" title="@Strings.S96"><settingConfig type="numeric" min="10" max="300"/></setting>
+    <setting propertyKey="@Properties.p9h" title="@Strings.S97"><settingConfig type="numeric" min="1" max="15"/></setting>
+    <setting propertyKey="@Properties.p10n" title="@Strings.S98"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
+    <setting propertyKey="@Properties.p10v" title="@Strings.S99"><settingConfig type="numeric" min="150" max="1200"/></setting>
+    <setting propertyKey="@Properties.p10b" title="@Strings.S100"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
+    <setting propertyKey="@Properties.p10g" title="@Strings.S101"><settingConfig type="list"><listEntry value="1">@Strings.S102</listEntry><listEntry value="7">@Strings.S103</listEntry></settingConfig></setting>
+    <setting propertyKey="@Properties.p10z" title="@Strings.S104"><settingConfig type="numeric" min="10" max="300"/></setting>
+    <setting propertyKey="@Properties.p10h" title="@Strings.S105"><settingConfig type="numeric" min="1" max="15"/></setting>
+    <setting propertyKey="@Properties.p11n" title="@Strings.S106"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
+    <setting propertyKey="@Properties.p11v" title="@Strings.S107"><settingConfig type="numeric" min="150" max="1200"/></setting>
+    <setting propertyKey="@Properties.p11b" title="@Strings.S108"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
+    <setting propertyKey="@Properties.p11g" title="@Strings.S109"><settingConfig type="list"><listEntry value="1">@Strings.S110</listEntry><listEntry value="7">@Strings.S111</listEntry></settingConfig></setting>
+    <setting propertyKey="@Properties.p11z" title="@Strings.S112"><settingConfig type="numeric" min="10" max="300"/></setting>
+    <setting propertyKey="@Properties.p11h" title="@Strings.S113"><settingConfig type="numeric" min="1" max="15"/></setting>
+    <setting propertyKey="@Properties.p12n" title="@Strings.S114"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
+    <setting propertyKey="@Properties.p12v" title="@Strings.S115"><settingConfig type="numeric" min="150" max="1200"/></setting>
+    <setting propertyKey="@Properties.p12b" title="@Strings.S116"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
+    <setting propertyKey="@Properties.p12g" title="@Strings.S117"><settingConfig type="list"><listEntry value="1">@Strings.S118</listEntry><listEntry value="7">@Strings.S119</listEntry></settingConfig></setting>
+    <setting propertyKey="@Properties.p12z" title="@Strings.S120"><settingConfig type="numeric" min="10" max="300"/></setting>
+    <setting propertyKey="@Properties.p12h" title="@Strings.S121"><settingConfig type="numeric" min="1" max="15"/></setting>
+    <setting propertyKey="@Properties.p13n" title="@Strings.S122"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
+    <setting propertyKey="@Properties.p13v" title="@Strings.S123"><settingConfig type="numeric" min="150" max="1200"/></setting>
+    <setting propertyKey="@Properties.p13b" title="@Strings.S124"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
+    <setting propertyKey="@Properties.p13g" title="@Strings.S125"><settingConfig type="list"><listEntry value="1">@Strings.S126</listEntry><listEntry value="7">@Strings.S127</listEntry></settingConfig></setting>
+    <setting propertyKey="@Properties.p13z" title="@Strings.S128"><settingConfig type="numeric" min="10" max="300"/></setting>
+    <setting propertyKey="@Properties.p13h" title="@Strings.S129"><settingConfig type="numeric" min="1" max="15"/></setting>
+    <setting propertyKey="@Properties.p14n" title="@Strings.S130"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
+    <setting propertyKey="@Properties.p14v" title="@Strings.S131"><settingConfig type="numeric" min="150" max="1200"/></setting>
+    <setting propertyKey="@Properties.p14b" title="@Strings.S132"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
+    <setting propertyKey="@Properties.p14g" title="@Strings.S133"><settingConfig type="list"><listEntry value="1">@Strings.S134</listEntry><listEntry value="7">@Strings.S135</listEntry></settingConfig></setting>
+    <setting propertyKey="@Properties.p14z" title="@Strings.S136"><settingConfig type="numeric" min="10" max="300"/></setting>
+    <setting propertyKey="@Properties.p14h" title="@Strings.S137"><settingConfig type="numeric" min="1" max="15"/></setting>
+    <setting propertyKey="@Properties.p15n" title="@Strings.S138"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
+    <setting propertyKey="@Properties.p15v" title="@Strings.S139"><settingConfig type="numeric" min="150" max="1200"/></setting>
+    <setting propertyKey="@Properties.p15b" title="@Strings.S140"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
+    <setting propertyKey="@Properties.p15g" title="@Strings.S141"><settingConfig type="list"><listEntry value="1">@Strings.S142</listEntry><listEntry value="7">@Strings.S143</listEntry></settingConfig></setting>
+    <setting propertyKey="@Properties.p15z" title="@Strings.S144"><settingConfig type="numeric" min="10" max="300"/></setting>
+    <setting propertyKey="@Properties.p15h" title="@Strings.S145"><settingConfig type="numeric" min="1" max="15"/></setting>
+    <setting propertyKey="@Properties.p16n" title="@Strings.S146"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
+    <setting propertyKey="@Properties.p16v" title="@Strings.S147"><settingConfig type="numeric" min="150" max="1200"/></setting>
+    <setting propertyKey="@Properties.p16b" title="@Strings.S148"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
+    <setting propertyKey="@Properties.p16g" title="@Strings.S149"><settingConfig type="list"><listEntry value="1">@Strings.S150</listEntry><listEntry value="7">@Strings.S151</listEntry></settingConfig></setting>
+    <setting propertyKey="@Properties.p16z" title="@Strings.S152"><settingConfig type="numeric" min="10" max="300"/></setting>
+    <setting propertyKey="@Properties.p16h" title="@Strings.S153"><settingConfig type="numeric" min="1" max="15"/></setting>
+    <setting propertyKey="@Properties.p17n" title="@Strings.S154"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
+    <setting propertyKey="@Properties.p17v" title="@Strings.S155"><settingConfig type="numeric" min="150" max="1200"/></setting>
+    <setting propertyKey="@Properties.p17b" title="@Strings.S156"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
+    <setting propertyKey="@Properties.p17g" title="@Strings.S157"><settingConfig type="list"><listEntry value="1">@Strings.S158</listEntry><listEntry value="7">@Strings.S159</listEntry></settingConfig></setting>
+    <setting propertyKey="@Properties.p17z" title="@Strings.S160"><settingConfig type="numeric" min="10" max="300"/></setting>
+    <setting propertyKey="@Properties.p17h" title="@Strings.S161"><settingConfig type="numeric" min="1" max="15"/></setting>
+    <setting propertyKey="@Properties.p18n" title="@Strings.S162"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
+    <setting propertyKey="@Properties.p18v" title="@Strings.S163"><settingConfig type="numeric" min="150" max="1200"/></setting>
+    <setting propertyKey="@Properties.p18b" title="@Strings.S164"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
+    <setting propertyKey="@Properties.p18g" title="@Strings.S165"><settingConfig type="list"><listEntry value="1">@Strings.S166</listEntry><listEntry value="7">@Strings.S167</listEntry></settingConfig></setting>
+    <setting propertyKey="@Properties.p18z" title="@Strings.S168"><settingConfig type="numeric" min="10" max="300"/></setting>
+    <setting propertyKey="@Properties.p18h" title="@Strings.S169"><settingConfig type="numeric" min="1" max="15"/></setting>
+    <setting propertyKey="@Properties.p19n" title="@Strings.S170"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
+    <setting propertyKey="@Properties.p19v" title="@Strings.S171"><settingConfig type="numeric" min="150" max="1200"/></setting>
+    <setting propertyKey="@Properties.p19b" title="@Strings.S172"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
+    <setting propertyKey="@Properties.p19g" title="@Strings.S173"><settingConfig type="list"><listEntry value="1">@Strings.S174</listEntry><listEntry value="7">@Strings.S175</listEntry></settingConfig></setting>
+    <setting propertyKey="@Properties.p19z" title="@Strings.S176"><settingConfig type="numeric" min="10" max="300"/></setting>
+    <setting propertyKey="@Properties.p19h" title="@Strings.S177"><settingConfig type="numeric" min="1" max="15"/></setting>
+    <setting propertyKey="@Properties.p20n" title="@Strings.S178"><settingConfig type="alphaNumeric" maxLength="24"/></setting>
+    <setting propertyKey="@Properties.p20v" title="@Strings.S179"><settingConfig type="numeric" min="150" max="1200"/></setting>
+    <setting propertyKey="@Properties.p20b" title="@Strings.S180"><settingConfig type="numeric" min="0.03" max="1.2"/></setting>
+    <setting propertyKey="@Properties.p20g" title="@Strings.S181"><settingConfig type="list"><listEntry value="1">@Strings.S182</listEntry><listEntry value="7">@Strings.S183</listEntry></settingConfig></setting>
+    <setting propertyKey="@Properties.p20z" title="@Strings.S184"><settingConfig type="numeric" min="10" max="300"/></setting>
+    <setting propertyKey="@Properties.p20h" title="@Strings.S185"><settingConfig type="numeric" min="1" max="15"/></setting>
 </settings>

@@ -13,7 +13,7 @@ const N_PROFS = 20;     // munitions (voir tools/gen_settings.py)
 const OMEGA = 7.292115e-5;  // rotation de la Terre (rad/s)
 
 // Réglages communs, lus et écrits dans Application.Properties (modifiables aussi depuis Connect IQ sur le téléphone)
-const KEYS = ["prof", "moa", "click", "dist", "step", "dFrom", "dTo", "dStep", "ws", "wc", "temp", "pAuto", "press", "corOn", "gpsAuto", "lat", "az", "shLat", "shLon", "tgLat", "tgLon"];
+const KEYS = ["prof", "moa", "click", "dist", "step", "dFrom", "dTo", "dStep", "ws", "wc", "temp", "pAuto", "press", "corOn", "gpsAuto", "lat", "az", "shLat", "shLon", "tgLat", "tgLon", "hAll", "hCom"];
 const R_EARTH = 6371000.0;
 // Champs de chaque munition : p<n><suffixe>
 const PSUF = ["n", "v", "b", "g", "z", "h"];
@@ -95,13 +95,16 @@ class BalApp extends Application.AppBase {
     }
 
     function get(key) {
+        if (key.equals("sight") && s["hAll"]) { return s["hCom"]; }
         var i = pIdx(key);
         return i > 0 ? prof()[i] : s[key];
     }
 
     function set(key, val) {
         var i = pIdx(key);
-        if (i > 0) { prof()[i] = val; }
+        if (key.equals("hAll") && val) { s["hCom"] = prof()[5]; }  // on part de la hauteur de la munition en cours
+        if (key.equals("sight") && s["hAll"]) { s["hCom"] = val; }
+        else if (i > 0) { prof()[i] = val; }
         else { s[key] = val; }
         if (key.equals("lat")) { gpsOk = false; }
         if (s["dTo"] < s["dFrom"]) { s["dTo"] = s["dFrom"]; }
@@ -126,7 +129,7 @@ class BalApp extends Application.AppBase {
         pUsed = pressure();
         var at = Bal.atmo(s["temp"].toFloat(), pUsed);
         var pr = prof();
-        var p = [pr[1].toFloat(), pr[2].toFloat(), pr[5].toFloat() / 100.0, at[0], at[1]];
+        var p = [pr[1].toFloat(), pr[2].toFloat(), get("sight").toFloat() / 100.0, at[0], at[1]];
         Bal.useG7(pr[3] == 7);
         var a = Bal.zeroAngle(p, pr[4].toFloat());
         var r = s["dist"] > s["dTo"] ? s["dist"] : s["dTo"];
@@ -392,6 +395,7 @@ class BalApp extends Application.AppBase {
         if (key.equals("bc")) { return v.format("%.3f") + (prof()[3] == 7 ? " (G7)" : " (G1)"); }
         if (key.equals("g")) { return v == 7 ? "G7" : "G1"; }
         if (key.equals("corOn")) { return v ? "oui" : "non"; }
+        if (key.equals("hAll")) { return v ? "oui : " + s["hCom"].format("%.1f") + " cm" : "non, par munition"; }
         if (key.equals("gpsAuto")) { return v ? (gpsOk ? "oui (position reçue)" : "oui (recherche...)") : "non"; }
         if (key.equals("lat")) { return v.abs().format("%.2f") + (v < 0 ? "° S" : "° N") + (gpsOk ? " (GPS)" : ""); }
         if (key.equals("az")) { return "" + v + "° (" + azTxt(v) + ")"; }

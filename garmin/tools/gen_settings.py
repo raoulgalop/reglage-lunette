@@ -32,6 +32,8 @@ GLOBAL = [
     ("gpsAuto", "boolean", True, "Latitude par le GPS", ("bool",)),
     ("lat", "float", 45.0, "Latitude (°, négative au sud)", ("num", -90, 90)),
     ("az", "number", 0, "Azimut de tir (° depuis le nord)", ("num", 0, 359)),
+    ("hAll", "boolean", False, "Même hauteur lunette / canon pour toutes les munitions", ("bool",)),
+    ("hCom", "float", 5.0, "Hauteur lunette / canon commune (cm)", ("num", 1, 15)),
     # positions mémorisées sur la montre (0 = aucune), pas affichées sur le téléphone
     ("shLat", "float", 0.0, "", None), ("shLon", "float", 0.0, "", None),
     ("tgLat", "float", 0.0, "", None), ("tgLon", "float", 0.0, "", None),

@@ -48,6 +48,7 @@ Chaque **munition** est un profil complet, modifiable sur la montre : V0, CB, mo
 20 profils : SK Standard Plus, Rifle Match, Long Range Match, High Velocity Match ; Lapua Center-X, Midas+, X-Act ;
 Top Shot SV Target ; Geco Semi Auto ; RWS R50 ; CCI Standard Velocity ; Perso 1 à 9 (tous en G1, zéro 50 m).
 Passer un profil en G7 ne convertit pas le CB : saisir le CB G7 du fabricant.
+**Même hauteur partout** (menu ou téléphone) : une seule hauteur lunette / canon pour toutes les munitions, reprise de la munition en cours au moment où on l'active. Quand l'option est coupée, chaque munition retrouve sa propre hauteur.
 
 Réglages communs : unité **MRAD ou MOA** et valeur du clic (0,1 / 0,05 / 0,2 MRAD ou 1/4, 1/8, 1/2, 1 MOA),
 vent (vitesse et direction en heures), température, pression (baromètre de la montre ou manuelle),
