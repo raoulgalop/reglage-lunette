@@ -301,6 +301,11 @@ async function postes(){
   toast(`${cand.length?pick.length+" poste(s) proposé(s)":"Aucun poste dégagé"} · vert : on touche la cible d'ici, rouge : masqué, gris : hors de portée. Relief ≈30 m${A.bl.L.length?`, ${A.bl.L.length} bâtiments`:""} : vérifiez chaque poste avec la coupe une fois choisi.`);
 }
 $("losPs").onclick=postes;
+// efface la cible, la ligne de tir et tous les calques posés sur la carte (le tireur reste)
+$("losClr").onclick=()=>{S.target=null;LS.obs=[];LS.obsKey="";LC.tap=null;renderObs();psClear();
+  if(zLayer){map.removeLayer(zLayer);zLayer=null;$("losZones").textContent="🗺 Zones atteignables";$("losZones").classList.remove("acc");}
+  if(bpLayer){map.removeLayer(bpLayer);bpLayer=null;}if(map)map.closePopup();$("l3d").style.display="none";
+  drawMarkers();$("geoInfo").textContent="Cible effacée. Touchez la carte pour placer une nouvelle cible.";compute();save();};
 const psSet=()=>{LS.pMin=$("losPmin").value;LS.pMax=$("losPmax").value;save();};$("losPmin").oninput=psSet;$("losPmax").oninput=psSet;
 $("losPmin").value=LS.pMin??50;$("losPmax").value=LS.pMax??300;
 
