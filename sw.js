@@ -1,5 +1,5 @@
 // Service worker : l'appli fonctionne hors ligne une fois ouverte (cartes et météo exigent le réseau).
-const CACHE="lunette-v4.17";
+const CACHE="lunette-v4.18";
 const FILES=[
   "./",
   "catalog.js",

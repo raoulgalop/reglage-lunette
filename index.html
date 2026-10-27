@@ -76,6 +76,7 @@ tr.zero td{color:var(--ok)}
 #l3dBar{display:flex;gap:6px;align-items:center;padding:8px}#l3dBar .seg{margin:0;flex:0 0 auto}#l3dBar .seg button{padding:6px 9px}
 #l3dMap{flex:1;position:relative}#l3dMsg{position:absolute;left:0;right:0;top:40%;text-align:center;color:var(--mut);z-index:2;pointer-events:none}
 #l3dInfo{font-size:12px;color:var(--mut);padding:6px 10px}
+.psMk{width:26px;height:26px;border-radius:50%;background:#16a34a;color:#fff;border:2px solid #fff;font:700 13px/22px system-ui,sans-serif;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.5)}
 .mk3d{color:#fff;font:600 11px system-ui,sans-serif;padding:3px 6px;border-radius:6px;border:2px solid #fff;white-space:nowrap}
 </style>
 </head>
@@ -101,14 +102,14 @@ tr.zero td{color:var(--ok)}
   document.getElementById("lockGo").onclick=go;I.onkeydown=function(e){if(e.key==="Enter")go();};
 })();</script>
 <div id="apkBar" style="display:none;position:relative;z-index:2000;background:#14532d;color:#fff;padding:10px 40px 10px 12px;padding-top:calc(10px + env(safe-area-inset-top));font-size:15px">
-  📱 Android : <a href="ReglageLunette.apk" download="ReglageLunette.apk" style="color:#fde68a;font-weight:700">Télécharger l'appli (APK v4.14)</a>
+  📱 Android : <a href="ReglageLunette.apk" download="ReglageLunette.apk" style="color:#fde68a;font-weight:700">Télécharger l'appli (APK v4.15)</a>
   <div style="font-size:12px;opacity:.85;margin-top:3px">Ouvrez ensuite le fichier téléchargé et autorisez l'installation depuis le navigateur si Android le demande. Vos réglages du site ne sont pas repris dans l'appli.</div>
   <button id="apkX" aria-label="Fermer" style="position:absolute;right:6px;top:calc(6px + env(safe-area-inset-top));background:none;border:0;color:#fff;font-size:20px">✕</button>
 </div>
 <script>(function(){ // proposé seulement dans un navigateur Android, pas dans l'appli elle-même
-  var hide=false;try{hide=localStorage.getItem("apkBarOff")==="4.14";}catch(e){}
+  var hide=false;try{hide=localStorage.getItem("apkBarOff")==="4.15";}catch(e){}
   if(/Android/i.test(navigator.userAgent)&&!window.Android&&/^https?:/.test(location.protocol)&&!hide)document.getElementById("apkBar").style.display="";
-  document.getElementById("apkX").onclick=function(){document.getElementById("apkBar").style.display="none";try{localStorage.setItem("apkBarOff","4.14");}catch(e){}};
+  document.getElementById("apkX").onclick=function(){document.getElementById("apkBar").style.display="none";try{localStorage.setItem("apkBarOff","4.15");}catch(e){}};
 })();</script>
 <header>
   <h1>🎯 Réglage Lunette</h1>
@@ -164,6 +165,8 @@ tr.zero td{color:var(--ok)}
     <div id="losVerdict"></div>
     <div class="kv" id="losInfo"></div>
     <div class="chips"><button class="btn sm" id="losZones">🗺 Zones atteignables</button><button class="btn sm" id="losBest">🔎 Poste dégagé</button><button class="btn sm" id="losObsAdd">＋ Obstacle à la main</button></div>
+    <div class="row" style="margin-top:10px;margin-bottom:0"><label>Postes autour de la cible : de (m)<input id="losPmin" type="number" inputmode="decimal" value="50"></label><label>à (m)<input id="losPmax" type="number" inputmode="decimal" value="300"></label><label style="flex:0 0 auto">&nbsp;<br><button class="btn sm acc" id="losPs">📍 Postes possibles</button></label></div>
+    <div id="losPosts"></div>
     <div id="losObsForm" style="display:none;margin-top:8px">
       <div class="row"><label>Distance du tireur (m)<input id="loD" type="number" inputmode="decimal"></label><label>Nom<input id="loN" placeholder="haie, arbre…"></label></div>
       <div class="row"><label>Bas (m, 0 = plein)<input id="loLo" type="number" inputmode="decimal" value="0"></label><label>Haut (m)<input id="loHi" type="number" inputmode="decimal" value="3"></label></div>

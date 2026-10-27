@@ -203,7 +203,7 @@ let zLayer=null,bpLayer=null;
 async function areaData(s,w,n,e){const ok=await terrLoad(s,w,n,e),bl=await bldLoad(s,w,n,e);return {ok,bl};}
 function lineOk(A,Tp,zA,zT,y,I,ex){ // A,Tp en m locaux ; terrain Terrarium
   const H=Math.hypot(Tp[0]-A[0],Tp[1]-A[1]),n=Math.max(8,Math.ceil(H/3));let w=1e9;
-  for(let i=1;i<n;i++){const f=i/n,d=f*H;if(d<10||d>H-3)continue; // relief ≈30 m : on ignore les abords immédiats du posteconst x=A[0]+(Tp[0]-A[0])*f,yy=A[1]+(Tp[1]-A[1])*f,ll=LC.E.inv(x,yy),g=terrAt(ll.lat,ll.lon);if(!isFinite(g))continue;
+  for(let i=1;i<n;i++){const f=i/n,d=f*H;if(d<10||d>H-3)continue; /* relief ≈30 m : abords immédiats du poste ignorés */const x=A[0]+(Tp[0]-A[0])*f,yy=A[1]+(Tp[1]-A[1])*f,ll=LC.E.inv(x,yy),g=terrAt(ll.lat,ll.lon);if(!isFinite(g))continue;
     const b=zA+f*(zT-zA)+y(d);let c=b-g;const bd=I.at(x,yy);if(bd&&!ex.includes(bd))c=Math.min(c,b-bTop(bd,g));if(c<w)w=c;}
   return w;}
 async function zones(){
@@ -245,6 +245,52 @@ async function bestPost(){
   setTimeout(()=>{const g=document.getElementById("bpGo");if(g)g.onclick=()=>{S.shooter={lat:best.ll.lat,lon:best.ll.lon,alt:null};S.shooterManual=true;map.removeLayer(bpLayer);bpLayer=null;drawMarkers();updateGeo(true);};},50);
 }
 $("losZones").onclick=zones;$("losBest").onclick=bestPost;
+
+/* ---------- postes de tir possibles autour de la cible ---------- */
+let psLayer=null;
+const DIR8=["nord","nord-est","est","sud-est","sud","sud-ouest","ouest","nord-ouest"];
+function psClear(){if(psLayer){map.removeLayer(psLayer);psLayer=null;}$("losPosts").innerHTML="";$("losPs").textContent="📍 Postes possibles";$("losPs").classList.remove("acc");}
+function psGo(pt){S.shooter={lat:pt.lat,lon:pt.lon,alt:null};S.shooterManual=true;psClear();drawMarkers();updateGeo(true);if(map)map.closePopup();toast("Tireur placé sur le poste choisi. Le GPS reprend la main avec le bouton 📍 GPS.");}
+async function postes(){
+  if(psLayer){psClear();return;}
+  if(!map||!S.target){toast("Touchez d'abord la cible sur la carte.");return;}
+  const b=S.target,mn=Math.max(10,pf(LS.pMin)||50),mx=Math.min(1200,Math.max(mn+20,pf(LS.pMax)||300)),dl=mx/(DEG*R0),cl=Math.cos(b.lat*DEG);
+  $("losPs").textContent="⏳ Recherche des postes…";
+  const A=await areaData(b.lat-dl,b.lon-dl/cl,b.lat+dl,b.lon+dl/cl);
+  if(!A.ok){$("losPs").textContent="📍 Postes possibles";toast("Relief de la zone indisponible (pas de réseau ?). Chargez-le avec « Garder relief et bâtiments ».");return;}
+  const E=enu(b);LC.E=E;const I=bldIndex(A.bl.L,E),gt=terrAt(b.lat,b.lon),tb=I.at(0,0),th=LS.tgt==="toit"?(tb?bTop(tb,gt)-gt+.3:.5):losTH(),zT=gt+th,sh=losSH();
+  const p=P(),c=conditions();c.site=0;const TR=new Map();
+  const trOf=H=>{const k=Math.round(H/5)*5;if(!TR.has(k)){const tr=fly(Object.assign({p,alpha:zeroAngle(p),maxX:k+1},c)),end=tr(k);TR.set(k,end?{tr,end,k}:null);}return TR.get(k);};
+  const me=S.shooter?E.f(S.shooter.lat,S.shooter.lon):null;
+  const NG=80,cv=document.createElement("canvas");cv.width=cv.height=NG;const g=cv.getContext("2d"),cand=[];let n=0;
+  for(let j=0;j<NG;j++){for(let i=0;i<NG;i++){const x=(i+.5)/NG*2*mx-mx,y=mx-(j+.5)/NG*2*mx,H=Math.hypot(x,y);if(H<mn||H>mx)continue;
+      const ll=E.inv(x,y),gs=terrAt(ll.lat,ll.lon),bd=I.at(x,y);if(!isFinite(gs)||(bd&&LS.post!=="x"))continue;
+      const T=trOf(H);if(!T){g.fillStyle="rgba(120,120,120,.35)";g.fillRect(i,j,1,1);continue;} // hors de portée de la munition
+      const yy=d=>{const r=T.tr(d*T.k/H);return r?r.y-T.end.y*d/H:0;};
+      const v=lineOk([x,y],[0,0],gs+sh,zT,yy,I,[tb,bd]);
+      g.fillStyle=v<0?"rgba(248,113,113,.4)":v<MARGIN?"rgba(251,191,36,.45)":"rgba(52,211,153,.5)";g.fillRect(i,j,1,1);
+      if(v>=MARGIN){const walk=me?Math.hypot(x-me[0],y-me[1]):0;cand.push({x,y,H,v,walk,ll,mil:toUnit(-T.end.y/T.k,p.unit),score:Math.min(v,1.5)-(me?walk/400:0)});}}
+    if(++n%8===0)await new Promise(r=>setTimeout(r,0));}
+  cand.sort((a,b)=>b.score-a.score);const pick=[];
+  for(const q of cand){if(pick.every(o=>Math.hypot(o.x-q.x,o.y-q.y)>Math.max(30,mx/8)))pick.push(q);if(pick.length>=5)break;}
+  psLayer=L.layerGroup().addTo(map);
+  L.imageOverlay(cv.toDataURL(),[[b.lat-dl,b.lon-dl/cl],[b.lat+dl,b.lon+dl/cl]],{opacity:.75,interactive:false}).addTo(psLayer).getElement().style.imageRendering="pixelated";
+  L.circle([b.lat,b.lon],{radius:mn,color:"#f59e0b",weight:1,fill:false,dashArray:"4 4",interactive:false}).addTo(psLayer);
+  const info=q=>{const az=(Math.atan2(q.x,q.y)/DEG+360)%360,clk=Math.round(q.mil/p.click);
+    return `à ${Math.round(q.H)} m de la cible, côté ${DIR8[Math.round(az/45)%8]} · marge ${fr(q.v,1)} m · élévation ≈ ${clk} clics${me?` · à ${Math.round(q.walk)} m de vous`:""}`;};
+  pick.forEach((q,k)=>{const m=L.marker([q.ll.lat,q.ll.lon],{icon:L.divIcon({className:"",html:`<div class="psMk">${k+1}</div>`,iconSize:[26,26],iconAnchor:[13,13]})}).addTo(psLayer);
+    m.bindPopup(`<b>Poste ${k+1}</b><br>${info(q)}<br><button class="btn sm acc" data-ps="${k}">Placer le tireur ici</button>`);
+    m.on("popupopen",e=>{const bt=e.popup.getElement().querySelector("[data-ps]");if(bt)bt.onclick=()=>psGo(q.ll);});});
+  $("losPosts").innerHTML=pick.length?pick.map((q,k)=>`<div class="obsr"><span><b>${k+1}.</b> ${info(q)}</span><button class="btn sm" data-ps="${k}">Choisir</button></div>`).join(""):
+    `<p class="hint">Aucun poste dégagé entre ${mn} et ${mx} m de cette cible (position ${({"0.3":"couché","0.8":"assis","1.5":"debout","x":"en hauteur"})[LS.post]}). Essayez une autre position ou une autre plage de distance.</p>`;
+  $("losPosts").onclick=e=>{const bt=e.target.closest("[data-ps]");if(bt)psGo(pick[+bt.dataset.ps].ll);};
+  const all=[[b.lat,b.lon],...pick.map(q=>[q.ll.lat,q.ll.lon])];if(S.shooter)all.push([S.shooter.lat,S.shooter.lon]);map.fitBounds(all,{padding:[30,30],maxZoom:17});
+  $("losPs").textContent="📍 Masquer les postes";$("losPs").classList.add("acc");
+  toast(`${cand.length?pick.length+" poste(s) proposé(s)":"Aucun poste dégagé"} · vert : on touche la cible d'ici, rouge : masqué, gris : hors de portée. Relief ≈30 m${A.bl.L.length?`, ${A.bl.L.length} bâtiments`:""} : vérifiez chaque poste avec la coupe une fois choisi.`);
+}
+$("losPs").onclick=postes;
+const psSet=()=>{LS.pMin=$("losPmin").value;LS.pMax=$("losPmax").value;save();};$("losPmin").oninput=psSet;$("losPmax").oninput=psSet;
+$("losPmin").value=LS.pMin??50;$("losPmax").value=LS.pMax??300;
 
 /* ---------- garder relief et bâtiments pour le hors ligne ---------- */
 $("losKeep").onclick=async()=>{if(!map)return;const B=map.getBounds(),i=$("losKeepInfo");
