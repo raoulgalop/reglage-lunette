@@ -102,14 +102,14 @@ tr.zero td{color:var(--ok)}
   document.getElementById("lockGo").onclick=go;I.onkeydown=function(e){if(e.key==="Enter")go();};
 })();</script>
 <div id="apkBar" style="display:none;position:relative;z-index:2000;background:#14532d;color:#fff;padding:10px 40px 10px 12px;padding-top:calc(10px + env(safe-area-inset-top));font-size:15px">
-  📱 Android : <a href="ReglageLunette.apk" download="ReglageLunette.apk" style="color:#fde68a;font-weight:700">Télécharger l'appli (APK v4.15)</a>
+  📱 Android : <a href="ReglageLunette.apk" download="ReglageLunette.apk" style="color:#fde68a;font-weight:700">Télécharger l'appli (APK v4.16)</a>
   <div style="font-size:12px;opacity:.85;margin-top:3px">Ouvrez ensuite le fichier téléchargé et autorisez l'installation depuis le navigateur si Android le demande. Vos réglages du site ne sont pas repris dans l'appli.</div>
   <button id="apkX" aria-label="Fermer" style="position:absolute;right:6px;top:calc(6px + env(safe-area-inset-top));background:none;border:0;color:#fff;font-size:20px">✕</button>
 </div>
 <script>(function(){ // proposé seulement dans un navigateur Android, pas dans l'appli elle-même
-  var hide=false;try{hide=localStorage.getItem("apkBarOff")==="4.15";}catch(e){}
+  var hide=false;try{hide=localStorage.getItem("apkBarOff")==="4.16";}catch(e){}
   if(/Android/i.test(navigator.userAgent)&&!window.Android&&/^https?:/.test(location.protocol)&&!hide)document.getElementById("apkBar").style.display="";
-  document.getElementById("apkX").onclick=function(){document.getElementById("apkBar").style.display="none";try{localStorage.setItem("apkBarOff","4.15");}catch(e){}};
+  document.getElementById("apkX").onclick=function(){document.getElementById("apkBar").style.display="none";try{localStorage.setItem("apkBarOff","4.16");}catch(e){}};
 })();</script>
 <header>
   <h1>🎯 Réglage Lunette</h1>
@@ -174,7 +174,7 @@ tr.zero td{color:var(--ok)}
     </div>
     <div id="losObs"></div>
     <div class="chips"><button class="btn sm" id="losKeep">⬇ Garder relief et bâtiments de la zone</button></div>
-    <p class="hint" id="losKeepInfo">La balle est suivie avec la tourelle réglée pour la distance : elle passe plus haut que la ligne de visée en milieu de trajet. Touchez la coupe pour lire les hauteurs à une distance donnée. Relief IGN en France (Terrarium ailleurs), bâtiments IGN BD TOPO (OpenStreetMap ailleurs). Arbres, haies récentes, antennes et véhicules ne sont pas dans les données : ajoutez-les à la main. Marge « rasant » : 25 cm.</p>
+    <p class="hint" id="losKeepInfo">La balle est suivie avec la tourelle réglée pour la distance : elle passe plus haut que la ligne de visée en milieu de trajet. Touchez la coupe pour lire les hauteurs à une distance donnée. Relief IGN en France (Terrarium ailleurs), bâtiments IGN BD TOPO (OpenStreetMap ailleurs). En France métropolitaine, le LiDAR HD de l'IGN donne aussi la hauteur des arbres, haies et murs le long de la ligne (comptés comme pleins). Ailleurs, ou pour un obstacle récent, ajoutez-le à la main. Marge « rasant » : 25 cm.</p>
   </div>
 
   <div class="card">
