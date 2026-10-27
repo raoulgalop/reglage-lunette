@@ -76,18 +76,23 @@ function clr(z,lo,hi){return z>hi?z-hi:z<lo?lo-z:-Math.min(hi-z,z-lo);}
 
 /* ---------- relief le long de la ligne ---------- */
 async function profileZ(a,b,N){
-  const key=`prof:${[a.lat,a.lon,b.lat,b.lon].map(v=>v.toFixed(6)).join(",")}:${N}`,hit=await XDB.get(key);if(hit)return hit;
+  const key=`prof2:${[a.lat,a.lon,b.lat,b.lon].map(v=>v.toFixed(6)).join(",")}:${N}`,hit=await XDB.get(key);if(hit)return hit;
   const ok=z=>z&&z.length>1&&z.every(v=>isFinite(v)&&v>-500);
   const resamp=z=>Array.from({length:N+1},(_,i)=>{const t=i/N*(z.length-1),k=Math.min(z.length-2,Math.floor(t)),u=t-k;return z[k]*(1-u)+z[k+1]*u;});
   let r=null;
-  try{const u=`https://data.geopf.fr/altimetrie/1.0/calcul/alti/rest/elevationLine.json?lon=${a.lon}|${b.lon}&lat=${a.lat}|${b.lat}&resource=ign_rge_alti_wld&delimiter=|&indent=false&measures=false&zonly=false&profile_mode=simple&sampling=${Math.min(N+1,2000)}`;
+  // LiDAR HD IGN (50 cm) : sol (MNT) et hauteur de la végétation / du sursol (MNH) en une requête
+  try{const u=`https://data.geopf.fr/altimetrie/1.0/calcul/alti/rest/elevationLine.json?lon=${a.lon}|${b.lon}&lat=${a.lat}|${b.lat}&resource=ign_lidar_hd_mnx_mono_wld&delimiter=|&indent=false&measures=true&zonly=false&profile_mode=simple&sampling=${Math.min(N+1,2000)}`;
+    const q=await fetchT(u,20000);if(q.ok){const j=await q.json(),E=j.elevations||[],pick=(e,k)=>{const m=(e.measures||[]).find(m=>String(m.title||"").includes(" "+k+" "));return m?pf(m.z):NaN;};
+      const z=E.map(e=>{const t=pick(e,"MNT");return isFinite(t)?t:pf(e.z);}),h=E.map(e=>{const v=pick(e,"MNH");return isFinite(v)&&v>-1&&v<120?Math.max(0,v):0;});
+      if(ok(z)&&E.some(e=>(e.measures||[]).length))r={z:resamp(z),veg:resamp(h),src:"lidar"};}}catch(x){}
+  if(!r)try{const u=`https://data.geopf.fr/altimetrie/1.0/calcul/alti/rest/elevationLine.json?lon=${a.lon}|${b.lon}&lat=${a.lat}|${b.lat}&resource=ign_rge_alti_wld&delimiter=|&indent=false&measures=false&zonly=false&profile_mode=simple&sampling=${Math.min(N+1,2000)}`;
     const q=await fetchT(u,15000);if(q.ok){const j=await q.json(),z=(j.elevations||[]).map(e=>typeof e==="number"?e:pf(e.z));if(ok(z))r={z:resamp(z),src:"ign"};}}catch(x){}
   if(!r){const s=Math.min(a.lat,b.lat)-1e-4,n=Math.max(a.lat,b.lat)+1e-4,w=Math.min(a.lon,b.lon)-1e-4,e=Math.max(a.lon,b.lon)+1e-4;
     if(await terrLoad(s,w,n,e)){const z=Array.from({length:N+1},(_,i)=>terrAt(a.lat+(b.lat-a.lat)*i/N,a.lon+(b.lon-a.lon)*i/N));if(ok(z))r={z,src:"terrarium"};}}
   if(!r)try{const M=Math.min(N,99),la=[],lo=[];for(let i=0;i<=M;i++){la.push((a.lat+(b.lat-a.lat)*i/M).toFixed(6));lo.push((a.lon+(b.lon-a.lon)*i/M).toFixed(6));}
     const q=await fetchT(`https://api.open-meteo.com/v1/elevation?latitude=${la}&longitude=${lo}`,10000),j=await q.json();if(ok(j.elevation))r={z:resamp(j.elevation),src:"om"};}catch(x){}
   if(r)XDB.put(key,r);return r;}
-const SRC={ign:"IGN RGE ALTI (1 à 5 m)",terrarium:"Terrarium (≈30 m, moins précis)",om:"Open-Meteo (90 m, approximatif)"};
+const SRC={lidar:"IGN LiDAR HD (50 cm), arbres compris",ign:"IGN RGE ALTI (1 à 5 m), sans les arbres",terrarium:"Terrarium (≈30 m, moins précis)",om:"Open-Meteo (90 m, approximatif)"};
 
 /* ---------- calcul de la ligne ---------- */
 let LC={key:null,data:null,seq:0,res:null};
@@ -109,7 +114,8 @@ async function losRun(force){
   const ux=T[0]/H,uy=T[1]/H,nx=-uy,ny=ux,tb0=I.at(T[0],T[1]),sb=I.at(0,0);
   for(let i=0;i<=N;i++){const d=H*i/N,x=ux*d,y=uy*d,g=pz.z[i];let top=null,bd=null;
     for(const o of [0,-0.5,0.5]){const bb=I.at(x+nx*o,y+ny*o);if(bb&&bb!==tb0&&bb!==sb){const t=bTop(bb,g);if(top==null||t>top){top=t;bd=bb;}}}
-    pts.push({d,x,y,g,top,bd});}
+    const inB=!!I.at(x,y),v=pz.veg&&!inB&&d>3&&d<H-3?pz.veg[i]:0; // végétation, haies, murs… (LiDAR) hors bâtiments connus
+    pts.push({d,x,y,g,top,bd,v:v>0.3?v:0});}
   const gT=pz.z[N];
   LC.data={H,N,pts,src:pz.src,bsrc:bl.src,bn:bl.L.length,bmiss:bl.miss,az:bearing(a,b),
     tb:tb0?{h:tb0.h,rel:bTop(tb0,gT)-gT,est:tb0.est}:null,sb:sb?{rel:bTop(sb,pz.z[0])-pz.z[0]}:null,I,E};
@@ -123,16 +129,20 @@ function losEval(){const D=LC.data;if(!D)return null;
   const sh=losSH(),th=losTH(),z0=D.pts[0].g+sh,z1=D.pts[D.N].g+th,k=D3/D.H;
   let worst={c:1e9},wl={c:1e9},hit=false,ymax={v:-1e9};const P2=[];
   for(const q of D.pts){const f=q.d/D.H,los=z0+f*(z1-z0),yy=y(q.d*k),b=los+yy;
-    const obs=[];if(q.top!=null)obs.push([-1e9,q.top,"b",q.bd]);
+    const obs=[];if(q.top!=null)obs.push([-1e9,q.top,"b",q.bd]);if(q.v)obs.push([-1e9,q.g+q.v,"v",{h:q.v}]);
     LS.obs.forEach(o=>{if(Math.abs(q.d-o.d)<=1)obs.push([q.g+(+o.lo||0),q.g+(+o.hi||0),"m",o]);});
     let c=b-q.g,cs=null,cl=los-q.g;for(const o of obs){const v=clr(b,o[0],o[1]);if(v<c){c=v;cs=o;}cl=Math.min(cl,clr(los,o[0],o[1]));}
     if(q.d>2&&q.d<D.H-2&&c<0)hit=true;
-    const r={d:q.d,g:q.g,los,b,c:hit?Math.min(c,-0.01):c,cl,cs,top:q.top};P2.push(r);
+    const r={d:q.d,g:q.g,los,b,c0:c,c:hit?Math.min(c,-0.01):c,cl,cs,top:q.top,v:q.v};P2.push(r);
     if(yy>ymax.v)ymax={v:yy,d:q.d};
     if(q.d>2&&q.d<D.H-2){if(c<worst.c)worst={c,d:q.d,cs,b,g:q.g};if(cl<wl.c)wl={c:cl,d:q.d};}}
+  // la balle s'arrête au premier obstacle : c'est lui qu'on annonce (le plus profond de ce premier obstacle), puis on compte les suivants
+  let more=0;if(worst.c<0){const ins=r=>r.d>2&&r.d<D.H-2&&r.c0<0;let i=P2.findIndex(ins),f=null;
+    for(;i<P2.length&&ins(P2[i]);i++)if(!f||P2[i].c0<f.c)f={c:P2[i].c0,d:P2[i].d,cs:P2[i].cs,b:P2[i].b,g:P2[i].g};
+    for(let prev=false;i<P2.length;i++){const x=ins(P2[i]);if(x&&!prev)more++;prev=x;}worst=f;}
   const st=worst.c<0?"bad":worst.c<MARGIN?"warn":"ok";
-  return LC.res={pts:P2,worst,wl,st,z0,z1,sh,th,ymax};}
-function causeTxt(w){const o=w.cs;if(!o)return "le relief";if(o[2]==="b")return `un bâtiment de ${fr(o[3].h,0)} m${o[3].est?" (hauteur supposée)":""}`;return "l'obstacle ajouté à la main";}
+  return LC.res={pts:P2,worst,wl,st,more,z0,z1,sh,th,ymax};}
+function causeTxt(w){const o=w.cs;if(!o)return "le relief";if(o[2]==="v")return `la végétation ou un obstacle du terrain (${fr(o[3].h,1)} m de haut, LiDAR)`;if(o[2]==="b")return `un bâtiment de ${fr(o[3].h,0)} m${o[3].est?" (hauteur supposée)":""}`;return "l'obstacle ajouté à la main";}
 
 /* ---------- affichage ---------- */
 const CC={ok:"#34d399",warn:"#fbbf24",bad:"#f87171"};const ccol=c=>c<0?CC.bad:c<MARGIN?CC.warn:CC.ok;
@@ -143,7 +153,7 @@ function losDraw(){
   cv.style.display="block";$("losMsg").textContent="";
   const r=cv.getBoundingClientRect(),dpr=Math.min(2,window.devicePixelRatio||1),w=r.width||320,h=190;cv.width=w*dpr;cv.height=h*dpr;cv.style.height=h+"px";
   const c=cv.getContext("2d");c.setTransform(dpr,0,0,dpr,0,0);
-  let lo=1e9,hi=-1e9;R.pts.forEach(q=>{lo=Math.min(lo,q.g);hi=Math.max(hi,q.b,q.los,q.top??-1e9);});LS.obs.forEach(o=>{const q=R.pts.find(p=>Math.abs(p.d-o.d)<=1);if(q)hi=Math.max(hi,q.g+(+o.hi||0));});
+  let lo=1e9,hi=-1e9;R.pts.forEach(q=>{lo=Math.min(lo,q.g);hi=Math.max(hi,q.b,q.los,q.top??-1e9,q.v?q.g+q.v:-1e9);});LS.obs.forEach(o=>{const q=R.pts.find(p=>Math.abs(p.d-o.d)<=1);if(q)hi=Math.max(hi,q.g+(+o.hi||0));});
   hi=Math.max(hi,R.z1+0.5);lo-=Math.max(1,(hi-lo)*.08);hi+=Math.max(.5,(hi-lo)*.06);
   const L=34,Rr=8,T=8,B=20,X=d=>L+d/D.H*(w-L-Rr),Y=z=>T+(hi-z)/(hi-lo)*(h-T-B);
   c.fillStyle="#0b0e11";c.fillRect(0,0,w,h);c.font="10px ui-monospace,monospace";c.lineWidth=1;
@@ -154,6 +164,7 @@ function losDraw(){
   c.fillStyle="#6b6660";R.pts.forEach((q,i)=>{if(q.top==null)return;const d1=i?R.pts[i-1].d:q.d;c.fillRect(X(d1),Y(q.top),Math.max(1.2,X(q.d)-X(d1)+.6),Y(q.g)-Y(q.top));});
   const tg=R.pts[R.pts.length-1];if(D.tb){c.fillStyle="#5c5650";c.fillRect(X(D.H)-5,Y(tg.g+D.tb.rel),6,Y(tg.g)-Y(tg.g+D.tb.rel));}
   if(D.sb){c.fillStyle="#5c5650";c.fillRect(X(0),Y(R.pts[0].g+D.sb.rel),6,Y(R.pts[0].g)-Y(R.pts[0].g+D.sb.rel));}
+  c.fillStyle="rgba(74,160,90,.8)";R.pts.forEach((q,i)=>{if(!q.v)return;const d1=i?R.pts[i-1].d:q.d;c.fillRect(X(d1),Y(q.g+q.v),Math.max(1.2,X(q.d)-X(d1)+.6),Y(q.g)-Y(q.g+q.v));});
   c.beginPath();c.moveTo(X(0),h-B);R.pts.forEach(q=>c.lineTo(X(q.d),Y(q.g)));c.lineTo(X(D.H),h-B);c.closePath();c.fillStyle="#3b3326";c.fill();
   c.beginPath();R.pts.forEach(q=>c.lineTo(X(q.d),Y(q.g)));c.strokeStyle="#a58b5c";c.lineWidth=1.5;c.stroke();
   c.fillStyle="rgba(74,160,90,.85)";LS.obs.forEach(o=>{const q=R.pts.find(p=>Math.abs(p.d-o.d)<=1);if(q)c.fillRect(X(o.d)-2,Y(q.g+(+o.hi||0)),4,Y(q.g+(+o.lo||0))-Y(q.g+(+o.hi||0)));});
@@ -167,7 +178,8 @@ function losDraw(){
   // verdict
   const W=R.worst;let t,s;
   if(R.st==="bad"){t=`Bloqué à ${Math.round(W.d)} m par ${causeTxt(W)}`;const miss=-W.c>=1?`${fr(-W.c,1)} m`:`${fr(-W.c*100,0)} cm`,over=!W.cs||W.cs[0]<-1e8||!(+W.cs[3].lo);
-    s=R.wl.c>0?`Vous verrez la cible, mais pas la balle : elle monte plus haut que la ligne de visée et touche l'obstacle (${miss} de trop).`:over?`La cible n'est pas visible d'ici. Il manque ${miss} pour passer au-dessus.`:`La ligne de visée est elle aussi coupée. La balle traverse l'obstacle sur ${miss}.`;}
+    s=R.wl.c>0?`Vous verrez la cible, mais pas la balle : elle monte plus haut que la ligne de visée et touche l'obstacle (${miss} de trop).`:over?`La cible n'est pas visible d'ici. Il manque ${miss} pour passer au-dessus.`:`La ligne de visée est elle aussi coupée. La balle traverse l'obstacle sur ${miss}.`;
+    if(R.more)s+=` Puis ${R.more} autre${R.more>1?"s":""} obstacle${R.more>1?"s":""} plus loin.`;}
   else if(R.st==="warn"){t=`Rasant à ${Math.round(W.d)} m`;s=`Il ne reste que ${fr(W.c*100,0)} cm de marge avec ${causeTxt(W)}, moins que la dispersion et le vent. À éviter.`;}
   else{t="Ligne de tir dégagée";s=W.c<1e8?`Point le plus serré à ${Math.round(W.d)} m : ${fr(W.c,1)} m de marge.`:"";}
   V.innerHTML=`<div class="verdict v-${R.st}"><span class="dot"></span><div><b>${t}</b><span>${s}</span></div></div>`;
@@ -309,6 +321,7 @@ function seg3d(){const D=LC.data,R=LC.res;if(!D||!R)return {type:"FeatureCollect
   const W=Math.max(1,D.H/150); // ruban élargi pour rester visible de loin
   for(let i=0;i+step<=D.N;i+=step){const p0=D.pts[i],p1=D.pts[i+step],r0=R.pts[i],r1=R.pts[i+step],cmin=Math.min(r0.c,r1.c),base=Math.max(0,(r0.b+r1.b)/2-(r0.g+r1.g)/2);
     F.push({type:"Feature",properties:{c:ccol(cmin),b:base,t:base+W*.8},geometry:{type:"Polygon",coordinates:[poly(p0.x,p0.y,p1.x,p1.y,W/2)]}});
+    const vv=Math.max(p0.v||0,p1.v||0);if(vv)F.push({type:"Feature",properties:{c:"#2f7d3a",b:0,t:vv},geometry:{type:"Polygon",coordinates:[poly(p0.x,p0.y,p1.x,p1.y,W*1.5)]}});
     if((i/step)%2===0){const lb=Math.max(0,(r0.los+r1.los)/2-(r0.g+r1.g)/2);F.push({type:"Feature",properties:{c:"#60a5fa",b:lb,t:lb+W*.3},geometry:{type:"Polygon",coordinates:[poly(p0.x,p0.y,p1.x,p1.y,W/4)]}});}}
   return {type:"FeatureCollection",features:F};}
 function bld3d(){const D=LC.data;if(!D)return {type:"FeatureCollection",features:[]};
