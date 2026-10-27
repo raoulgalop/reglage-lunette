@@ -67,6 +67,17 @@ tr.zero td{color:var(--ok)}
 .scroll{overflow-x:auto}
 .leaflet-container{font:inherit}
 .cHits{display:flex;flex-direction:column;gap:2px;max-height:260px;overflow:auto;margin:4px 0}.cHits .hit{text-align:left;padding:8px;border:1px solid var(--line,#444);border-radius:6px;background:transparent;color:inherit;font:inherit}.cFind{width:100%;box-sizing:border-box}
+.verdict{display:flex;gap:8px;align-items:flex-start;border-radius:10px;padding:8px 10px;font-size:14px;margin-top:8px}
+.verdict .dot{width:10px;height:10px;border-radius:50%;margin-top:5px;flex:none}.verdict b{display:block}.verdict span{color:var(--mut);font-size:13px}
+.v-ok{background:rgba(52,211,153,.12)}.v-ok .dot{background:var(--ok)}.v-warn{background:rgba(251,191,36,.12)}.v-warn .dot{background:#fbbf24}.v-bad{background:rgba(248,113,113,.13)}.v-bad .dot{background:var(--bad)}
+#losCv{display:block;width:100%;border-radius:8px;background:#0b0e11;margin-top:8px}
+.obsr{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:13px;padding:4px 0;border-bottom:1px solid var(--line)}
+#l3d{position:fixed;inset:0;z-index:2500;background:var(--bg);display:none;flex-direction:column;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+#l3dBar{display:flex;gap:6px;align-items:center;padding:8px}#l3dBar .seg{margin:0;flex:0 0 auto}#l3dBar .seg button{padding:6px 9px}
+#l3dMap{flex:1;position:relative}#l3dMsg{position:absolute;left:0;right:0;top:40%;text-align:center;color:var(--mut);z-index:2;pointer-events:none}
+#l3dInfo{font-size:12px;color:var(--mut);padding:6px 10px}
+.psMk{width:26px;height:26px;border-radius:50%;background:#16a34a;color:#fff;border:2px solid #fff;font:700 13px/22px system-ui,sans-serif;text-align:center;box-shadow:0 1px 4px rgba(0,0,0,.5)}
+.mk3d{color:#fff;font:600 11px system-ui,sans-serif;padding:3px 6px;border-radius:6px;border:2px solid #fff;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -91,14 +102,14 @@ tr.zero td{color:var(--ok)}
   document.getElementById("lockGo").onclick=go;I.onkeydown=function(e){if(e.key==="Enter")go();};
 })();</script>
 <div id="apkBar" style="display:none;position:relative;z-index:2000;background:#14532d;color:#fff;padding:10px 40px 10px 12px;padding-top:calc(10px + env(safe-area-inset-top));font-size:15px">
-  📱 Android : <a href="ReglageLunette.apk" download="ReglageLunette.apk" style="color:#fde68a;font-weight:700">Télécharger l'appli (APK v4.13)</a>
+  📱 Android : <a href="ReglageLunette.apk" download="ReglageLunette.apk" style="color:#fde68a;font-weight:700">Télécharger l'appli (APK v4.15)</a>
   <div style="font-size:12px;opacity:.85;margin-top:3px">Ouvrez ensuite le fichier téléchargé et autorisez l'installation depuis le navigateur si Android le demande. Vos réglages du site ne sont pas repris dans l'appli.</div>
   <button id="apkX" aria-label="Fermer" style="position:absolute;right:6px;top:calc(6px + env(safe-area-inset-top));background:none;border:0;color:#fff;font-size:20px">✕</button>
 </div>
 <script>(function(){ // proposé seulement dans un navigateur Android, pas dans l'appli elle-même
-  var hide=false;try{hide=localStorage.getItem("apkBarOff")==="4.13";}catch(e){}
+  var hide=false;try{hide=localStorage.getItem("apkBarOff")==="4.15";}catch(e){}
   if(/Android/i.test(navigator.userAgent)&&!window.Android&&/^https?:/.test(location.protocol)&&!hide)document.getElementById("apkBar").style.display="";
-  document.getElementById("apkX").onclick=function(){document.getElementById("apkBar").style.display="none";try{localStorage.setItem("apkBarOff","4.13");}catch(e){}};
+  document.getElementById("apkX").onclick=function(){document.getElementById("apkBar").style.display="none";try{localStorage.setItem("apkBarOff","4.15");}catch(e){}};
 })();</script>
 <header>
   <h1>🎯 Réglage Lunette</h1>
@@ -140,6 +151,30 @@ tr.zero td{color:var(--ok)}
       <label>Coriolis<div class="seg" id="corOn"><button data-v="1" class="on">Oui</button><button data-v="0">Non</button></div></label>
     </div>
     <p class="hint" id="geoInfo">Placez la cible sur la carte, ou saisissez la distance mesurée (télémètre) et l'azimut.</p>
+  </div>
+
+  <div class="card" id="losCard">
+    <h2>Ligne de tir <span><button class="btn sm" id="losRefresh" aria-label="Relancer la vérification">↻</button> <button class="btn sm acc" id="los3d">🧊 Vue 3D</button></span></h2>
+    <div class="row"><label>Arme du tireur<div class="seg" id="losPost"><button data-v="0.3" class="on">Couché</button><button data-v="0.8">Assis</button><button data-v="1.5">Debout</button><button data-v="x">Étage…</button></div></label></div>
+    <div class="row" id="losPostXRow" style="display:none"><label>Hauteur de l'arme au-dessus du sol (m) — 3e étage ≈ 10 m<input id="losPostX" type="number" inputmode="decimal" value="10"></label></div>
+    <div class="row"><label>Cible<div class="seg" id="losTgt"><button data-v="sol" class="on">Au sol</button><button data-v="etage">Étage</button><button data-v="toit">Toit</button><button data-v="x">Autre</button></div></label></div>
+    <div class="row" id="losTgtXRow" style="display:none"><label id="losTgtXLbl">Étage n°<input id="losTgtX" type="number" inputmode="decimal" value="2"></label></div>
+    <p class="hint" id="losTgtInfo"></p>
+    <p class="hint" id="losMsg"></p>
+    <canvas id="losCv" height="190" style="display:none" aria-label="Coupe de la ligne de tir"></canvas>
+    <div id="losVerdict"></div>
+    <div class="kv" id="losInfo"></div>
+    <div class="chips"><button class="btn sm" id="losZones">🗺 Zones atteignables</button><button class="btn sm" id="losBest">🔎 Poste dégagé</button><button class="btn sm" id="losObsAdd">＋ Obstacle à la main</button></div>
+    <div class="row" style="margin-top:10px;margin-bottom:0"><label>Postes autour de la cible : de (m)<input id="losPmin" type="number" inputmode="decimal" value="50"></label><label>à (m)<input id="losPmax" type="number" inputmode="decimal" value="300"></label><label style="flex:0 0 auto">&nbsp;<br><button class="btn sm acc" id="losPs">📍 Postes possibles</button></label></div>
+    <div id="losPosts"></div>
+    <div id="losObsForm" style="display:none;margin-top:8px">
+      <div class="row"><label>Distance du tireur (m)<input id="loD" type="number" inputmode="decimal"></label><label>Nom<input id="loN" placeholder="haie, arbre…"></label></div>
+      <div class="row"><label>Bas (m, 0 = plein)<input id="loLo" type="number" inputmode="decimal" value="0"></label><label>Haut (m)<input id="loHi" type="number" inputmode="decimal" value="3"></label></div>
+      <button class="btn acc sm" id="loOk">Ajouter</button>
+    </div>
+    <div id="losObs"></div>
+    <div class="chips"><button class="btn sm" id="losKeep">⬇ Garder relief et bâtiments de la zone</button></div>
+    <p class="hint" id="losKeepInfo">La balle est suivie avec la tourelle réglée pour la distance : elle passe plus haut que la ligne de visée en milieu de trajet. Touchez la coupe pour lire les hauteurs à une distance donnée. Relief IGN en France (Terrarium ailleurs), bâtiments IGN BD TOPO (OpenStreetMap ailleurs). Arbres, haies récentes, antennes et véhicules ne sont pas dans les données : ajoutez-les à la main. Marge « rasant » : 25 cm.</p>
   </div>
 
   <div class="card">
@@ -1259,8 +1294,8 @@ async function updateGeo(fetchElev){
   const h=haversine(S.shooter,S.target),az=bearing(S.shooter,S.target);
   $("tAz").value=az.toFixed(0);
   const apply=()=>{
-    const dz=(S.target.alt!=null&&S.shooter.alt!=null)?S.target.alt-S.shooter.alt:0;
-    $("tDist").value=Math.hypot(h,dz).toFixed(0);$("tSite").value=(Math.atan2(dz,h)/DEG).toFixed(1);
+    const dz=(S.target.alt!=null&&S.shooter.alt!=null)?S.target.alt-S.shooter.alt:0,dh=window.losTH?losTH()-losSH():0; // hauteurs de l'arme et de la cible (ligne de tir)
+    $("tDist").value=Math.hypot(h,dz+dh).toFixed(0);$("tSite").value=(Math.atan2(dz+dh,h)/DEG).toFixed(1);
     $("geoInfo").textContent=`Distance horizontale ${h.toFixed(0)} m · azimut ${az.toFixed(0)}° · dénivelé `+
       ((S.target.alt!=null&&S.shooter.alt!=null)?`${dz>=0?"+":""}${dz.toFixed(1)} m (relief)`:"inconnu (hors ligne)");
     compute();save();
@@ -1731,5 +1766,8 @@ if(S.shooter&&S.target)updateGeo(false);
 if(window.Android&&Android.requestGps)Android.requestGps();else $("gpsBtn").click();
 if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js").catch(()=>{});
 </script>
+<div id="l3d"><div id="l3dBar"><button class="btn sm" id="l3dClose">✕ Fermer</button><span style="font-size:12px;color:var(--mut)">Relief</span><div class="seg" id="l3dEx"><button data-v="1" class="on">×1</button><button data-v="2">×2</button><button data-v="3">×3</button></div><button class="btn sm" id="l3dTop">🧍 Vue du tireur</button></div>
+<div id="l3dMap"><div id="l3dMsg"></div></div><div id="l3dInfo"></div></div>
+<script src="ligne.js"></script>
 </body>
 </html>
