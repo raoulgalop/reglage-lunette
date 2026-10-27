@@ -98,7 +98,7 @@ const SRC={lidar:"IGN LiDAR HD (50 cm), arbres compris",ign:"IGN RGE ALTI (1 à 
 let LC={key:null,data:null,seq:0,res:null};
 async function losRun(force){
   const msg=$("losMsg");
-  if(!(S.shooter&&S.target)){LC.key=null;LC.data=null;LC.res=null;msg.textContent="Placez le tireur (GPS) et touchez la cible sur la carte : l'appli vérifie si le relief, les bâtiments ou un obstacle coupent la trajectoire.";losDraw();return;}
+  if(!(S.shooter&&S.target)){LC.key=null;LC.data=null;LC.res=null;msg.textContent=losHint();losDraw();return;}
   const key=[S.shooter.lat,S.shooter.lon,S.target.lat,S.target.lon].map(v=>v.toFixed(6)).join(",");
   if(LS.obsKey!==key){if(LS.obsKey&&LS.obs.length)toast("Obstacles ajoutés à la main effacés : la ligne de tir a changé.");LS.obs=[];LS.obsKey=key;renderObs();}
   if(LC.key===key&&LC.data&&!force){losDraw();return;}
@@ -210,6 +210,9 @@ $("losPostX").oninput=()=>{LS.postX=$("losPostX").value;changedH();};$("losTgtX"
 $("losCv").addEventListener("click",e=>{if(!LC.data)return;const r=$("losCv").getBoundingClientRect();LC.tap=Math.max(0,Math.min(LC.data.H,(e.clientX-r.left-34)/(r.width-42)*LC.data.H));losDraw();});
 $("losRefresh").onclick=()=>{LC.key=null;losRun(true);};
 
+function losHint(){return S.target&&!S.shooter?"Cible seule : « 📍 Postes possibles » propose des postes d'où la balle passe, « 🎯 D'où la cible est vue » montre d'où on la voit. Ou posez le tireur (point bleu) pour vérifier une ligne.":
+  S.shooter&&!S.target?"Tireur seul : « 👁 Ce que voit le tireur » montre ce qu'il voit, « 🗺 Zones atteignables » ce que sa balle peut atteindre. Touchez la carte (mode Cible) pour poser la cible.":
+  "Carte vide : touchez la carte pour poser la cible (point rouge) ou le tireur (point bleu, mode « Tireur »). L'appli vérifie ensuite si le relief, les bâtiments ou un obstacle coupent la trajectoire.";}
 /* ---------- zones atteignables et poste dégagé (relief Terrarium + bâtiments) ---------- */
 let zLayer=null,bpLayer=null;
 async function areaData(s,w,n,e){const ok=await terrLoad(s,w,n,e),bl=await bldLoad(s,w,n,e);return {ok,bl};}
@@ -262,7 +265,7 @@ $("losZones").onclick=zones;$("losBest").onclick=bestPost;
 let psLayer=null;
 const DIR8=["nord","nord-est","est","sud-est","sud","sud-ouest","ouest","nord-ouest"];
 function psClear(){if(psLayer){map.removeLayer(psLayer);psLayer=null;}$("losPosts").innerHTML="";$("losPs").textContent="📍 Postes possibles";$("losPs").classList.remove("acc");}
-function psGo(pt){S.shooter={lat:pt.lat,lon:pt.lon,alt:null};S.shooterManual=true;psClear();drawMarkers();updateGeo(true);if(map)map.closePopup();toast("Tireur placé sur le poste choisi. Le GPS reprend la main avec le bouton 📍 GPS.");}
+function psGo(pt){S.shooter={lat:pt.lat,lon:pt.lon,alt:null};S.shooterManual=true;psClear();drawMarkers();updateGeo(true);if(map)map.closePopup();toast("Tireur placé sur le poste choisi. Faites-le glisser pour l'ajuster.");}
 async function postes(){
   if(psLayer){psClear();return;}
   if(!map||!S.target){toast("Touchez d'abord la cible sur la carte.");return;}
@@ -301,10 +304,39 @@ async function postes(){
   toast(`${cand.length?pick.length+" poste(s) proposé(s)":"Aucun poste dégagé"} · vert : on touche la cible d'ici, rouge : masqué, gris : hors de portée. Relief ≈30 m${A.bl.L.length?`, ${A.bl.L.length} bâtiments`:""} : vérifiez chaque poste avec la coupe une fois choisi.`);
 }
 $("losPs").onclick=postes;
+/* ---------- visibilité : ce que voit le tireur, d'où la cible est vue (ligne de visée droite, sans balle) ---------- */
+let vLayer=null,vMode=null,vAt=null;
+const VB={t:["losSeeT","👁 Ce que voit le tireur"],c:["losSeeC","🎯 D'où la cible est vue"]};
+function visClear(){if(vLayer){map.removeLayer(vLayer);vLayer=null;}for(const k in VB){$(VB[k][0]).textContent=VB[k][1];$(VB[k][0]).classList.remove("acc");}vMode=null;}
+async function visScan(mode){
+  const again=vMode===mode;visClear();if(again||!map)return;
+  const o=mode==="t"?S.shooter:S.target;
+  if(!o){toast(mode==="t"?"Placez d'abord le tireur (point bleu) : choisissez « Tireur » puis touchez la carte, ou 📍 GPS.":"Touchez d'abord la cible sur la carte (point rouge).");return;}
+  const B=map.getBounds(),cl=Math.cos(o.lat*DEG),Rm=Math.max(100,Math.min(1500,Math.max(haversine(o,{lat:B.getNorth(),lon:o.lon}),haversine(o,{lat:o.lat,lon:B.getEast()})))),dl=Rm/(DEG*R0);
+  const s=o.lat-dl,n=o.lat+dl,w=o.lon-dl/cl,e=o.lon+dl/cl,bt=$(VB[mode][0]);bt.textContent="⏳ Calcul…";
+  const A=await areaData(s,w,n,e);if(!A.ok){bt.textContent=VB[mode][1];toast("Relief de la zone indisponible hors ligne. Chargez-le avec « Garder relief et bâtiments ».");return;}
+  const E=enu(o);LC.E=E;const I=bldIndex(A.bl.L,E),g0=terrAt(o.lat,o.lon),ob=I.at(0,0),sh=losSH(),flat=()=>0;
+  const tgtH=(b,g)=>LS.tgt==="toit"?(b?bTop(b,g)-g+.3:null):(b&&LS.tgt==="sol"?null:losTH());
+  const z0=mode==="t"?g0+sh:g0+(tgtH(ob,g0)??losTH());
+  const NG=80,cv=document.createElement("canvas");cv.width=cv.height=NG;const g=cv.getContext("2d");let k=0,vis=0,tot=0;
+  for(let j=0;j<NG;j++){for(let i=0;i<NG;i++){const x=(i+.5)/NG*2*Rm-Rm,y=Rm-(j+.5)/NG*2*Rm,H=Math.hypot(x,y);if(H<10||H>Rm)continue;
+      const ll=E.inv(x,y),gc=terrAt(ll.lat,ll.lon),bd=I.at(x,y);if(!isFinite(gc))continue;
+      let v;
+      if(mode==="t"){const th=tgtH(bd,gc);if(th==null)continue;v=lineOk([0,0],[x,y],z0,gc+th,flat,I,[bd,ob]);} // l'œil du tireur vers une cible posée dans la case
+      else{if(bd&&LS.post!=="x")continue;v=lineOk([x,y],[0,0],gc+sh,z0,flat,I,[ob,bd]);} // un tireur posté dans la case vers la cible
+      tot++;if(v>=0)vis++;g.fillStyle=v<0?"rgba(248,113,113,.45)":"rgba(52,211,153,.5)";g.fillRect(i,j,1,1);}
+    if(++k%8===0)await new Promise(r=>setTimeout(r,0));}
+  vLayer=L.imageOverlay(cv.toDataURL(),[[s,w],[n,e]],{opacity:.75,interactive:false}).addTo(map);vLayer.getElement().style.imageRendering="pixelated";vMode=mode;vAt=o;
+  bt.textContent="✖ Masquer";bt.classList.add("acc");
+  const pos=({"0.3":"couché","0.8":"assis","1.5":"debout","x":"en hauteur"})[LS.post],ct=LS.tgt==="toit"?"sur les toits":"à "+fr(losTH(),1)+" m du sol";
+  toast((mode==="t"?`Vert : le tireur (${pos}) voit une cible ${ct} posée là · rouge : caché par le relief ou un bâtiment.`:`Vert : depuis là, un tireur ${pos} voit la cible · rouge : la cible est cachée.`)+` ${Math.round(vis/Math.max(1,tot)*100)} % visible sur ${Math.round(Rm)} m. Relief ≈30 m${A.bl.L.length?`, ${A.bl.L.length} bâtiments`:""}, arbres non comptés.`);
+}
+$("losSeeT").onclick=()=>visScan("t");$("losSeeC").onclick=()=>visScan("c");
+$("shClr").addEventListener("click",()=>{if(vMode==="t")visClear();if(zLayer){map.removeLayer(zLayer);zLayer=null;$("losZones").textContent="🗺 Zones atteignables";$("losZones").classList.remove("acc");}if(bpLayer){map.removeLayer(bpLayer);bpLayer=null;}});
 // efface la cible, la ligne de tir et tous les calques posés sur la carte (le tireur reste)
 $("losClr").onclick=()=>{S.target=null;LS.obs=[];LS.obsKey="";LC.tap=null;renderObs();psClear();
   if(zLayer){map.removeLayer(zLayer);zLayer=null;$("losZones").textContent="🗺 Zones atteignables";$("losZones").classList.remove("acc");}
-  if(bpLayer){map.removeLayer(bpLayer);bpLayer=null;}if(map)map.closePopup();$("l3d").style.display="none";
+  if(bpLayer){map.removeLayer(bpLayer);bpLayer=null;}if(vMode==="c")visClear();if(map)map.closePopup();$("l3d").style.display="none";
   drawMarkers();$("geoInfo").textContent="Cible effacée. Touchez la carte pour placer une nouvelle cible.";compute();save();};
 const psSet=()=>{LS.pMin=$("losPmin").value;LS.pMax=$("losPmax").value;save();};$("losPmin").oninput=psSet;$("losPmax").oninput=psSet;
 $("losPmin").value=LS.pMin??50;$("losPmax").value=LS.pMax??300;
@@ -369,9 +401,9 @@ $("l3dTop").onclick=()=>{if(!ml||!S.shooter)return;const a=S.shooter,b=S.target|
 const _ug=updateGeo;window._ugLos=_ug;
 updateGeo=async function(fe){await _ug(fe);if(fe)await losRun();else if(!LC.data||LC.key!==[S.shooter&&S.shooter.lat,S.shooter&&S.shooter.lon,S.target&&S.target.lat,S.target&&S.target.lon].map(v=>v!=null?v.toFixed(6):"").join(","))losRun();};
 const _cp=compute;compute=function(){_cp();try{losDraw();}catch(e){console.log(e);}};
-const _dm=drawMarkers;drawMarkers=function(){_dm();if(!(S.shooter&&S.target)){LC.data=null;LC.key=null;LC.tap=null;losDraw();$("losMsg").textContent="Touchez la cible sur la carte : l'appli vérifie si le relief, les bâtiments ou un obstacle coupent la trajectoire.";}};
+const _dm=drawMarkers;drawMarkers=function(){_dm();if(vMode&&(vMode==="t"?S.shooter:S.target)!==vAt)visClear(); /* le point a bougé : la carte de visibilité n'est plus juste */if(!(S.shooter&&S.target)){LC.data=null;LC.key=null;LC.tap=null;losDraw();$("losMsg").textContent=losHint();}};
 addEventListener("resize",()=>{clearTimeout(LC.rz);LC.rz=setTimeout(losDraw,150);});
 syncCtl();renderObs();
-if(S.shooter&&S.target)losRun();else $("losMsg").textContent="Touchez la cible sur la carte : l'appli vérifie si le relief, les bâtiments ou un obstacle coupent la trajectoire.";
+if(S.shooter&&S.target)losRun();else $("losMsg").textContent=losHint();
 window.losDebug={LC,losRun,losEval,terrAt,terrLoad,bldLoad};
 })();

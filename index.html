@@ -102,14 +102,14 @@ tr.zero td{color:var(--ok)}
   document.getElementById("lockGo").onclick=go;I.onkeydown=function(e){if(e.key==="Enter")go();};
 })();</script>
 <div id="apkBar" style="display:none;position:relative;z-index:2000;background:#14532d;color:#fff;padding:10px 40px 10px 12px;padding-top:calc(10px + env(safe-area-inset-top));font-size:15px">
-  📱 Android : <a href="ReglageLunette.apk" download="ReglageLunette.apk" style="color:#fde68a;font-weight:700">Télécharger l'appli (APK v4.17)</a>
+  📱 Android : <a href="ReglageLunette.apk" download="ReglageLunette.apk" style="color:#fde68a;font-weight:700">Télécharger l'appli (APK v4.18)</a>
   <div style="font-size:12px;opacity:.85;margin-top:3px">Ouvrez ensuite le fichier téléchargé et autorisez l'installation depuis le navigateur si Android le demande. Vos réglages du site ne sont pas repris dans l'appli.</div>
   <button id="apkX" aria-label="Fermer" style="position:absolute;right:6px;top:calc(6px + env(safe-area-inset-top));background:none;border:0;color:#fff;font-size:20px">✕</button>
 </div>
 <script>(function(){ // proposé seulement dans un navigateur Android, pas dans l'appli elle-même
-  var hide=false;try{hide=localStorage.getItem("apkBarOff")==="4.17";}catch(e){}
+  var hide=false;try{hide=localStorage.getItem("apkBarOff")==="4.18";}catch(e){}
   if(/Android/i.test(navigator.userAgent)&&!window.Android&&/^https?:/.test(location.protocol)&&!hide)document.getElementById("apkBar").style.display="";
-  document.getElementById("apkX").onclick=function(){document.getElementById("apkBar").style.display="none";try{localStorage.setItem("apkBarOff","4.17");}catch(e){}};
+  document.getElementById("apkX").onclick=function(){document.getElementById("apkBar").style.display="none";try{localStorage.setItem("apkBarOff","4.18");}catch(e){}};
 })();</script>
 <header>
   <h1>🎯 Réglage Lunette</h1>
@@ -134,8 +134,8 @@ tr.zero td{color:var(--ok)}
       <label>Toucher la carte place<div class="seg" id="placeMode"><button data-v="target" class="on">🎯 Cible</button><button data-v="shooter">🧍 Tireur</button></div></label>
       <label style="flex:0 0 auto">&nbsp;<br><button class="btn acc" id="gpsBtn">📍 GPS</button></label>
     </div>
-    <p class="hint" id="gpsInfo">Recherche de la position GPS…</p>
-    <div class="chips"><button class="btn sm" id="losClr">✖ Effacer la cible et la trajectoire</button><button class="btn sm" id="tileDl">⬇ Garder cette zone pour le hors ligne</button><button class="btn sm" id="tileClr">🗑 Vider le cache carte</button></div>
+    <p class="hint" id="gpsInfo">Carte vide : touchez la carte pour poser la cible 🎯 (point rouge) ou, en choisissant « Tireur », le tireur (point bleu). Les points se déplacent en les faisant glisser. 📍 GPS pose le tireur à votre position.</p>
+    <div class="chips"><button class="btn sm" id="losClr">✖ Effacer la cible et la trajectoire</button><button class="btn sm" id="shClr">✖ Effacer le tireur</button><button class="btn sm" id="tileDl">⬇ Garder cette zone pour le hors ligne</button><button class="btn sm" id="tileClr">🗑 Vider le cache carte</button></div>
     <p class="hint" id="tileInfo">Les morceaux de carte déjà vus sont gardés en mémoire et s'affichent sans réseau. Les calculs, eux, marchent toujours sans réseau (la météo et le relief se saisissent alors à la main).</p>
   </div>
 
@@ -165,6 +165,7 @@ tr.zero td{color:var(--ok)}
     <div id="losVerdict"></div>
     <div class="kv" id="losInfo"></div>
     <div class="chips"><button class="btn sm" id="losZones">🗺 Zones atteignables</button><button class="btn sm" id="losBest">🔎 Poste dégagé</button><button class="btn sm" id="losObsAdd">＋ Obstacle à la main</button></div>
+    <div class="chips"><button class="btn sm" id="losSeeT">👁 Ce que voit le tireur</button><button class="btn sm" id="losSeeC">🎯 D'où la cible est vue</button></div>
     <div class="row" style="margin-top:10px;margin-bottom:0"><label>Postes autour de la cible : de (m)<input id="losPmin" type="number" inputmode="decimal" value="50"></label><label>à (m)<input id="losPmax" type="number" inputmode="decimal" value="300"></label><label style="flex:0 0 auto">&nbsp;<br><button class="btn sm acc" id="losPs">📍 Postes possibles</button></label></div>
     <div id="losPosts"></div>
     <div id="losObsForm" style="display:none;margin-top:8px">
@@ -1271,7 +1272,7 @@ function initMap(){
   baseLayers(map);
   map.on("click",e=>{
     const pt={lat:e.latlng.lat,lon:e.latlng.lng,alt:null};
-    if(seg("placeMode")==="shooter"){S.shooter=pt;S.shooterManual=true;setSeg("placeMode","target");}else S.target=pt;
+    if(seg("placeMode")==="shooter"){S.shooter=pt;S.shooterManual=true;}else S.target=pt; // chaque point se pose seul : poser le tireur ne demande pas la cible
     drawMarkers();updateGeo(true);
   });
   drawMarkers();
@@ -1279,8 +1280,10 @@ function initMap(){
 function drawMarkers(){
   if(!map)return;
   [mShooter,mTarget,line].forEach(m=>m&&map.removeLayer(m));mShooter=mTarget=line=null;
-  if(S.shooter)mShooter=L.circleMarker([S.shooter.lat,S.shooter.lon],{radius:9,color:"#fff",weight:2,fillColor:"#2563eb",fillOpacity:1}).addTo(map).bindTooltip("Tireur");
-  if(S.target)mTarget=L.circleMarker([S.target.lat,S.target.lon],{radius:9,color:"#fff",weight:2,fillColor:"#dc2626",fillOpacity:1}).addTo(map).bindTooltip("Cible");
+  const pin=(p,col,tip,set)=>L.marker([p.lat,p.lon],{draggable:true,icon:L.divIcon({className:"",html:`<div style="width:22px;height:22px;border-radius:50%;background:${col};border:3px solid #fff;box-shadow:0 0 4px #0008"></div>`,iconSize:[22,22],iconAnchor:[11,11]})})
+    .addTo(map).bindTooltip(tip).on("dragend",e=>{const q=e.target.getLatLng();set({lat:q.lat,lon:q.lng,alt:null});drawMarkers();updateGeo(true);});
+  if(S.shooter)mShooter=pin(S.shooter,"#2563eb","Tireur (faites glisser pour déplacer)",q=>{S.shooter=q;S.shooterManual=true;});
+  if(S.target)mTarget=pin(S.target,"#dc2626","Cible (faites glisser pour déplacer)",q=>{S.target=q;});
   if(S.shooter&&S.target)line=L.polyline([[S.shooter.lat,S.shooter.lon],[S.target.lat,S.target.lon]],{color:"#f59e0b",weight:3,dashArray:"6 6"}).addTo(map);
 }
 function bearing(a,b){const f1=a.lat*DEG,f2=b.lat*DEG,dl=(b.lon-a.lon)*DEG;
@@ -1314,25 +1317,27 @@ async function updateGeo(fetchElev){
 window.onGps=function(lat,lon,alt,acc){
   gpsFix={lat,lon,alt,acc,time:Date.now()};
   if(jWantGps){jWantGps=false;jSetLoc(lat,lon,"GPS ±"+Math.round(acc)+" m");}
-  $("gpsInfo").textContent=`GPS : ${lat.toFixed(5)}, ${lon.toFixed(5)} · précision ±${Math.round(acc)} m`;
-  if(!S.shooterManual){
-    const moved=!S.shooter||haversine(S.shooter,{lat,lon})>3;
-    S.shooter={lat,lon,alt:S.shooter&&!moved?S.shooter.alt:null};
-    if(moved){drawMarkers();updateGeo(true);}
-    if(gpsFirst&&map){map.setView([lat,lon],Math.max(map.getZoom(),16));gpsFirst=false;}
-    if(!S.meteoTime||Date.now()-S.meteoTime>3600e3)meteo();
-  }
+  if(gpsFirst&&map){map.setView([lat,lon],Math.max(map.getZoom(),16));gpsFirst=false;} // la carte se centre, sans poser de point
+  if(!S.meteoTime||Date.now()-S.meteoTime>3600e3)meteo();
+  if(!gpsWant){$("gpsInfo").textContent=`GPS prêt (±${Math.round(acc)} m) : appuyez sur 📍 GPS pour placer le tireur à votre position.`;return;}
+  gpsWant=false; // le GPS ne pose le tireur que sur demande, une seule fois : il ne le déplace plus ensuite
+  $("gpsInfo").textContent=`Tireur placé au GPS : ${lat.toFixed(5)}, ${lon.toFixed(5)} · précision ±${Math.round(acc)} m`;
+  S.shooter={lat,lon,alt:null};S.shooterManual=false;drawMarkers();updateGeo(true);
 };
 window.onGpsError=function(msg){$("gpsInfo").textContent=msg;};
-$("gpsBtn").onclick=()=>{
-  S.shooterManual=false;gpsFirst=true;
-  if(gpsFix)window.onGps(gpsFix.lat,gpsFix.lon,gpsFix.alt,gpsFix.acc);
+let gpsWant=false;
+function gpsAsk(){
   if(window.Android&&Android.requestGps)Android.requestGps();
   else if(navigator.geolocation)navigator.geolocation.getCurrentPosition(p=>onGps(p.coords.latitude,p.coords.longitude,p.coords.altitude,p.coords.accuracy),e=>onGpsError("GPS indisponible : "+e.message),{enableHighAccuracy:true});
+}
+$("gpsBtn").onclick=()=>{
+  gpsWant=true;gpsFirst=true;$("gpsInfo").textContent="Recherche de la position GPS…";
+  if(gpsFix&&Date.now()-gpsFix.time<60e3)window.onGps(gpsFix.lat,gpsFix.lon,gpsFix.alt,gpsFix.acc);else gpsAsk();
 };
+$("shClr").onclick=()=>{S.shooter=null;drawMarkers();updateGeo(false);$("gpsInfo").textContent="Tireur effacé.";};
 let meteoBusy=false;
 async function meteo(){
-  const pos=S.shooter;if(!pos){$("meteoInfo").textContent="Position du tireur inconnue : activez le GPS ou placez le tireur sur la carte.";return;}
+  const pos=S.shooter||S.target||gpsFix;if(!pos){$("meteoInfo").textContent="Position du tireur inconnue : activez le GPS ou placez le tireur sur la carte.";return;}
   if(meteoBusy)return;meteoBusy=true;S.meteoTime=Date.now();
   $("meteoInfo").textContent="Récupération de la météo…";
   try{
@@ -1637,7 +1642,7 @@ document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
 });
 SEGS.forEach(id=>$(id).querySelectorAll("button").forEach(b=>b.onclick=()=>{setSeg(id,b.dataset.v);compute();save();}));
 FIELDS.forEach(f=>$(f).addEventListener("input",()=>{if(["tDist","tAz","tSite"].includes(f)){S.target=null;drawMarkers();}compute();save();}));
-load();
+load();S.shooter=null;S.target=null; // carte vide au démarrage : aucun point n'est posé d'office
 function fixMissing(){ // modèle disparu du catalogue → modèle le plus proche (même calibre pour les munitions)
   ["weapon","scope","ammo"].forEach(k=>{if(find(k,S.sel[k]))return;
     const cal=k==="ammo"?String(V("weapon","cal")):"",brand=(S.sel[k]||"").split("|")[0],L=list(k).filter(e=>!cal||e.cal===cal);
@@ -1762,8 +1767,7 @@ $("jDate").value=jNowLocal();if(S.lastPlace){$("jPlace").value=S.lastPlace.place
 fillTgtSelects();changed();renderTables();renderLog();initMap();renderBackup();
 try{const k=sessionStorage.getItem("bkDone");if(k){sessionStorage.removeItem("bkDone");setTimeout(()=>{document.querySelector('nav button[data-t=log]').click();$("cBackup").scrollIntoView();$("bkMsg").textContent=k==="1"?"Import terminé ✓ (« Annuler le dernier import » pour revenir en arrière)":"Import annulé : données d'avant restaurées ✓";},80);}}catch(e){}
 if(window.Android&&Android.takeImport)setTimeout(onImportPending,300);
-if(S.shooter&&S.target)updateGeo(false);
-if(window.Android&&Android.requestGps)Android.requestGps();else $("gpsBtn").click();
+gpsAsk(); // position demandée pour centrer la carte et la météo, sans poser le tireur
 if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js").catch(()=>{});
 </script>
 <div id="l3d"><div id="l3dBar"><button class="btn sm" id="l3dClose">✕ Fermer</button><span style="font-size:12px;color:var(--mut)">Relief</span><div class="seg" id="l3dEx"><button data-v="1" class="on">×1</button><button data-v="2">×2</button><button data-v="3">×3</button></div><button class="btn sm" id="l3dTop">🧍 Vue du tireur</button></div>
