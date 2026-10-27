@@ -53,6 +53,8 @@ table.jc{width:100%;border-collapse:collapse;font-size:14px}table.jc td,table.jc
 #map{height:46vh;min-height:260px;border-radius:10px;background:#0d1014}
 .hint{font-size:12px;color:var(--mut);margin:6px 0 0;line-height:1.4}
 .warn{color:var(--acc)}
+.bk label{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--txt);padding:5px 0}.bk input[type=checkbox],.bk input[type=radio]{width:20px;height:20px;margin:0;flex:none;accent-color:var(--acc)}.bk small{color:var(--mut);margin-left:auto;text-align:right}
+#bkPrev{background:#0d1014;border:1px solid var(--acc);border-radius:10px;padding:10px;margin-top:10px}#bkPrev h3{margin:0 0 6px;font-size:14px}#bkPrev ul{margin:4px 0 8px;padding-left:18px;font-size:13px;line-height:1.5}
 .kv{display:grid;grid-template-columns:1fr auto;gap:4px 10px;font-size:14px;margin-top:10px}
 .kv span:nth-child(odd){color:var(--mut)}
 .kv span:nth-child(even){text-align:right;font-variant-numeric:tabular-nums}
@@ -89,14 +91,14 @@ tr.zero td{color:var(--ok)}
   document.getElementById("lockGo").onclick=go;I.onkeydown=function(e){if(e.key==="Enter")go();};
 })();</script>
 <div id="apkBar" style="display:none;position:relative;z-index:2000;background:#14532d;color:#fff;padding:10px 40px 10px 12px;padding-top:calc(10px + env(safe-area-inset-top));font-size:15px">
-  📱 Android : <a href="ReglageLunette.apk" download="ReglageLunette.apk" style="color:#fde68a;font-weight:700">Télécharger l'appli (APK v4.12)</a>
+  📱 Android : <a href="ReglageLunette.apk" download="ReglageLunette.apk" style="color:#fde68a;font-weight:700">Télécharger l'appli (APK v4.13)</a>
   <div style="font-size:12px;opacity:.85;margin-top:3px">Ouvrez ensuite le fichier téléchargé et autorisez l'installation depuis le navigateur si Android le demande. Vos réglages du site ne sont pas repris dans l'appli.</div>
   <button id="apkX" aria-label="Fermer" style="position:absolute;right:6px;top:calc(6px + env(safe-area-inset-top));background:none;border:0;color:#fff;font-size:20px">✕</button>
 </div>
 <script>(function(){ // proposé seulement dans un navigateur Android, pas dans l'appli elle-même
-  var hide=false;try{hide=localStorage.getItem("apkBarOff")==="4.12";}catch(e){}
+  var hide=false;try{hide=localStorage.getItem("apkBarOff")==="4.13";}catch(e){}
   if(/Android/i.test(navigator.userAgent)&&!window.Android&&/^https?:/.test(location.protocol)&&!hide)document.getElementById("apkBar").style.display="";
-  document.getElementById("apkX").onclick=function(){document.getElementById("apkBar").style.display="none";try{localStorage.setItem("apkBarOff","4.12");}catch(e){}};
+  document.getElementById("apkX").onclick=function(){document.getElementById("apkBar").style.display="none";try{localStorage.setItem("apkBarOff","4.13");}catch(e){}};
 })();</script>
 <header>
   <h1>🎯 Réglage Lunette</h1>
@@ -353,7 +355,7 @@ tr.zero td{color:var(--ok)}
     <h2>Mes setups</h2>
     <div class="row"><label>Nom du setup<input id="setupName" type="text" placeholder="ex. B14R + SK Standard Plus 50 m"></label></div>
     <div class="row"><label>Note (facultatif)<input id="setupNote" type="text" placeholder="ex. zéro fait au stand, 12 clics de réserve"></label></div>
-    <div class="chips"><button class="btn sm acc" id="setupSave">💾 Enregistrer le setup actuel</button></div>
+    <div class="chips"><button class="btn sm acc" id="setupSave">💾 Enregistrer le setup actuel</button><button class="btn sm" id="setupXfer">🔄 Vers un autre téléphone</button></div>
     <details id="setupBox" class="fold" style="margin-top:10px"><summary id="setupSum">Setups enregistrés</summary><div id="setupList"></div></details>
     <p class="hint">Un setup mémorise l'arme, la lunette, la munition (avec vos valeurs modifiées) et le zéro. Rappelez-le ici ou en haut de l'onglet Tir.</p>
   </div>
@@ -442,6 +444,18 @@ tr.zero td{color:var(--ok)}
     <div id="jList" style="margin-top:6px"></div>
     <div class="chips"><button class="btn sm" id="jCsv">⬇️ Exporter le journal (CSV)</button></div>
     <p class="hint" id="jCsvMsg"></p>
+  </div>
+  <div class="card" id="cBackup">
+    <h2>Sauvegarde et transfert entre téléphones</h2>
+    <p class="hint" style="margin:0 0 8px" id="bkLast"></p>
+    <div class="row"><label>Nom de cet appareil<input id="bkDev" type="text" placeholder="ex. Pixel de Regis"></label></div>
+    <div id="bkWhat" class="bk"></div>
+    <div class="chips"><button class="btn acc" id="bkExport">📤 Exporter / envoyer</button><button class="btn" id="bkImport">📥 Importer une sauvegarde</button></div>
+    <input type="file" id="bkFile" accept=".json,application/json" style="display:none">
+    <p class="hint" id="bkMsg"></p>
+    <div id="bkPrev" style="display:none"></div>
+    <div class="chips" id="bkUndoW" style="display:none"><button class="btn sm" id="bkUndo">↶ Annuler le dernier import</button></div>
+    <p class="hint">Le fichier <b>.json</b> contient vos données : envoyez-le à l'autre téléphone (Quick Share, Bluetooth, WhatsApp, e-mail, Drive…), puis ouvrez-le avec Réglage Lunette ou touchez « Importer ». <b>Fusionner</b> ajoute ce qui manque sans rien effacer ; <b>Remplacer</b> rend ce téléphone identique à la sauvegarde.</p>
   </div>
 </section>
 </main>
@@ -968,6 +982,7 @@ function jInitMap(){
 }
 function jSessions(){const f=$("jFilter").value,L=S.log||[];return f==="*"?L:L.filter(s=>(s.setup||"")===(f==="-"?"":f));}
 function renderLog(){
+  try{renderBackup();}catch(e){}
   if(!$("jFilter"))return;const LG=S.log||[],f=$("jFilter").value||"*";
   const names=[...new Set(LG.map(s=>s.setup||""))];
   $("jFilter").innerHTML=`<option value="*">Toutes les séances</option>`+names.map(n=>`<option value="${n?esc(n):"-"}"${(n||"-")===f?" selected":""}>${n?"Setup « "+esc(n)+" »":"Matériel non enregistré"}</option>`).join("");
@@ -1337,14 +1352,14 @@ function renderSetups(){
 }
 $("setupSave").onclick=()=>{
   const name=$("setupName").value.trim()||setupSummary(snapshot());
-  const st=Object.assign(snapshot(),{val:cleanVal(S.val)},{name,note:$("setupNote").value.trim(),date:"Enregistré le "+new Date().toLocaleString("fr-FR")});
+  const st=Object.assign(snapshot(),{val:cleanVal(S.val)},{name,note:$("setupNote").value.trim(),date:"Enregistré le "+new Date().toLocaleString("fr-FR"),ts:Date.now()});
   S.setups=S.setups.filter(x=>x.name!==name);S.setups.push(st);S.activeSetup=name;S.setupsOpen=true;
   $("setupName").blur();$("setupNote").blur();renderSetups();save();
 };
 $("setupList").addEventListener("click",e=>{
   const b=e.target.closest("button");if(!b)return;
   if(b.dataset.load!=null)applySetup(S.setups[+b.dataset.load].name);
-  else if(b.dataset.upd!=null){const st=S.setups[+b.dataset.upd];Object.assign(st,snapshot(),{val:cleanVal(S.val)},{date:"Mis à jour le "+new Date().toLocaleString("fr-FR")});S.activeSetup=st.name;renderSetups();save();}
+  else if(b.dataset.upd!=null){const st=S.setups[+b.dataset.upd];Object.assign(st,snapshot(),{val:cleanVal(S.val)},{date:"Mis à jour le "+new Date().toLocaleString("fr-FR"),ts:Date.now()});S.activeSetup=st.name;renderSetups();save();}
   else if(b.dataset.del!=null){const st=S.setups[+b.dataset.del];
     if(b.dataset.confirm){S.setups.splice(+b.dataset.del,1);if(S.activeSetup===st.name)S.activeSetup="";renderSetups();save();}
     else{b.dataset.confirm="1";b.textContent="Confirmer ?";b.classList.add("acc");}}
@@ -1583,7 +1598,7 @@ document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x===b));
   document.querySelectorAll("section").forEach(s=>s.classList.toggle("on",s.id===b.dataset.t));
   window.scrollTo(0,0);if(b.dataset.t==="tir"&&map)setTimeout(()=>map.invalidateSize(),50);
-  if(b.dataset.t==="log"){jSync();setTimeout(()=>{jInitMap();jMap&&jMap.invalidateSize();},50);}
+  if(b.dataset.t==="log"){jSync();renderBackup();setTimeout(()=>{jInitMap();jMap&&jMap.invalidateSize();},50);}
 });
 SEGS.forEach(id=>$(id).querySelectorAll("button").forEach(b=>b.onclick=()=>{setSeg(id,b.dataset.v);compute();save();}));
 FIELDS.forEach(f=>$(f).addEventListener("input",()=>{if(["tDist","tAz","tSite"].includes(f)){S.target=null;drawMarkers();}compute();save();}));
@@ -1600,8 +1615,118 @@ fixMissing();
   const over=S.custom.ammo.filter(e=>{const c=CATALOG.ammo.find(x=>key(x)===key(e));return c&&(pf(c.bc)!==pf(e.bc)||pf(c.v0)!==pf(e.v0));});
   if(over.length)setTimeout(()=>toast(`${over.length} munition(s) perso remplace(nt) le catalogue avec un CB ou une V0 différents : ${over.slice(0,3).map(e=>e.model+" (CB "+e.bc+")").join(", ")}${over.length>3?"…":""}. Onglet Matériel → « ↺ Revenir au catalogue » pour reprendre les valeurs du fabricant.`),800);
 })();
+/* ================= sauvegarde / transfert entre téléphones ================= */
+const BK_APP="reglage-lunette",BK_VER="4.13";
+const BK_CATS=[ // id, libellé, lecture dans S, clé d'identité d'un élément
+  {id:"setups",lbl:"Setups",get:s=>s.setups||[],key:x=>x.name},
+  {id:"log",lbl:"Journal de tir (séances)",get:s=>s.log||[],key:x=>x.id},
+  {id:"custom",lbl:"Catalogue perso (armes, lunettes, munitions)",get:s=>["weapon","scope","ammo"].flatMap(k=>((s.custom||{})[k]||[]).map(e=>Object.assign({_k:k},e))),key:x=>x._k+"#"+key(x)},
+  {id:"tables",lbl:"Tables perso",get:s=>s.tables||[],key:x=>x.name},
+  {id:"targets",lbl:"Cibles perso",get:s=>s.customTargets||[],key:x=>x.name},
+  {id:"photos",lbl:"Photos de réticule",get:s=>Object.keys(s.retPhoto||{}).map(k=>Object.assign({_s:k},s.retPhoto[k])),key:x=>x._s},
+];
+const BK_LISTKEYS=["setups","log","custom","tables","customTargets","retPhoto"];
+function bkPut(s,id,arr){ // réécrit une catégorie dans l'état s
+  if(id==="setups")s.setups=arr;else if(id==="log")s.log=arr;else if(id==="tables")s.tables=arr;else if(id==="targets")s.customTargets=arr;
+  else if(id==="custom"){s.custom={weapon:[],scope:[],ammo:[]};arr.forEach(e=>{const k=e._k,o=Object.assign({},e);delete o._k;s.custom[k].push(o);});}
+  else if(id==="photos"){s.retPhoto={};arr.forEach(e=>{const o=Object.assign({},e);delete o._s;s.retPhoto[e._s]=o;});}
+}
+function bkState(s){const o={};Object.keys(s).forEach(k=>{if(!BK_LISTKEYS.includes(k)&&!k.startsWith("bk"))o[k]=s[k];});return o;}
+const bkSize=o=>{const n=JSON.stringify(o).length;return n>1e6?(n/1048576).toFixed(1)+" Mo":Math.max(1,Math.round(n/1024))+" Ko";};
+function renderBackup(){
+  if(!$("bkWhat"))return;
+  const prev={};$("bkWhat").querySelectorAll("input").forEach(i=>prev[i.dataset.c]=i.checked);
+  const row=(id,lbl,n,extra,def)=>`<label><input type="checkbox" data-c="${id}"${(prev[id]??def)?" checked":""}>${lbl}<small>${n}${extra?"<br>"+extra:""}</small></label>`;
+  $("bkWhat").innerHTML=BK_CATS.map(c=>{const L=c.get(S);return row(c.id,c.lbl,L.length,c.id==="photos"&&L.length?bkSize(L):"",c.id!=="photos"||L.length<4);}).join("")+
+    row("state","Matériel et réglages en cours","","",true);
+  if(document.activeElement!==$("bkDev"))$("bkDev").value=S.bkDev||"";
+  $("bkLast").innerHTML=S.bkLast?`Dernière sauvegarde : <b>${new Date(S.bkLast).toLocaleString("fr-FR")}</b>`+(Date.now()-S.bkLast>30*864e5?' <span class="warn">— plus d\'un mois, pensez à en refaire une.</span>':""):'<span class="warn">Aucune sauvegarde faite depuis ce téléphone.</span>';
+  let u=null;try{u=localStorage.getItem("lunette2-avant-import-date");}catch(e){}
+  $("bkUndoW").style.display=u?"":"none";if(u)$("bkUndo").textContent="↶ Annuler le dernier import ("+new Date(+u).toLocaleString("fr-FR")+")";
+}
+$("bkDev").onchange=()=>{S.bkDev=$("bkDev").value.trim();save();};
+$("setupXfer").onclick=()=>{document.querySelector('nav button[data-t=log]').click();setTimeout(()=>$("cBackup").scrollIntoView({behavior:"smooth"}),60);};
+$("bkExport").onclick=()=>{
+  save();const sel={};$("bkWhat").querySelectorAll("input").forEach(i=>sel[i.dataset.c]=i.checked);
+  const data={};BK_CATS.forEach(c=>{if(sel[c.id])data[c.id]=c.get(S);});if(sel.state)data.state=bkState(S);
+  if(!Object.keys(data).length){$("bkMsg").textContent="Cochez au moins une rubrique.";return;}
+  const d=new Date(),dev=(S.bkDev||"").replace(/[^\wÀ-ÿ-]+/g,"-").replace(/^-|-$/g,"");
+  const txt=JSON.stringify({app:BK_APP,format:1,version:BK_VER,exportedAt:d.toISOString(),device:S.bkDev||"",data});
+  const name=`reglage-lunette-${dev?dev+"-":""}${d.toISOString().slice(0,10)}-${String(d.getHours()).padStart(2,"0")}h${String(d.getMinutes()).padStart(2,"0")}.json`;
+  S.bkLast=d.getTime();save();renderBackup();
+  if(window.Android&&Android.shareText)$("bkMsg").textContent=Android.shareText(txt,name,"application/json");
+  else if(window.Android&&Android.saveText)$("bkMsg").textContent=Android.saveText(txt,name,"application/json");
+  else shareFile(new Blob([txt],{type:"application/json"}),name,$("bkMsg"),"Sauvegarde");
+};
+$("bkImport").onclick=()=>$("bkFile").click();
+$("bkFile").onchange=e=>{const f=e.target.files[0];e.target.value="";if(!f)return;const r=new FileReader();r.onload=()=>bkOpen(r.result,f.name);r.onerror=()=>$("bkMsg").textContent="Lecture du fichier impossible.";r.readAsText(f);};
+let BK=null; // sauvegarde en cours d'import
+function bkOpen(txt,name){
+  let o;try{o=JSON.parse(txt);}catch(e){o=null;}
+  if(!o||o.app!==BK_APP||!o.data){$("bkMsg").textContent=`« ${name||"fichier"} » n'est pas une sauvegarde Réglage Lunette.`;return;}
+  BK=o;document.querySelector('nav button[data-t=log]').click();bkPreview();setTimeout(()=>$("bkPrev").scrollIntoView({behavior:"smooth",block:"center"}),60);
+}
+window.onImportPending=()=>{const t=window.Android&&Android.takeImport?Android.takeImport():"";if(t)bkOpen(t,"fichier reçu");};
+function bkSrc(id){const v=BK.data[id];return Array.isArray(v)?v:null;}
+function bkMerge(s,id,mode,theirsWin){ // fusionne la catégorie id de BK dans s ; renvoie les compteurs
+  const c=BK_CATS.find(c=>c.id===id),src=bkSrc(id);const st={add:0,upd:0,same:0,kept:0,del:0};if(!src)return st;
+  const mine=c.get(s).map(x=>Object.assign({},x)),m=new Map(mine.map(x=>[c.key(x),x]));
+  if(mode==="replace"){const tk=new Set(src.map(c.key));mine.forEach(x=>{if(!tk.has(c.key(x)))st.del++;});
+    src.forEach(x=>{const y=m.get(c.key(x));if(!y)st.add++;else if(JSON.stringify(y)===JSON.stringify(x))st.same++;else st.upd++;});
+    bkPut(s,id,src.map(x=>Object.assign({},x)));return st;}
+  src.forEach(x=>{const k=c.key(x),y=m.get(k);
+    if(!y){m.set(k,Object.assign({},x));st.add++;}
+    else if(JSON.stringify(y)===JSON.stringify(x))st.same++;
+    else{const win=id==="setups"&&x.ts&&y.ts?x.ts>y.ts:theirsWin;if(win){m.set(k,Object.assign({},x));st.upd++;}else st.kept++;}});
+  let out=[...m.values()];if(id==="log")out.sort((a,b)=>String(a.date).localeCompare(String(b.date)));
+  bkPut(s,id,out);return st;
+}
+function bkPlan(){ // simule l'import sur une copie pour l'aperçu, ou renvoie le nouvel état
+  const mode=($("bkPrev").querySelector("input[name=bkMode]:checked")||{}).value||"merge",theirs=(($("bkPrev").querySelector("input[name=bkWin]:checked")||{}).value||"theirs")==="theirs";
+  const pick={};$("bkPrev").querySelectorAll("input[data-i]").forEach(i=>pick[i.dataset.i]=i.checked);
+  const s=JSON.parse(JSON.stringify(S)),stats={};
+  BK_CATS.forEach(c=>{if(pick[c.id])stats[c.id]=bkMerge(s,c.id,mode,theirs);});
+  if(pick.state&&BK.data.state){const keep={};BK_LISTKEYS.concat(Object.keys(s).filter(k=>k.startsWith("bk"))).forEach(k=>keep[k]=s[k]);Object.keys(s).forEach(k=>delete s[k]);Object.assign(s,JSON.parse(JSON.stringify(BK.data.state)),keep);}
+  return {s,stats,mode};
+}
+function bkPreview(){
+  const d=BK.data,box=$("bkPrev"),old={};box.querySelectorAll("input").forEach(i=>old[i.name||i.dataset.i]=i.type==="radio"?(i.checked?i.value:old[i.name]):i.checked);
+  const mode=old.bkMode||"merge",win=old.bkWin||"theirs";
+  const has=BK_CATS.filter(c=>bkSrc(c.id)&&bkSrc(c.id).length);
+  box.style.display="";
+  box.innerHTML=`<h3>📥 Sauvegarde ${BK.device?"de « "+esc(BK.device)+" » ":""}du ${new Date(BK.exportedAt).toLocaleString("fr-FR")}</h3>
+    <div class="hint" style="margin:0 0 6px">Version ${esc(BK.version||"?")} · ${bkSize(BK)}</div>
+    <div class="bk">${has.map(c=>`<label><input type="checkbox" data-i="${c.id}"${old[c.id]===false?"":" checked"}>${c.lbl}<small>${bkSrc(c.id).length}</small></label>`).join("")}
+    ${d.state?`<label><input type="checkbox" data-i="state"${old.state?" checked":""}>Matériel et réglages en cours<small>remplacent ceux d'ici</small></label>`:""}</div>
+    <div class="bk" style="border-top:1px solid var(--line);margin-top:6px;padding-top:4px">
+      <label><input type="radio" name="bkMode" value="merge"${mode==="merge"?" checked":""}><span><b>Fusionner</b> (recommandé) — ajoute ce qui manque, n'efface rien</span></label>
+      <label><input type="radio" name="bkMode" value="replace"${mode==="replace"?" checked":""}><span><b>Remplacer</b> — ce téléphone devient identique à la sauvegarde pour les rubriques cochées</span></label>
+      ${mode==="merge"?`<div class="hint" style="margin:4px 0 0">Même nom mais contenu différent :</div>
+      <label><input type="radio" name="bkWin" value="theirs"${win==="theirs"?" checked":""}>prendre la version de la sauvegarde</label>
+      <label><input type="radio" name="bkWin" value="mine"${win==="mine"?" checked":""}>garder celle de ce téléphone</label>
+      <div class="hint" style="margin:0">Pour les setups, la version la plus récente l'emporte quand les deux sont datées.</div>`:""}</div>
+    <div id="bkSum"></div>
+    <div class="chips"><button class="btn acc" id="bkApply">✔ Importer</button><button class="btn" id="bkCancel">Annuler</button></div>`;
+  const {stats}=bkPlan(),f=(n,t)=>n?`${n} ${t}`:"";
+  $("bkSum").innerHTML="<ul>"+Object.keys(stats).map(id=>{const t=stats[id],c=BK_CATS.find(c=>c.id===id);
+    const parts=[f(t.add,"nouveau(x)"),f(t.upd,"mis à jour"),f(t.kept,"gardé(s) tel(s) quel(s)"),f(t.del,'<span class="warn">supprimé(s)</span>'),f(t.same,"déjà identique(s)")].filter(Boolean);
+    return `<li>${c.lbl} : ${parts.join(", ")||"rien"}</li>`;}).join("")+((box.querySelector("input[data-i=state]")||{}).checked?"<li>Matériel et réglages en cours remplacés</li>":"")+"</ul>";
+}
+$("bkPrev").addEventListener("change",bkPreview);
+$("bkPrev").addEventListener("click",e=>{
+  if(e.target.id==="bkCancel"){BK=null;$("bkPrev").style.display="none";$("bkMsg").textContent="Import annulé.";}
+  else if(e.target.id==="bkApply"){save();const {s}=bkPlan();
+    try{localStorage.setItem("lunette2-avant-import",localStorage.getItem("lunette2")||"");localStorage.setItem("lunette2-avant-import-date",String(Date.now()));}catch(err){}
+    try{localStorage.setItem("lunette2",JSON.stringify(s));}catch(err){$("bkMsg").textContent="Mémoire du téléphone pleine : décochez les photos de réticule et réessayez.";return;}
+    try{sessionStorage.setItem("bkDone","1");}catch(err){}location.reload();}
+});
+$("bkUndo").onclick=e=>{const b=e.target;if(!b.dataset.ok){b.dataset.ok=1;b.textContent="Toucher encore pour confirmer";b.classList.add("acc");return;}
+  try{const o=localStorage.getItem("lunette2-avant-import");if(o)localStorage.setItem("lunette2",o);localStorage.removeItem("lunette2-avant-import");localStorage.removeItem("lunette2-avant-import-date");sessionStorage.setItem("bkDone","2");}catch(err){}
+  location.reload();};
 $("jDate").value=jNowLocal();if(S.lastPlace){$("jPlace").value=S.lastPlace.place||"";if(S.lastPlace.loc)jSetLoc(S.lastPlace.loc.lat,S.lastPlace.loc.lon,"dernier lieu utilisé");}
-fillTgtSelects();changed();renderTables();renderLog();initMap();
+fillTgtSelects();changed();renderTables();renderLog();initMap();renderBackup();
+try{const k=sessionStorage.getItem("bkDone");if(k){sessionStorage.removeItem("bkDone");setTimeout(()=>{document.querySelector('nav button[data-t=log]').click();$("cBackup").scrollIntoView();$("bkMsg").textContent=k==="1"?"Import terminé ✓ (« Annuler le dernier import » pour revenir en arrière)":"Import annulé : données d'avant restaurées ✓";},80);}}catch(e){}
+if(window.Android&&Android.takeImport)setTimeout(onImportPending,300);
 if(S.shooter&&S.target)updateGeo(false);
 if(window.Android&&Android.requestGps)Android.requestGps();else $("gpsBtn").click();
 if("serviceWorker" in navigator&&location.protocol.startsWith("http"))navigator.serviceWorker.register("sw.js").catch(()=>{});
