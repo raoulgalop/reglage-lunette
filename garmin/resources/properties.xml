@@ -1,0 +1,145 @@
+<properties>
+    <property id="prof" type="number">1</property>
+    <property id="moa" type="boolean">false</property>
+    <property id="click" type="float">0.1</property>
+    <property id="dist" type="number">100</property>
+    <property id="step" type="number">5</property>
+    <property id="dFrom" type="number">100</property>
+    <property id="dTo" type="number">300</property>
+    <property id="dStep" type="number">25</property>
+    <property id="ws" type="number">0</property>
+    <property id="wc" type="number">3</property>
+    <property id="temp" type="number">15</property>
+    <property id="pAuto" type="boolean">true</property>
+    <property id="press" type="number">1013</property>
+    <property id="corOn" type="boolean">false</property>
+    <property id="gpsAuto" type="boolean">true</property>
+    <property id="lat" type="float">45.0</property>
+    <property id="az" type="number">0</property>
+    <property id="hAll" type="boolean">false</property>
+    <property id="hCom" type="float">5.0</property>
+    <property id="shLat" type="float">0.0</property>
+    <property id="shLon" type="float">0.0</property>
+    <property id="tgLat" type="float">0.0</property>
+    <property id="tgLon" type="float">0.0</property>
+    <property id="p1n" type="string">SK Standard Plus</property>
+    <property id="p1v" type="number">327</property>
+    <property id="p1b" type="float">0.167</property>
+    <property id="p1g" type="number">1</property>
+    <property id="p1z" type="number">50</property>
+    <property id="p1h" type="float">5.0</property>
+    <property id="p2n" type="string">SK Rifle Match</property>
+    <property id="p2v" type="number">327</property>
+    <property id="p2b" type="float">0.167</property>
+    <property id="p2g" type="number">1</property>
+    <property id="p2z" type="number">50</property>
+    <property id="p2h" type="float">5.0</property>
+    <property id="p3n" type="string">SK Long Range Match</property>
+    <property id="p3v" type="number">335</property>
+    <property id="p3b" type="float">0.155</property>
+    <property id="p3g" type="number">1</property>
+    <property id="p3z" type="number">50</property>
+    <property id="p3h" type="float">5.0</property>
+    <property id="p4n" type="string">SK High Velocity Match</property>
+    <property id="p4v" type="number">385</property>
+    <property id="p4b" type="float">0.192</property>
+    <property id="p4g" type="number">1</property>
+    <property id="p4z" type="number">50</property>
+    <property id="p4h" type="float">5.0</property>
+    <property id="p5n" type="string">Lapua Center-X</property>
+    <property id="p5v" type="number">327</property>
+    <property id="p5b" type="float">0.172</property>
+    <property id="p5g" type="number">1</property>
+    <property id="p5z" type="number">50</property>
+    <property id="p5h" type="float">5.0</property>
+    <property id="p6n" type="string">Lapua Midas+</property>
+    <property id="p6v" type="number">327</property>
+    <property id="p6b" type="float">0.172</property>
+    <property id="p6g" type="number">1</property>
+    <property id="p6z" type="number">50</property>
+    <property id="p6h" type="float">5.0</property>
+    <property id="p7n" type="string">Lapua X-Act</property>
+    <property id="p7v" type="number">327</property>
+    <property id="p7b" type="float">0.172</property>
+    <property id="p7g" type="number">1</property>
+    <property id="p7z" type="number">50</property>
+    <property id="p7h" type="float">5.0</property>
+    <property id="p8n" type="string">Top Shot SV Target</property>
+    <property id="p8v" type="number">326</property>
+    <property id="p8b" type="float">0.167</property>
+    <property id="p8g" type="number">1</property>
+    <property id="p8z" type="number">50</property>
+    <property id="p8h" type="float">5.0</property>
+    <property id="p9n" type="string">Geco Semi Auto</property>
+    <property id="p9v" type="number">350</property>
+    <property id="p9b" type="float">0.151</property>
+    <property id="p9g" type="number">1</property>
+    <property id="p9z" type="number">50</property>
+    <property id="p9h" type="float">5.0</property>
+    <property id="p10n" type="string">RWS R50</property>
+    <property id="p10v" type="number">330</property>
+    <property id="p10b" type="float">0.136</property>
+    <property id="p10g" type="number">1</property>
+    <property id="p10z" type="number">50</property>
+    <property id="p10h" type="float">5.0</property>
+    <property id="p11n" type="string">CCI Standard Velocity</property>
+    <property id="p11v" type="number">326</property>
+    <property id="p11b" type="float">0.12</property>
+    <property id="p11g" type="number">1</property>
+    <property id="p11z" type="number">50</property>
+    <property id="p11h" type="float">5.0</property>
+    <property id="p12n" type="string">Perso 1</property>
+    <property id="p12v" type="number">330</property>
+    <property id="p12b" type="float">0.15</property>
+    <property id="p12g" type="number">1</property>
+    <property id="p12z" type="number">50</property>
+    <property id="p12h" type="float">5.0</property>
+    <property id="p13n" type="string">Perso 2</property>
+    <property id="p13v" type="number">330</property>
+    <property id="p13b" type="float">0.15</property>
+    <property id="p13g" type="number">1</property>
+    <property id="p13z" type="number">50</property>
+    <property id="p13h" type="float">5.0</property>
+    <property id="p14n" type="string">Perso 3</property>
+    <property id="p14v" type="number">330</property>
+    <property id="p14b" type="float">0.15</property>
+    <property id="p14g" type="number">1</property>
+    <property id="p14z" type="number">50</property>
+    <property id="p14h" type="float">5.0</property>
+    <property id="p15n" type="string">Perso 4</property>
+    <property id="p15v" type="number">330</property>
+    <property id="p15b" type="float">0.15</property>
+    <property id="p15g" type="number">1</property>
+    <property id="p15z" type="number">50</property>
+    <property id="p15h" type="float">5.0</property>
+    <property id="p16n" type="string">Perso 5</property>
+    <property id="p16v" type="number">330</property>
+    <property id="p16b" type="float">0.15</property>
+    <property id="p16g" type="number">1</property>
+    <property id="p16z" type="number">50</property>
+    <property id="p16h" type="float">5.0</property>
+    <property id="p17n" type="string">Perso 6</property>
+    <property id="p17v" type="number">330</property>
+    <property id="p17b" type="float">0.15</property>
+    <property id="p17g" type="number">1</property>
+    <property id="p17z" type="number">50</property>
+    <property id="p17h" type="float">5.0</property>
+    <property id="p18n" type="string">Perso 7</property>
+    <property id="p18v" type="number">330</property>
+    <property id="p18b" type="float">0.15</property>
+    <property id="p18g" type="number">1</property>
+    <property id="p18z" type="number">50</property>
+    <property id="p18h" type="float">5.0</property>
+    <property id="p19n" type="string">Perso 8</property>
+    <property id="p19v" type="number">330</property>
+    <property id="p19b" type="float">0.15</property>
+    <property id="p19g" type="number">1</property>
+    <property id="p19z" type="number">50</property>
+    <property id="p19h" type="float">5.0</property>
+    <property id="p20n" type="string">Perso 9</property>
+    <property id="p20v" type="number">330</property>
+    <property id="p20b" type="float">0.15</property>
+    <property id="p20g" type="number">1</property>
+    <property id="p20z" type="number">50</property>
+    <property id="p20h" type="float">5.0</property>
+</properties>

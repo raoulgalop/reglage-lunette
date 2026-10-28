@@ -1,0 +1,136 @@
+name: Appli Garmin (Connect IQ)
+
+on:
+  push:
+    paths:
+      - 'garmin/source/**'
+      - 'garmin/resources/**'
+      - 'garmin/manifest.xml'
+      - 'garmin/monkey.jungle'
+      - '.github/workflows/garmin.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: garmin-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: ghcr.io/matco/connectiq-tester:latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Compiler pour Epix 2 / Epix Pro
+        shell: bash
+        env:
+          # clé de développeur de Regis (base64 du .der), indispensable pour la boutique Connect IQ
+          GARMIN_DEV_KEY: ${{ secrets.GARMIN_DEV_KEY }}
+        run: |
+          MC=$(command -v monkeyc || find / -name monkeyc -type f 2>/dev/null | head -1)
+          echo "monkeyc : $MC"
+          "$MC" --version || true
+          DEV=$(find / -type d -name Devices -path '*ConnectIQ*' 2>/dev/null | head -1)
+          echo "appareils : $DEV"; ls "$DEV" | grep -i -E 'epix|fenix7' | tr '\n' ' '; echo
+          if [ -n "$GARMIN_DEV_KEY" ]; then
+            echo "$GARMIN_DEV_KEY" | base64 -d > /tmp/k.der
+            echo "clé de développeur : secret GARMIN_DEV_KEY"
+          else
+            openssl genrsa -out /tmp/k.pem 4096
+            openssl pkcs8 -topk8 -inform PEM -outform DER -in /tmp/k.pem -out /tmp/k.der -nocrypt
+            echo "clé de développeur : temporaire (pas de paquet .iq pour la boutique)"
+          fi
+          mkdir -p out
+          ok=0
+          for d in epix2 epix2pro42mm epix2pro47mm epix2pro51mm; do
+            echo "=== $d"
+            if "$MC" -d $d -f garmin/monkey.jungle -o out/ReglageLunette-$d.prg -y /tmp/k.der -l 0 -r -w 2>&1 | tee -a out/build.log; then
+              [ -f out/ReglageLunette-$d.prg ] && ok=1
+            fi
+          done
+          # paquet pour la boutique Connect IQ (toutes les montres du manifeste), seulement avec la clé permanente
+          if [ -n "$GARMIN_DEV_KEY" ]; then
+            "$MC" -e -f garmin/monkey.jungle -o out/ReglageLunette.iq -y /tmp/k.der -l 0 -r -w 2>&1 | tee -a out/build.log
+          fi
+          ls -la out
+          [ $ok = 1 ]
+      - name: Essai dans le simulateur (captures d'écran)
+        continue-on-error: true
+        shell: bash
+        run: |
+          command -v Xvfb >/dev/null && command -v xdotool >/dev/null && command -v convert >/dev/null || \
+            (apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq xvfb xdotool imagemagick x11-apps >/dev/null)
+          export DISPLAY=:99
+          echo "HOME=$HOME"; export HOME=/root
+          ls /root/.Garmin/ConnectIQ/Devices/epix2
+          pgrep Xvfb >/dev/null || (Xvfb :99 -screen 0 1280x1024x24 & sleep 3)
+          SIM=$(find /connectiq/bin -name simulator -type f | head -1)
+          "$SIM" > /tmp/sim.log 2>&1 &
+          sleep 12
+          MD=/connectiq/bin/monkeydo
+          timeout 60 "$MD" out/ReglageLunette-epix2.prg epix2 > out/monkeydo.log 2>&1 &
+          sleep 25
+          mkdir -p out/shots
+          shot() { import -window root "out/shots/$1.png" || xwd -root -silent | convert xwd:- "out/shots/$1.png"; }
+          shot 1-principal
+          W=$(xdotool search --name "Simulator" | head -1); echo "fenêtre : $W"
+          [ -n "$W" ] && xdotool windowactivate --sync $W || true
+          xdotool key Up; sleep 1; xdotool key Up; sleep 2; shot 2-distance-plus
+          xdotool key Return; sleep 2; shot 3-vent
+          xdotool key Return; sleep 2; shot 4-boussole
+          xdotool key Return; sleep 2; shot 5-meteo
+          xdotool key Return; sleep 2; shot 6-trajectoire
+          xdotool key Return; sleep 3; shot 7-table
+          xdotool key Return; sleep 5; shot 8-carte
+          xdotool key Escape; sleep 2; shot 9-retour
+          # 2e essai : version de test qui ouvre le menu au démarrage
+          rm -rf /tmp/gt && cp -r garmin /tmp/gt && rm -rf /tmp/gt/bin
+          sed -i 's/    function onShow() {/    function onShow() {\n        if (!TESTED) { TESTED = true; var a = app(); var p = a.prof(); p[0] = "Test .50 BMG"; p[1] = 882; p[2] = 1.05; p[3] = 1; p[4] = 100; a.s["dTo"] = 2000; a.s["dStep"] = 250; a.s["dist"] = 500; a.s["shLat"] = 45.02; a.s["shLon"] = 0.03; a.recompute(); }/' /tmp/gt/source/MainView.mc
+          echo 'var TESTED = false;' >> /tmp/gt/source/MainView.mc
+          /connectiq/bin/monkeyc -d epix2 -f /tmp/gt/monkey.jungle -o /tmp/test.prg -y /tmp/k.der -l 0 -w
+          timeout 120 "$MD" /tmp/test.prg epix2 > out/monkeydo-test.log 2>&1 &
+          TPID=$!
+          sleep 20
+          k() { for x in "$@"; do xdotool key $x; sleep 1; done; }
+          shot t1-bmg-2000
+          k Down; sleep 2; shot t2-bmg-1995
+          k Return Return Return Return; sleep 2; shot t3-trajectoire-2000
+          k Return; sleep 3; shot t4-table-2000
+          k Return; sleep 6; shot t5-carte
+          xdotool mousemove 250 380 mousedown 1 sleep 2 mouseup 1; sleep 1; shot t6-cible-posee
+          xdotool mousemove 330 500 click 1; sleep 2; shot t7-mode-tireur
+          xdotool mousemove 400 560 mousedown 1 sleep 2 mouseup 1; sleep 1; shot t8-tireur-pose
+          k Down; sleep 3; shot t9-zoom-arriere
+          set +e +o pipefail
+          wait $TPID || true
+          cat out/monkeydo.log out/monkeydo-test.log /tmp/sim.log | tail -60
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: prg
+          path: |
+            out/*.prg
+            out/*.json
+            out/*.iq
+            out/*.log
+            out/shots/
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: git rm -r -q --ignore-unmatch garmin/bin && rm -rf garmin/bin
+      - uses: actions/download-artifact@v4
+        with:
+          name: prg
+          path: garmin/bin
+      - name: Enregistrer les .prg dans le dépôt
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A garmin/bin
+          git commit -m "Appli Garmin : fichiers .prg compilés [skip ci]" || exit 0
+          git push

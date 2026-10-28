@@ -1,0 +1,15 @@
+WARNING: epix2: /__w/reglage-lunette/reglage-lunette/garmin/resources/jsonData/jsonData.xml:2,4: The serialized form of the <jsonData> record Ammo is large (> 8kb).
+BUILD SUCCESSFUL
+BUILD SUCCESSFUL
+BUILD SUCCESSFUL
+BUILD SUCCESSFUL
+0 OUT OF 7 DEVICES BUILT
+WARNING: epix2pro47mm: /__w/reglage-lunette/reglage-lunette/garmin/resources/jsonData/jsonData.xml:2,4: The serialized form of the <jsonData> record Ammo is large (> 8kb).
+1 OUT OF 7 DEVICES BUILT
+2 OUT OF 7 DEVICES BUILT
+3 OUT OF 7 DEVICES BUILT
+4 OUT OF 7 DEVICES BUILT
+5 OUT OF 7 DEVICES BUILT
+6 OUT OF 7 DEVICES BUILT
+7 OUT OF 7 DEVICES BUILT
+BUILD SUCCESSFUL
