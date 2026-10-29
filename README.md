@@ -6,4 +6,4 @@ Version web installable sur iPhone : ouvrir https://raoulgalop.github.io/reglage
 
 Le même code est aussi compilé en application Android (WebView).
 
-Hébergement chez o2switch (facultatif) : voir [deploy/o2switch/LISEZMOI.md](deploy/o2switch/LISEZMOI.md).
+Hébergement chez o2switch ou sur un NAS Synology (facultatif) : voir [deploy/o2switch/LISEZMOI.md](deploy/o2switch/LISEZMOI.md) et [deploy/synology/LISEZMOI.md](deploy/synology/LISEZMOI.md).

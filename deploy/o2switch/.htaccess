@@ -1,5 +1,5 @@
-# Réglage Lunette : configuration Apache pour l'hébergement o2switch.
-# Ce fichier est copié à la racine du site par le déploiement (voir deploy/o2switch/LISEZMOI.md).
+# Réglage Lunette : configuration Apache, utilisée chez o2switch et sur le NAS Synology.
+# Ce fichier est copié à la racine du site par le déploiement (voir deploy/o2switch/ et deploy/synology/).
 # Tous les chemins de l'appli sont relatifs : elle marche à la racine d'un domaine comme dans un sous-dossier.
 
 Options -Indexes
