@@ -4,14 +4,17 @@
    La balle est suivie avec la tourelle réglée pour la distance : elle passe au-dessus de la ligne de visée. */
 (function(){
 if(!S.los)S.los={};
-const LS=Object.assign({post:"0.3",postX:10,tgt:"sol",tgtX:2,obs:[],obsKey:""},S.los);S.los=LS;
+const LS=Object.assign({post:"0.3",postX:4,sFl:"toit",sFlN:1,tgt:"sol",tgtX:2,obs:[],obsKey:""},S.los);S.los=LS;
 const R0=6371008.8,MARGIN=0.25,CELL=0.004;
 const XDB={get:k=>TileDB.get("x:"+k).then(v=>v&&v.j),put:(k,j)=>TileDB.put("x:"+k,{j,d:Date.now()})};
 const enu=o=>{const c=Math.cos(o.lat*DEG);return {f:(lat,lon)=>[(lon-o.lon)*DEG*R0*c,(lat-o.lat)*DEG*R0],inv:(x,y)=>({lat:o.lat+y/(DEG*R0),lon:o.lon+x/(DEG*R0*c)})};};
 const fr=(v,n)=>fx(v,n).replace(".",",");
 
 /* ---------- hauteurs du tireur et de la cible ---------- */
-window.losSH=()=>LS.post==="x"?Math.max(0,pf(LS.postX)||0):+LS.post;
+// rel : hauteur du bâtiment sous le tireur (null au sol). Un tireur posé sur un bâtiment est sur le toit, sauf s'il tire d'un étage.
+function shAbove(rel){if(LS.post==="x")return Math.max(0,pf(LS.postX)||0);const p=+LS.post;if(rel==null)return p;
+  return LS.sFl==="etage"?Math.min(rel,Math.max(0,Math.round(pf(LS.sFlN)||0))*3)+p:rel+p;}
+window.losSH=()=>shAbove(LC.data&&LC.data.sb?LC.data.sb.rel:null);
 window.losTH=()=>{
   if(LS.tgt==="x")return Math.max(0,pf(LS.tgtX)||0);
   if(LS.tgt==="etage")return Math.max(0,Math.round(pf(LS.tgtX)||0))*3+1.5;
@@ -66,6 +69,25 @@ function bldIndex(L,E){const G=new Map(),A=[];L.forEach(b=>{const r=b.r.map(p=>E
     const o=Object.assign({},b,{xy:r,bb:[x0,y0,x1,y1]});A.push(o);for(let gx=Math.floor(x0/20);gx<=Math.floor(x1/20);gx++)for(let gy=Math.floor(y0/20);gy<=Math.floor(y1/20);gy++){const k=gx+","+gy;(G.get(k)||G.set(k,[]).get(k)).push(o);}});
   return {A,at(x,y){const c=G.get(Math.floor(x/20)+","+Math.floor(y/20));if(!c)return null;for(const b of c){if(x<b.bb[0]||x>b.bb[2]||y<b.bb[1]||y>b.bb[3])continue;
     let ins=false;const r=b.xy;for(let i=0,k=r.length-1;i<r.length;k=i++){if((r[i][1]>y)!==(r[k][1]>y)&&x<(r[k][0]-r[i][0])*(y-r[i][1])/(r[k][1]-r[i][1])+r[i][0])ins=!ins;}if(ins)return b;}return null;}};}
+/* ---------- bois et haies (IGN BD TOPO, OpenStreetMap ailleurs) : pour les postes à couvert ---------- */
+function vegParseIGN(j,lonC){const out=[];(j.features||[]).forEach((f,n)=>{const g=f.geometry,P=f.properties||{};if(!g||/vigne/i.test(P.nature||""))return;
+  (g.type==="Polygon"?[g.coordinates]:g.type==="MultiPolygon"?g.coordinates:[]).forEach(pl=>{let r=pl[0];if(!r||r.length<3)return;
+    out.push({id:"i"+(f.id||P.cleabs||n),r:r.map(c=>Math.abs(c[0]-lonC)<Math.abs(c[1]-lonC)?[c[1],c[0]]:[c[0],c[1]]),nat:P.nature||"bois"});});});return out;}
+async function vegCell(i,j){const k=`veg:${i},${j}`,hit=await XDB.get(k);if(hit)return hit;
+  const s=i*CELL,w=j*CELL,n=s+CELL,e=w+CELL;let r=null;
+  try{const q=await fetchT(`https://data.geopf.fr/wfs/ows?SERVICE=WFS&VERSION=2.0.0&REQUEST=GetFeature&TYPENAMES=BDTOPO_V3:zone_de_vegetation&OUTPUTFORMAT=application/json&COUNT=2000&SRSNAME=EPSG:4326&BBOX=${s},${w},${n},${e},urn:ogc:def:crs:EPSG::4326`,15000);
+    if(!q.ok)throw 0;const L=vegParseIGN(await q.json(),w+CELL/2);if(L.length||(s>41&&s<51.2&&w>-5.3&&w<9.7))r={L};}catch(x){}
+  if(!r)try{const q=await fetchT("https://overpass-api.de/api/interpreter?data="+encodeURIComponent(`[out:json][timeout:20];(way["natural"~"wood|scrub"](${s},${w},${n},${e});way["landuse"="forest"](${s},${w},${n},${e}););out geom tags;`),20000);
+    if(q.ok)r={L:((await q.json()).elements||[]).filter(e=>e.geometry&&e.geometry.length>2).map(e=>({id:"o"+e.id,r:e.geometry.map(p=>[p.lat,p.lon]),nat:"bois"}))};}catch(x){}
+  if(r)XDB.put(k,r);return r;}
+async function vegLoad(s,w,n,e){const I0=Math.floor(s/CELL),I1=Math.floor(n/CELL),J0=Math.floor(w/CELL),J1=Math.floor(e/CELL);
+  if((I1-I0+1)*(J1-J0+1)>80)return {L:[]};const jobs=[];for(let i=I0;i<=I1;i++)for(let j=J0;j<=J1;j++)jobs.push(vegCell(i,j));
+  const seen=new Set(),L=[];(await Promise.all(jobs)).forEach(r=>r&&r.L.forEach(b=>{if(!seen.has(b.id)){seen.add(b.id);L.push(b);}}));return {L};}
+// même recherche que les bâtiments, la grille étant limitée à la zone étudiée (les forêts sont immenses)
+function vegIndex(L,E,Rm){const G=new Map(),gs=40,lim=Math.ceil(Rm/gs);L.forEach(b=>{const r=b.r.map(p=>E.f(p[0],p[1]));let x0=1e9,y0=1e9,x1=-1e9,y1=-1e9;r.forEach(p=>{x0=Math.min(x0,p[0]);x1=Math.max(x1,p[0]);y0=Math.min(y0,p[1]);y1=Math.max(y1,p[1]);});
+    const o={xy:r,bb:[x0,y0,x1,y1],nat:b.nat};for(let gx=Math.max(-lim,Math.floor(x0/gs));gx<=Math.min(lim,Math.floor(x1/gs));gx++)for(let gy=Math.max(-lim,Math.floor(y0/gs));gy<=Math.min(lim,Math.floor(y1/gs));gy++){const k=gx+","+gy;(G.get(k)||G.set(k,[]).get(k)).push(o);}});
+  return {at(x,y){const c=G.get(Math.floor(x/gs)+","+Math.floor(y/gs));if(!c)return null;for(const b of c){if(x<b.bb[0]||x>b.bb[2]||y<b.bb[1]||y>b.bb[3])continue;
+    let ins=false;const r=b.xy;for(let i=0,k=r.length-1;i<r.length;k=i++){if((r[i][1]>y)!==(r[k][1]>y)&&x<(r[k][0]-r[i][0])*(y-r[i][1])/(r[k][1]-r[i][1])+r[i][0])ins=!ins;}if(ins)return b;}return null;}};}
 const bTop=(b,g)=>b.top!=null&&b.top>g-2&&b.top<g+400?b.top:g+b.h; // sommet absolu du bâtiment
 
 /* ---------- trajectoire du setup en cours, tourelle réglée pour la distance ---------- */
@@ -118,11 +140,12 @@ async function losRun(force){
     pts.push({d,x,y,g,top,bd,v:v>0.3?v:0});}
   const gT=pz.z[N];
   LC.data={H,N,pts,src:pz.src,bsrc:bl.src,bn:bl.L.length,bmiss:bl.miss,az:bearing(a,b),
-    tb:tb0?{h:tb0.h,rel:bTop(tb0,gT)-gT,est:tb0.est}:null,sb:sb?{rel:bTop(sb,pz.z[0])-pz.z[0]}:null,I,E};
+    tb:tb0?{h:tb0.h,rel:bTop(tb0,gT)-gT,est:tb0.est}:null,sb:sb?{rel:bTop(sb,pz.z[0])-pz.z[0],est:sb.est}:null,I,E};
+  const sk=sb?sb.id+"@"+S.shooter.lat.toFixed(5):null;if(sk&&sk!==LC.sbKey)toast(`Tireur sur un bâtiment de ${fr(LC.data.sb.rel,0)} m : il tire ${LS.sFl==="etage"?"de l'étage "+(Math.round(pf(LS.sFlN))||0):"du toit"}. Changez-le dans « Tireur » si besoin.`);LC.sbKey=sk;
   if(pz.src==="ign"&&(Math.abs((a.alt??-1e4)-pz.z[0])>0.05||Math.abs((b.alt??-1e4)-gT)>0.05)){a.alt=pz.z[0];b.alt=gT;geoApply();}
   else geoApply();
 }
-function geoApply(){_ug(false);} // recalcule site et distance avec les hauteurs (puis compute → losDraw)
+function geoApply(){syncCtl();_ug(false);} // recalcule site et distance avec les hauteurs (puis compute → losDraw)
 
 function losEval(){const D=LC.data;if(!D)return null;
   const D3=num("tDist")||D.H,y=traj(D3);if(!y)return null;
@@ -184,7 +207,7 @@ function losDraw(){
   else{t="Ligne de tir dégagée";s=W.c<1e8?`Point le plus serré à ${Math.round(W.d)} m : ${fr(W.c,1)} m de marge.`:"";}
   V.innerHTML=`<div class="verdict v-${R.st}"><span class="dot"></span><div><b>${t}</b><span>${s}</span></div></div>`;
   const rows=[["Relief",SRC[D.src]],["Bâtiments",D.bsrc==="trop"?"zone trop grande":D.bsrc==="aucune"?"indisponibles (pas de réseau)":`${D.bn} dans la zone · ${D.bsrc.replace("ign","IGN BD TOPO").replace("osm","OpenStreetMap")}${D.bmiss?` (${D.bmiss} morceau(x) manquant(s))`:""}`],
-    ["Arme au-dessus du sol",`${fr(R.sh,1)} m${D.sb?` (bâtiment de ${fr(D.sb.rel,0)} m sous le tireur)`:""}`],["Cible au-dessus du sol",`${fr(R.th,1)} m`],
+    ["Arme au-dessus du sol",`${fr(R.sh,1)} m${D.sb?(LS.post==="x"?"":LS.sFl==="etage"?` (étage ${Math.round(pf(LS.sFlN))||0} d'un bâtiment de ${fr(D.sb.rel,0)} m)`:` (sur le toit, bâtiment de ${fr(D.sb.rel,0)} m)`):""}`],["Cible au-dessus du sol",`${fr(R.th,1)} m`],
     ["Balle au plus haut",`${fr(R.ymax.v,2)} m au-dessus de la visée, à ${Math.round(R.ymax.d)} m`]];
   if(LC.tap!=null){const q=R.pts.reduce((a,b)=>Math.abs(b.d-LC.tap)<Math.abs(a.d-LC.tap)?b:a);rows.push([`À ${Math.round(q.d)} m`,`balle à ${fr(q.b-q.g,1)} m du sol, ${fr((q.b-q.los)*100,0)} cm ${q.b>=q.los?"au-dessus":"sous"} la visée${q.top!=null?`, toit à ${fr(q.top-q.g,0)} m`:""}`]);}
   info.innerHTML=rows.map(r=>`<span>${r[0]}</span><span>${r[1]}</span>`).join("");
@@ -201,11 +224,14 @@ $("loOk").onclick=()=>{const o={d:pf($("loD").value),lo:pf($("loLo").value)||0,h
 
 /* ---------- réglages de hauteur ---------- */
 function syncCtl(){setSeg("losPost",LS.post);setSeg("losTgt",LS.tgt);$("losPostX").value=LS.postX;$("losTgtX").value=LS.tgtX;
+  const sb=LC.data&&LC.data.sb;setSeg("losSFl",LS.sFl);$("losSFlN").value=LS.sFlN;$("losSFlNL").style.display=LS.sFl==="etage"?"block":"none";
+  $("losSbRow").style.display=sb&&LS.post!=="x"?"block":"none";if(sb)$("losSbInfo").textContent=`🏢 Le tireur est sur un bâtiment de ${fr(sb.rel,0)} m${sb.est?" (hauteur supposée)":""}.`;
   $("losPostXRow").style.display=LS.post==="x"?"flex":"none";$("losTgtXRow").style.display=LS.tgt==="etage"||LS.tgt==="x"?"flex":"none";
   $("losTgtXLbl").firstChild.textContent=LS.tgt==="etage"?"Étage n° (0 = rez-de-chaussée)":"Hauteur de la cible au-dessus du sol (m)";}
 const changedH=()=>{syncCtl();save();if(S.shooter&&S.target)geoApply();else losDraw();};
 $("losPost").onclick=e=>{const b=e.target.closest("button");if(b){LS.post=b.dataset.v;changedH();}};
 $("losTgt").onclick=e=>{const b=e.target.closest("button");if(b){LS.tgt=b.dataset.v;if(b.dataset.v==="x"&&!(pf(LS.tgtX)>=0))LS.tgtX=1;changedH();}};
+$("losSFl").onclick=e=>{const b=e.target.closest("button");if(b){LS.sFl=b.dataset.v;changedH();}};$("losSFlN").oninput=()=>{LS.sFlN=$("losSFlN").value;changedH();};
 $("losPostX").oninput=()=>{LS.postX=$("losPostX").value;changedH();};$("losTgtX").oninput=()=>{LS.tgtX=$("losTgtX").value;changedH();};
 $("losCv").addEventListener("click",e=>{if(!LC.data)return;const r=$("losCv").getBoundingClientRect();LC.tap=Math.max(0,Math.min(LC.data.H,(e.clientX-r.left-34)/(r.width-42)*LC.data.H));losDraw();});
 $("losRefresh").onclick=()=>{LC.key=null;losRun(true);};
@@ -214,12 +240,12 @@ function losHint(){return S.target&&!S.shooter?"Cible seule : « 📍 Postes pos
   S.shooter&&!S.target?"Tireur seul : « 👁 Ce que voit le tireur » montre ce qu'il voit, « 🗺 Zones atteignables » ce que sa balle peut atteindre. Touchez la carte (mode Cible) pour poser la cible.":
   "Carte vide : touchez la carte pour poser la cible (point rouge) ou le tireur (point bleu, mode « Tireur »). L'appli vérifie ensuite si le relief, les bâtiments ou un obstacle coupent la trajectoire.";}
 /* ---------- zones atteignables et poste dégagé (relief Terrarium + bâtiments) ---------- */
-let zLayer=null,bpLayer=null;
+let zLayer=null;
 async function areaData(s,w,n,e){const ok=await terrLoad(s,w,n,e),bl=await bldLoad(s,w,n,e);return {ok,bl};}
 function lineOk(A,Tp,zA,zT,y,I,ex){ // A,Tp en m locaux ; terrain Terrarium
   const H=Math.hypot(Tp[0]-A[0],Tp[1]-A[1]),n=Math.max(8,Math.ceil(H/3));let w=1e9;
-  for(let i=1;i<n;i++){const f=i/n,d=f*H;if(d<10||d>H-3)continue; /* relief ≈30 m : abords immédiats du poste ignorés */const x=A[0]+(Tp[0]-A[0])*f,yy=A[1]+(Tp[1]-A[1])*f,ll=LC.E.inv(x,yy),g=terrAt(ll.lat,ll.lon);if(!isFinite(g))continue;
-    const b=zA+f*(zT-zA)+y(d);let c=b-g;const bd=I.at(x,yy);if(bd&&!ex.includes(bd))c=Math.min(c,b-bTop(bd,g));if(c<w)w=c;}
+  for(let i=1;i<n;i++){const f=i/n,d=f*H;if(d>H-3)continue;const x=A[0]+(Tp[0]-A[0])*f,yy=A[1]+(Tp[1]-A[1])*f,ll=LC.E.inv(x,yy),g=terrAt(ll.lat,ll.lon);if(!isFinite(g))continue;
+    const b=zA+f*(zT-zA)+y(d);let c=d<10?1e9:b-g; /* relief ≈30 m : abords immédiats du poste ignorés, mais pas les murs */const bd=I.at(x,yy);if(bd&&!ex.includes(bd))c=Math.min(c,b-bTop(bd,g));if(c<w)w=c;}
   return w;}
 async function zones(){
   if(zLayer){map.removeLayer(zLayer);zLayer=null;$("losZones").classList.remove("acc");return;}
@@ -227,7 +253,7 @@ async function zones(){
   const B=map.getBounds(),a=S.shooter,cl=Math.cos(a.lat*DEG),Rm=Math.min(1200,Math.max(haversine(a,{lat:B.getNorth(),lon:a.lon}),haversine(a,{lat:a.lat,lon:B.getEast()}))),dl=Rm/(DEG*R0);
   const s=a.lat-dl,n=a.lat+dl,w=a.lon-dl/cl,e=a.lon+dl/cl;$("losZones").textContent="⏳ Calcul…";
   const A=await areaData(s,w,n,e);if(!A.ok){$("losZones").textContent="🗺 Zones atteignables";toast("Relief de la zone indisponible hors ligne. Chargez-le avec « Garder relief et bâtiments ».");return;}
-  LC.E=LC.E||enu(a);const E=enu(a);LC.E=E;const I=bldIndex(A.bl.L,E),g0=terrAt(a.lat,a.lon),sb=I.at(0,0),zA=(sb&&LS.post==="x"?g0:g0)+losSH();
+  LC.E=LC.E||enu(a);const E=enu(a);LC.E=E;const I=bldIndex(A.bl.L,E),g0=terrAt(a.lat,a.lon),sb=I.at(0,0),zA=g0+shAbove(sb?bTop(sb,g0)-g0:null);
   const p=P(),c=conditions();c.site=0;const tr=fly(Object.assign({p,alpha:zeroAngle(p),maxX:Rm*1.5+1},c));
   const NG=64,cv=document.createElement("canvas");cv.width=cv.height=NG;const g=cv.getContext("2d");let k=0;
   for(let j=0;j<NG;j++){for(let i=0;i<NG;i++){const x=(i+.5)/NG*2*Rm-Rm,y=Rm-(j+.5)/NG*2*Rm,H=Math.hypot(x,y);if(H<8||H>Rm)continue;
@@ -240,68 +266,68 @@ async function zones(){
   $("losZones").textContent="🗺 Masquer les zones";$("losZones").classList.add("acc");
   toast(`Vert : atteignable · orange : rasant · rouge : masqué (cible ${LS.tgt==="toit"?"sur les toits":"à "+fr(losTH(),1)+" m"}). Relief ≈30 m${A.bl.L.length?`, ${A.bl.L.length} bâtiments`:""}.`);
 }
-async function bestPost(){
-  if(bpLayer){map.removeLayer(bpLayer);bpLayer=null;}
-  if(!(S.shooter&&S.target)){toast("Placez d'abord le tireur et la cible.");return;}
-  const a=S.shooter,b=S.target,H=haversine(a,b),dl=(H+80)/(DEG*R0),cl=Math.cos(a.lat*DEG);$("losBest").textContent="⏳ Recherche…";
-  const A=await areaData(Math.min(a.lat,b.lat)-80/(DEG*R0),Math.min(a.lon,b.lon)-80/(DEG*R0)/cl,Math.max(a.lat,b.lat)+80/(DEG*R0),Math.max(a.lon,b.lon)+80/(DEG*R0)/cl);
-  $("losBest").textContent="🔎 Poste dégagé";if(!A.ok){toast("Relief indisponible hors ligne pour chercher un poste.");return;}
-  const E=enu(a);LC.E=E;const I=bldIndex(A.bl.L,E),Tp=E.f(b.lat,b.lon),tb=I.at(Tp[0],Tp[1]),gt=terrAt(b.lat,b.lon),zT=gt+losTH(),p=P(),c=conditions();
-  let best=null;
-  for(let r=5;r<=80&&!best;r+=5)for(let k=0;k<24;k++){const an=k/24*2*Math.PI,x=r*Math.sin(an),y=r*Math.cos(an),ll=E.inv(x,y),g=terrAt(ll.lat,ll.lon),bd=I.at(x,y);
-    if(!isFinite(g)||(bd&&LS.post!=="x"))continue;const Hc=Math.hypot(Tp[0]-x,Tp[1]-y);
-    const tr=fly(Object.assign({p,alpha:zeroAngle(p),maxX:Hc+1},c)),end=tr(Hc);if(!end)continue;
-    const v=lineOk([x,y],Tp,g+losSH(),zT,d=>{const q=tr(d);return q?q.y-end.y*d/Hc:0;},I,[tb,bd]);
-    if(v>=MARGIN&&(!best||v>best.v))best={ll,r,v,an};}
-  if(!best){toast("Aucun poste dégagé trouvé à moins de 80 m pour cette cible.");return;}
-  const dir=["au nord","au nord-est","à l'est","au sud-est","au sud","au sud-ouest","à l'ouest","au nord-ouest"][Math.round(best.an/(Math.PI/4))%8];
-  bpLayer=L.circleMarker([best.ll.lat,best.ll.lon],{radius:10,color:"#fff",weight:2,fillColor:"#16a34a",fillOpacity:1}).addTo(map)
-    .bindPopup(`<b>Poste dégagé à ${best.r} m ${dir}</b><br>marge ≈ ${fr(best.v,1)} m (relief ≈30 m)<br><button class="btn sm acc" id="bpGo">Placer le tireur ici</button>`).openPopup();
-  setTimeout(()=>{const g=document.getElementById("bpGo");if(g)g.onclick=()=>{S.shooter={lat:best.ll.lat,lon:best.ll.lon,alt:null};S.shooterManual=true;map.removeLayer(bpLayer);bpLayer=null;drawMarkers();updateGeo(true);};},50);
-}
-$("losZones").onclick=zones;$("losBest").onclick=bestPost;
+$("losZones").onclick=zones;
 
 /* ---------- postes de tir possibles autour de la cible ---------- */
-let psLayer=null;
+let psLayer=null,PS=[];
 const DIR8=["nord","nord-est","est","sud-est","sud","sud-ouest","ouest","nord-ouest"];
-function psClear(){if(psLayer){map.removeLayer(psLayer);psLayer=null;}$("losPosts").innerHTML="";$("losPs").textContent="📍 Postes possibles";$("losPs").classList.remove("acc");}
-function psGo(pt){S.shooter={lat:pt.lat,lon:pt.lon,alt:null};S.shooterManual=true;psClear();drawMarkers();updateGeo(true);if(map)map.closePopup();toast("Tireur placé sur le poste choisi. Faites-le glisser pour l'ajuster.");}
+const PT={toit:["🏢","Toit","#7c3aed"],haut:["⛰","Point dominant","#b45309"],bois:["🌳","Lisière de bois","#15803d"],mur:["🧱","À l'abri d'un bâtiment","#475569"]};
+function psClear(){if(psLayer){map.removeLayer(psLayer);psLayer=null;}PS=[];$("losPosts").innerHTML="";$("losPs").textContent="📍 Postes possibles";$("losPs").classList.remove("acc");}
+function psGo(q){S.shooter={lat:q.ll.lat,lon:q.ll.lon,alt:null};S.shooterManual=true;if(q.ty==="toit"){LS.sFl="toit";}psClear();drawMarkers();updateGeo(true);if(map)map.closePopup();
+  toast(`Tireur placé : ${PT[q.ty][1].toLowerCase()}. Faites-le glisser pour l'ajuster ; la coupe vérifie la ligne avec le relief précis et les arbres.`);}
+// postes réalistes uniquement : en hauteur (toit, point qui domine la cible) ou à couvert (lisière de bois, contre un bâtiment), jamais en terrain découvert
 async function postes(){
   if(psLayer){psClear();return;}
   if(!map||!S.target){toast("Touchez d'abord la cible sur la carte.");return;}
-  const b=S.target,mn=Math.max(10,pf(LS.pMin)||50),mx=Math.min(1200,Math.max(mn+20,pf(LS.pMax)||300)),dl=mx/(DEG*R0),cl=Math.cos(b.lat*DEG);
+  const b=S.target,mn=Math.max(10,pf(LS.pMin)||50),mx=Math.min(1200,Math.max(mn+20,pf(LS.pMax)||300)),dl=(mx+20)/(DEG*R0),cl=Math.cos(b.lat*DEG);
   $("losPs").textContent="⏳ Recherche des postes…";
-  const A=await areaData(b.lat-dl,b.lon-dl/cl,b.lat+dl,b.lon+dl/cl);
+  const [A,VG]=await Promise.all([areaData(b.lat-dl,b.lon-dl/cl,b.lat+dl,b.lon+dl/cl),vegLoad(b.lat-dl,b.lon-dl/cl,b.lat+dl,b.lon+dl/cl)]);
   if(!A.ok){$("losPs").textContent="📍 Postes possibles";toast("Relief de la zone indisponible (pas de réseau ?). Chargez-le avec « Garder relief et bâtiments ».");return;}
-  const E=enu(b);LC.E=E;const I=bldIndex(A.bl.L,E),gt=terrAt(b.lat,b.lon),tb=I.at(0,0),th=LS.tgt==="toit"?(tb?bTop(tb,gt)-gt+.3:.5):losTH(),zT=gt+th,sh=losSH();
+  const E=enu(b);LC.E=E;const I=bldIndex(A.bl.L,E),V=vegIndex(VG.L,E,mx+20),gt=terrAt(b.lat,b.lon),tb=I.at(0,0),th=LS.tgt==="toit"?(tb?bTop(tb,gt)-gt+.3:.5):losTH(),zT=gt+th,pz=LS.post==="x"?0.3:+LS.post;
   const p=P(),c=conditions();c.site=0;const TR=new Map();
   const trOf=H=>{const k=Math.round(H/5)*5;if(!TR.has(k)){const tr=fly(Object.assign({p,alpha:zeroAngle(p),maxX:k+1},c)),end=tr(k);TR.set(k,end?{tr,end,k}:null);}return TR.get(k);};
   const me=S.shooter?E.f(S.shooter.lat,S.shooter.lon):null;
-  const NG=80,cv=document.createElement("canvas");cv.width=cv.height=NG;const g=cv.getContext("2d"),cand=[];let n=0;
+  const near=(x,y,r,f)=>{for(let k=0;k<8;k++){const t=k*Math.PI/4;if(f(x+r*Math.sin(t),y+r*Math.cos(t)))return true;}return false;};
+  const NG=80,cv=document.createElement("canvas");cv.width=cv.height=NG;const g=cv.getContext("2d"),cand=[],nT={toit:0,haut:0,bois:0,mur:0};let n=0;
   for(let j=0;j<NG;j++){for(let i=0;i<NG;i++){const x=(i+.5)/NG*2*mx-mx,y=mx-(j+.5)/NG*2*mx,H=Math.hypot(x,y);if(H<mn||H>mx)continue;
-      const ll=E.inv(x,y),gs=terrAt(ll.lat,ll.lon),bd=I.at(x,y);if(!isFinite(gs)||(bd&&LS.post!=="x"))continue;
-      const T=trOf(H);if(!T){g.fillStyle="rgba(120,120,120,.35)";g.fillRect(i,j,1,1);continue;} // hors de portée de la munition
+      const ll=E.inv(x,y),gs=terrAt(ll.lat,ll.lon);if(!isFinite(gs))continue;
+      const bd=I.at(x,y);let ty=null,z;
+      if(bd){if(bd===tb)continue;ty="toit";z=bTop(bd,gs)+pz;} // sur un bâtiment, on tire du toit
+      else{const vg=V.at(x,y);
+        if(vg){if(near(x,y,10,(u,w)=>!V.at(u,w)))ty="bois";} // en bordure du bois : caché, avec une vue dégagée vers l'extérieur
+        else if(gs-gt>=5)ty="haut";
+        else if(near(x,y,5,(u,w)=>I.at(u,w)))ty="mur";
+        z=gs+pz;}
+      if(!ty)continue; // terrain découvert : pas un poste
+      const T=trOf(H);if(!T)continue; // hors de portée de la munition
       const yy=d=>{const r=T.tr(d*T.k/H);return r?r.y-T.end.y*d/H:0;};
-      const v=lineOk([x,y],[0,0],gs+sh,zT,yy,I,[tb,bd]);
-      g.fillStyle=v<0?"rgba(248,113,113,.4)":v<MARGIN?"rgba(251,191,36,.45)":"rgba(52,211,153,.5)";g.fillRect(i,j,1,1);
-      if(v>=MARGIN){const walk=me?Math.hypot(x-me[0],y-me[1]):0;cand.push({x,y,H,v,walk,ll,mil:toUnit(-T.end.y/T.k,p.unit),score:Math.min(v,1.5)-(me?walk/400:0)});}}
+      const v=lineOk([x,y],[0,0],z,zT,yy,I,[tb,bd]);
+      g.fillStyle=v<MARGIN?"rgba(248,113,113,.35)":"rgba(52,211,153,.55)";g.fillRect(i,j,1,1);
+      if(v>=MARGIN){nT[ty]++;const dom=z-zT,walk=me?Math.hypot(x-me[0],y-me[1]):0;
+        cand.push({x,y,H,v,ty,dom,rel:bd?bTop(bd,gs)-gs:0,walk,ll,mil:toUnit(-T.end.y/T.k,p.unit),score:Math.min(v,1.5)+Math.min(Math.max(dom,0),25)/8+(ty==="bois"||ty==="mur"?1:0)-(me?walk/400:0)});}}
     if(++n%8===0)await new Promise(r=>setTimeout(r,0));}
-  cand.sort((a,b)=>b.score-a.score);const pick=[];
-  for(const q of cand){if(pick.every(o=>Math.hypot(o.x-q.x,o.y-q.y)>Math.max(30,mx/8)))pick.push(q);if(pick.length>=5)break;}
+  cand.sort((a,b)=>b.score-a.score);const pick=[],sep=Math.max(40,mx/5);
+  // le meilleur de chaque sorte d'abord, puis les suivants, bien écartés les uns des autres
+  for(const t in PT){const q=cand.find(q=>q.ty===t);if(q&&pick.every(o=>Math.hypot(o.x-q.x,o.y-q.y)>sep))pick.push(q);}
+  for(const q of cand){if(pick.length>=6)break;if(!pick.includes(q)&&pick.every(o=>Math.hypot(o.x-q.x,o.y-q.y)>sep))pick.push(q);}
+  pick.sort((a,b)=>b.score-a.score);PS=pick;
   psLayer=L.layerGroup().addTo(map);
-  L.imageOverlay(cv.toDataURL(),[[b.lat-dl,b.lon-dl/cl],[b.lat+dl,b.lon+dl/cl]],{opacity:.75,interactive:false}).addTo(psLayer).getElement().style.imageRendering="pixelated";
+  L.imageOverlay(cv.toDataURL(),[[b.lat-mx/(DEG*R0),b.lon-mx/(DEG*R0)/cl],[b.lat+mx/(DEG*R0),b.lon+mx/(DEG*R0)/cl]],{opacity:.8,interactive:false}).addTo(psLayer).getElement().style.imageRendering="pixelated";
   L.circle([b.lat,b.lon],{radius:mn,color:"#f59e0b",weight:1,fill:false,dashArray:"4 4",interactive:false}).addTo(psLayer);
+  const name=q=>`${PT[q.ty][0]} ${PT[q.ty][1]}${q.ty==="toit"?` (${fr(q.rel,0)} m)`:""}`;
   const info=q=>{const az=(Math.atan2(q.x,q.y)/DEG+360)%360,clk=Math.round(q.mil/p.click);
-    return `à ${Math.round(q.H)} m de la cible, côté ${DIR8[Math.round(az/45)%8]} · marge ${fr(q.v,1)} m · élévation ≈ ${clk} clics${me?` · à ${Math.round(q.walk)} m de vous`:""}`;};
-  pick.forEach((q,k)=>{const m=L.marker([q.ll.lat,q.ll.lon],{icon:L.divIcon({className:"",html:`<div class="psMk">${k+1}</div>`,iconSize:[26,26],iconAnchor:[13,13]})}).addTo(psLayer);
-    m.bindPopup(`<b>Poste ${k+1}</b><br>${info(q)}<br><button class="btn sm acc" data-ps="${k}">Placer le tireur ici</button>`);
-    m.on("popupopen",e=>{const bt=e.popup.getElement().querySelector("[data-ps]");if(bt)bt.onclick=()=>psGo(q.ll);});});
-  $("losPosts").innerHTML=pick.length?pick.map((q,k)=>`<div class="obsr"><span><b>${k+1}.</b> ${info(q)}</span><button class="btn sm" data-ps="${k}">Choisir</button></div>`).join(""):
-    `<p class="hint">Aucun poste dégagé entre ${mn} et ${mx} m de cette cible (position ${({"0.3":"couché","0.8":"assis","1.5":"debout","x":"en hauteur"})[LS.post]}). Essayez une autre position ou une autre plage de distance.</p>`;
-  $("losPosts").onclick=e=>{const bt=e.target.closest("[data-ps]");if(bt)psGo(pick[+bt.dataset.ps].ll);};
+    return `${Math.round(q.H)} m, côté ${DIR8[Math.round(az/45)%8]} · ${q.dom>=1?`${fr(q.dom,0)} m au-dessus de la cible`:q.dom<=-1?`${fr(-q.dom,0)} m sous la cible`:"à hauteur de la cible"} · marge ${fr(q.v,1)} m · ≈ ${clk} clics${me?` · à ${Math.round(q.walk)} m de vous`:""}`;};
+  pick.forEach((q,k)=>{const m=L.marker([q.ll.lat,q.ll.lon],{icon:L.divIcon({className:"",html:`<div class="psMk" style="background:${PT[q.ty][2]}">${PT[q.ty][0]}${k+1}</div>`,iconSize:[40,26],iconAnchor:[20,13]})}).addTo(psLayer);
+    m.bindPopup(`<b>${k+1}. ${name(q)}</b><br>${info(q)}<br><button class="btn sm acc" data-ps="${k}">Placer le tireur ici</button>`);
+    m.on("popupopen",e=>{const bt=e.popup.getElement().querySelector("[data-ps]");if(bt)bt.onclick=()=>psGo(q);});});
+  const pos=({"0.3":"couché","0.8":"assis","1.5":"debout","x":"couché"})[LS.post];
+  $("losPosts").innerHTML=pick.length?pick.map((q,k)=>`<div class="obsr"><span><b>${k+1}. ${name(q)}</b><br>${info(q)}</span><button class="btn sm" data-ps="${k}">Choisir</button></div>`).join("")+
+    `<p class="hint">Trouvés : ${nT.toit} sur des toits, ${nT.haut} sur des points dominants, ${nT.bois} en lisière, ${nT.mur} à l'abri d'un bâtiment (tireur ${pos}). Carte : vert = la balle passe, rouge = masqué ; le terrain découvert n'est pas coloré.</p>`:
+    `<p class="hint">Aucun poste en hauteur ou à couvert entre ${mn} et ${mx} m de cette cible. Élargissez la plage de distance${VG.L.length?"":" (aucun bois connu dans la zone)"}.</p>`;
+  $("losPosts").onclick=e=>{const bt=e.target.closest("[data-ps]");if(bt)psGo(PS[+bt.dataset.ps]);};
   const all=[[b.lat,b.lon],...pick.map(q=>[q.ll.lat,q.ll.lon])];if(S.shooter)all.push([S.shooter.lat,S.shooter.lon]);map.fitBounds(all,{padding:[30,30],maxZoom:17});
   $("losPs").textContent="📍 Masquer les postes";$("losPs").classList.add("acc");
-  toast(`${cand.length?pick.length+" poste(s) proposé(s)":"Aucun poste dégagé"} · vert : on touche la cible d'ici, rouge : masqué, gris : hors de portée. Relief ≈30 m${A.bl.L.length?`, ${A.bl.L.length} bâtiments`:""} : vérifiez chaque poste avec la coupe une fois choisi.`);
+  toast(`${pick.length?pick.length+" poste(s) proposé(s), en hauteur ou à couvert":"Aucun poste réaliste trouvé"}. Relief ≈30 m${A.bl.L.length?`, ${A.bl.L.length} bâtiments`:""}${VG.L.length?`, ${VG.L.length} bois`:""} : vérifiez le poste choisi avec la coupe.`);
 }
 $("losPs").onclick=postes;
 /* ---------- visibilité : ce que voit le tireur, d'où la cible est vue (ligne de visée droite, sans balle) ---------- */
@@ -317,13 +343,13 @@ async function visScan(mode){
   const A=await areaData(s,w,n,e);if(!A.ok){bt.textContent=VB[mode][1];toast("Relief de la zone indisponible hors ligne. Chargez-le avec « Garder relief et bâtiments ».");return;}
   const E=enu(o);LC.E=E;const I=bldIndex(A.bl.L,E),g0=terrAt(o.lat,o.lon),ob=I.at(0,0),sh=losSH(),flat=()=>0;
   const tgtH=(b,g)=>LS.tgt==="toit"?(b?bTop(b,g)-g+.3:null):(b&&LS.tgt==="sol"?null:losTH());
-  const z0=mode==="t"?g0+sh:g0+(tgtH(ob,g0)??losTH());
+  const z0=mode==="t"?g0+shAbove(ob?bTop(ob,g0)-g0:null):g0+(tgtH(ob,g0)??losTH());
   const NG=80,cv=document.createElement("canvas");cv.width=cv.height=NG;const g=cv.getContext("2d");let k=0,vis=0,tot=0;
   for(let j=0;j<NG;j++){for(let i=0;i<NG;i++){const x=(i+.5)/NG*2*Rm-Rm,y=Rm-(j+.5)/NG*2*Rm,H=Math.hypot(x,y);if(H<10||H>Rm)continue;
       const ll=E.inv(x,y),gc=terrAt(ll.lat,ll.lon),bd=I.at(x,y);if(!isFinite(gc))continue;
       let v;
       if(mode==="t"){const th=tgtH(bd,gc);if(th==null)continue;v=lineOk([0,0],[x,y],z0,gc+th,flat,I,[bd,ob]);} // l'œil du tireur vers une cible posée dans la case
-      else{if(bd&&LS.post!=="x")continue;v=lineOk([x,y],[0,0],gc+sh,z0,flat,I,[ob,bd]);} // un tireur posté dans la case vers la cible
+      else{const zs=bd?bTop(bd,gc)+(LS.post==="x"?0.3:+LS.post):gc+sh;v=lineOk([x,y],[0,0],zs,z0,flat,I,[ob,bd]);} // un tireur posté dans la case (sur le toit si bâtiment) vers la cible
       tot++;if(v>=0)vis++;g.fillStyle=v<0?"rgba(248,113,113,.45)":"rgba(52,211,153,.5)";g.fillRect(i,j,1,1);}
     if(++k%8===0)await new Promise(r=>setTimeout(r,0));}
   vLayer=L.imageOverlay(cv.toDataURL(),[[s,w],[n,e]],{opacity:.75,interactive:false}).addTo(map);vLayer.getElement().style.imageRendering="pixelated";vMode=mode;vAt=o;
@@ -332,11 +358,11 @@ async function visScan(mode){
   toast((mode==="t"?`Vert : le tireur (${pos}) voit une cible ${ct} posée là · rouge : caché par le relief ou un bâtiment.`:`Vert : depuis là, un tireur ${pos} voit la cible · rouge : la cible est cachée.`)+` ${Math.round(vis/Math.max(1,tot)*100)} % visible sur ${Math.round(Rm)} m. Relief ≈30 m${A.bl.L.length?`, ${A.bl.L.length} bâtiments`:""}, arbres non comptés.`);
 }
 $("losSeeT").onclick=()=>visScan("t");$("losSeeC").onclick=()=>visScan("c");
-$("shClr").addEventListener("click",()=>{if(vMode==="t")visClear();if(zLayer){map.removeLayer(zLayer);zLayer=null;$("losZones").textContent="🗺 Zones atteignables";$("losZones").classList.remove("acc");}if(bpLayer){map.removeLayer(bpLayer);bpLayer=null;}});
+$("shClr").addEventListener("click",()=>{if(vMode==="t")visClear();if(zLayer){map.removeLayer(zLayer);zLayer=null;$("losZones").textContent="🗺 Zones atteignables";$("losZones").classList.remove("acc");}});
 // efface la cible, la ligne de tir et tous les calques posés sur la carte (le tireur reste)
 $("losClr").onclick=()=>{S.target=null;LS.obs=[];LS.obsKey="";LC.tap=null;renderObs();psClear();
   if(zLayer){map.removeLayer(zLayer);zLayer=null;$("losZones").textContent="🗺 Zones atteignables";$("losZones").classList.remove("acc");}
-  if(bpLayer){map.removeLayer(bpLayer);bpLayer=null;}if(vMode==="c")visClear();if(map)map.closePopup();$("l3d").style.display="none";
+  if(vMode==="c")visClear();if(map)map.closePopup();$("l3d").style.display="none";
   drawMarkers();$("geoInfo").textContent="Cible effacée. Touchez la carte pour placer une nouvelle cible.";compute();save();};
 const psSet=()=>{LS.pMin=$("losPmin").value;LS.pMax=$("losPmax").value;save();};$("losPmin").oninput=psSet;$("losPmax").oninput=psSet;
 $("losPmin").value=LS.pMin??50;$("losPmax").value=LS.pMax??300;
@@ -386,7 +412,8 @@ async function open3d(){
     ml._mk=[];
   }else{ml.getSource("bld").setData(bld3d());ml.getSource("trj").setData(seg3d());ml.resize();$("l3dMsg").textContent="";}
   ml._mk.forEach(m=>m.remove());const mk=(p,col,t)=>{const el=document.createElement("div");el.className="mk3d";el.style.background=col;el.textContent=t;return new maplibregl.Marker({element:el,anchor:"bottom"}).setLngLat([p.lon,p.lat]).addTo(ml);};
-  ml._mk=[mk(S.shooter,"#2563eb","Tireur"),mk(S.target,"#dc2626","Cible")];
+  const sb=LC.data.sb;ml._mk=[mk(S.shooter,"#2563eb",sb&&LS.post!=="x"?(LS.sFl==="etage"?`Tireur · étage ${Math.round(pf(LS.sFlN))||0}`:`Tireur · toit ${fr(sb.rel,0)} m`):"Tireur"),mk(S.target,"#dc2626","Cible"),
+    ...PS.map((q,k)=>{const m=mk(q.ll,PT[q.ty][2],PT[q.ty][0]+(k+1));m.getElement().onclick=()=>{$("l3d").style.display="none";psGo(q);};return m;})]; // postes proposés : touchez pour y placer le tireur
   const a=S.shooter,b=S.target,cam=ml.cameraForBounds([[Math.min(a.lon,b.lon),Math.min(a.lat,b.lat)],[Math.max(a.lon,b.lon),Math.max(a.lat,b.lat)]],{padding:60,bearing:LC.data.az});
   ml.jumpTo({center:cam.center,zoom:Math.min(18,(cam.zoom||16)-0.3),bearing:LC.data.az,pitch:62});
   const vb=$("losVerdict").querySelector("b"),vs=$("losVerdict").querySelector("div span");
