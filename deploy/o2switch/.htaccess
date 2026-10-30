@@ -33,8 +33,8 @@ AddDefaultCharset utf-8
 </FilesMatch>
 
 <IfModule mod_headers.c>
-  # Sécurité de base, sans gêner les cartes, la météo et le LiDAR (domaines externes appelés en HTTPS)
-  Header always set Strict-Transport-Security "max-age=31536000" "expr=%{HTTPS} == 'on'"
+  # Sécurité de base, sans gêner les cartes, la météo et le LiDAR (domaines externes appelés en HTTPS).
+  # Pas de HSTS ici : le site peut vivre dans un sous-dossier, et HSTS s'appliquerait à tout le domaine.
   Header always set X-Content-Type-Options "nosniff"
   Header always set Referrer-Policy "strict-origin-when-cross-origin"
   Header always set X-Frame-Options "SAMEORIGIN"

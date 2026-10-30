@@ -11,6 +11,11 @@ Rien n'est à modifier dans l'appli : tous ses chemins sont relatifs, elle march
 
 ## 1. Créer l'adresse du site (cPanel o2switch)
 
+**Dans un sous-dossier d'un site existant** (par exemple `https://imaginfabrik.com/reglage-lunette/`) : pas de sous-domaine à créer. Il suffit de créer le dossier `reglage-lunette` dans le dossier racine du domaine (souvent `public_html`) avec le **Gestionnaire de fichiers**, puis de passer à l'étape 2 en choisissant ce dossier. Le `.htaccess` de l'appli ne s'applique qu'à ce dossier et ne touche pas au reste du site.
+
+**Sur un sous-domaine dédié** :
+
+
 1. cPanel → **Domaines** → créer un sous-domaine, par exemple `lunette.mondomaine.fr`. Noter le dossier racine proposé (par exemple `/home/IDENTIFIANT/lunette.mondomaine.fr`).
 2. cPanel → **Let's Encrypt SSL** (ou **SSL/TLS Status**) : vérifier que le sous-domaine a un certificat, sinon le demander. Sans HTTPS, ni le GPS, ni le mode hors ligne, ni l'installation sur l'écran d'accueil ne fonctionnent.
 
