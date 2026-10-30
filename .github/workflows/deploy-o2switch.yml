@@ -1,0 +1,58 @@
+# Publie le site chez o2switch à chaque push sur main (ou à la demande depuis l'onglet Actions).
+# Ne fait rien tant que les secrets O2SWITCH_* ne sont pas renseignés : GitHub Pages continue de fonctionner seul.
+# Procédure complète : deploy/o2switch/LISEZMOI.md
+name: Déploiement o2switch
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-o2switch
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      FTP_SERVER: ${{ secrets.O2SWITCH_FTP_SERVER }}
+      HTPASSWD: ${{ vars.O2SWITCH_HTPASSWD }}
+    steps:
+      - name: Vérifier la configuration
+        id: cfg
+        run: |
+          if [ -z "$FTP_SERVER" ]; then
+            echo "Secrets O2SWITCH_* absents : déploiement o2switch ignoré."
+            echo "go=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "go=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - uses: actions/checkout@v4
+        if: steps.cfg.outputs.go == 'true'
+
+      - name: Préparer le site
+        if: steps.cfg.outputs.go == 'true'
+        run: |
+          mkdir _site
+          cp index.html ligne.js catalog.js sw.js manifest.webmanifest icon-*.png ReglageLunette.apk _site/
+          cp -r leaflet maplibre reticles _site/
+          cp deploy/o2switch/.htaccess _site/.htaccess
+          # Protection par mot de passe (facultative) : chemin du fichier .htpasswd créé sur le serveur
+          if [ -n "$HTPASSWD" ]; then
+            printf '\n# --- Accès protégé par mot de passe ---\nAuthType Basic\nAuthName "Reglage Lunette"\nAuthUserFile %s\nRequire valid-user\n' "$HTPASSWD" >> _site/.htaccess
+            echo "Protection par mot de passe activée."
+          fi
+          ls -la _site
+
+      - name: Envoyer par FTPS
+        if: steps.cfg.outputs.go == 'true'
+        uses: SamKirkland/FTP-Deploy-Action@v4.3.5
+        with:
+          server: ${{ secrets.O2SWITCH_FTP_SERVER }}
+          username: ${{ secrets.O2SWITCH_FTP_USER }}
+          password: ${{ secrets.O2SWITCH_FTP_PASSWORD }}
+          protocol: ftps
+          local-dir: ./_site/
+          server-dir: ${{ vars.O2SWITCH_DIR || './' }}
