@@ -1,0 +1,63 @@
+# Réglage Lunette : configuration Apache, utilisée chez o2switch et sur le NAS Synology.
+# Ce fichier est copié à la racine du site par le déploiement (voir deploy/o2switch/ et deploy/synology/).
+# Tous les chemins de l'appli sont relatifs : elle marche à la racine d'un domaine comme dans un sous-dossier.
+
+Options -Indexes
+DirectoryIndex index.html
+AddDefaultCharset utf-8
+
+# --- HTTPS obligatoire (service worker, GPS et installation sur l'écran d'accueil l'exigent) ---
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} !=on
+  RewriteCond %{HTTP:X-Forwarded-Proto} !https
+  RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
+</IfModule>
+
+# --- Types de fichiers que tous les serveurs ne connaissent pas ---
+<IfModule mod_mime.c>
+  AddType application/manifest+json .webmanifest
+  AddType image/webp .webp
+  AddType application/vnd.android.package-archive .apk
+  AddType text/javascript .js
+  AddCharset utf-8 .js .css .html .webmanifest
+</IfModule>
+
+# --- Fichiers à ne jamais servir ---
+<FilesMatch "^\.|\.(md|yml|yaml)$">
+  Require all denied
+</FilesMatch>
+# Le manifeste et les icônes restent publics : l'installation sur l'écran d'accueil les lit sans mot de passe
+<FilesMatch "^(manifest\.webmanifest|icon-(180|192|512)\.png)$">
+  Require all granted
+</FilesMatch>
+
+<IfModule mod_headers.c>
+  # Sécurité de base, sans gêner les cartes, la météo et le LiDAR (domaines externes appelés en HTTPS).
+  # Pas de HSTS ici : le site peut vivre dans un sous-dossier, et HSTS s'appliquerait à tout le domaine.
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  Header always set X-Frame-Options "SAMEORIGIN"
+  Header always set Permissions-Policy "geolocation=(self), camera=(), microphone=()"
+
+  # Cache navigateur : le code est toujours revalidé (une mise à jour poussée est vue tout de suite),
+  # les images restent une semaine. Le service worker garde de toute façon une copie hors ligne.
+  <FilesMatch "\.(html|js|css|webmanifest)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+  <Files "sw.js">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+  </Files>
+  <FilesMatch "\.(png|webp|jpg|svg|ico)$">
+    Header set Cache-Control "public, max-age=604800"
+  </FilesMatch>
+  <FilesMatch "\.apk$">
+    Header set Cache-Control "no-cache"
+    Header set Content-Disposition "attachment; filename=\"ReglageLunette.apk\""
+  </FilesMatch>
+</IfModule>
+
+# --- Compression (maplibre-gl.js passe de 784 Ko à environ 210 Ko) ---
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/manifest+json application/json image/svg+xml
+</IfModule>
